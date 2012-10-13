@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:spring="http://www.springframework.org/schema/beans" xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            ">
+
+    <hdfs:config name="simpleConfiguration" defaultFileSystemName="hdfs://localhost:8020/" />
+
+    <hdfs:config name="resourceBasedConfiguration">
+        <hdfs:configuration-resources>
+            <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
+            <hdfs:configuration-resource>/etc/hadoop/hdfs-site.xml</hdfs:configuration-resource>
+            <hdfs:configuration-resource>/etc/hadoop/mapred-site.xml</hdfs:configuration-resource>
+        </hdfs:configuration-resources>
+    </hdfs:config>
+
+    <hdfs:config name="entriesBasedConfiguration">
+        <hdfs:configuration-entries>
+            <hdfs:configuration-entry key="fs.default.name">hdfs://localhost:8020/</hdfs:configuration-entry>
+        </hdfs:configuration-entries>
+    </hdfs:config>
+
+    <flow name="test">
+        <vm:inbound-endpoint path="test.in" exchange-pattern="request-response" />
+        <hdfs:read config-ref="simpleConfiguration" path="#[message.inboundProperties.path]" />
+    </flow>
+</mule>
