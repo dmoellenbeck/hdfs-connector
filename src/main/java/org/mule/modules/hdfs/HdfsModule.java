@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -35,6 +36,7 @@ import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
+import org.mule.api.callback.SourceCallback;
 import org.mule.util.CollectionUtils;
 import org.mule.util.MapUtils;
 import org.mule.util.StringUtils;
@@ -193,16 +195,62 @@ public class HdfsModule
      * @param path the path of the file to read.
      * @param bufferSize an optional buffer size to be used when reading the file.
      * @return an {@link InputStream} that contains the file content.
-     * @throws IOException if there is an issue connecting with the file system.
+     * @throws Exception if any issue occurs during the execution.
      */
     @Processor
     @InvalidateConnectionOn(exception = IOException.class)
-    public InputStream read(final String path, @Optional final Integer bufferSize) throws IOException
+    public InputStream read(final String path, @Optional final Integer bufferSize) throws Exception
+    {
+        return runHdfsAction(new Callable<InputStream>()
+        {
+            public InputStream call() throws IOException
+            {
+                final Path hdfsPath = new Path(path);
+                return bufferSize == null ? fileSystem.open(hdfsPath) : fileSystem.open(hdfsPath, bufferSize);
+            }
+        });
+    }
+
+    // TODO write
+    // TODO delete
+
+    /**
+     * Verifies if a path exists and stops the flow execution if it doesn't.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:exists}
+     * 
+     * @param path the path whose existence must be checked.
+     * @param sourceCallback to invoke the next processor in the chain.
+     * @throws Exception if any issue occurs during the execution.
+     * @return the result of executing the next message processors if the path
+     *         exists, otherwise null.
+     */
+    @Processor(name = "exists-filter", intercepting = true)
+    @InvalidateConnectionOn(exception = IOException.class)
+    public Object exists(final String path, final SourceCallback sourceCallback) throws Exception
+    {
+        return runHdfsAction(new Callable<Object>()
+        {
+            public Object call() throws Exception
+            {
+                final Path hdfsPath = new Path(path);
+                if (fileSystem.exists(hdfsPath))
+                {
+                    return sourceCallback.process();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        });
+    }
+
+    private <T> T runHdfsAction(final Callable<T> action) throws Exception
     {
         try
         {
-            final Path hdfsPath = new Path(path);
-            return bufferSize == null ? fileSystem.open(hdfsPath) : fileSystem.open(hdfsPath, bufferSize);
+            return action.call();
         }
         catch (final FileNotFoundException fnfe)
         {
@@ -211,10 +259,6 @@ public class HdfsModule
             throw new MuleRuntimeException(fnfe);
         }
     }
-
-    // TODO write
-    // TODO delete
-    // TODO exists-filter
 
     public List<String> getConfigurationResources()
     {

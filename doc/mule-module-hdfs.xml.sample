@@ -1,9 +1,14 @@
 <!-- BEGIN_INCLUDE(hdfs:read-1) -->
-<!-- Reading a file using the default buffer size  -->
+<!-- Reading a file using the default buffer size -->
 <hdfs:read path="/tmp/test.dat" />
 <!-- END_INCLUDE(hdfs:read-1) -->
 
 <!-- BEGIN_INCLUDE(hdfs:read-2) -->
-<!-- Reading a file using a specific buffer size  -->
+<!-- Reading a file using a specific buffer size -->
 <hdfs:read path="/tmp/test.dat" bufferSize="8192" />
 <!-- END_INCLUDE(hdfs:read-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:exists) -->
+<!-- Ensures a path exists -->
+<hdfs:exists-filter path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:exists) -->
