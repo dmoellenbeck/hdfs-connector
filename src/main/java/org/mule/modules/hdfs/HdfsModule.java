@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.mule.api.ConnectionException;
@@ -26,10 +27,13 @@ import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.ConnectionIdentifier;
 import org.mule.api.annotations.Connector;
+import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.InvalidateConnectionOn;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.display.Placement;
+import org.mule.api.annotations.param.ConnectionKey;
+import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.util.CollectionUtils;
 import org.mule.util.MapUtils;
@@ -39,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * Hadoop File System (HDFS) Connector.
+ * Hadoop Distributed File System (HDFS) Connector.
  * </p>
  * 
  * @author MuleSoft, Inc.
@@ -50,14 +54,6 @@ import org.slf4j.LoggerFactory;
 public class HdfsModule
 {
     private final static Logger LOGGER = LoggerFactory.getLogger(HdfsModule.class);
-
-    /**
-     * Default name of the file system to connect to. Passed to HDFS client as the
-     * {@value FileSystem#FS_DEFAULT_NAME_KEY} configuration entry.
-     */
-    @Configurable
-    @Optional
-    private String defaultFileSystemName;
 
     /**
      * A {@link List} of configuration resource files to be loaded by the HDFS
@@ -79,22 +75,35 @@ public class HdfsModule
     private FileSystem fileSystem;
 
     /**
-     * Establish the connection to the Hadoop File System.
+     * Establish the connection to the Hadoop Distributed File System.
      * 
+     * @param defaultFileSystemName the name of the file system to connect to. It is
+     *            passed to HDFS client as the
+     *            {@value FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can
+     *            be overriden by values in configurationResources and
+     *            configurationEntries.
      * @throws ConnectionException Holding one of the possible values in
      *             {@link ConnectionExceptionCode}.
      */
     @Connect
-    public void connect() throws ConnectionException
+    public void connect(@ConnectionKey @Default(CommonConfigurationKeys.FS_DEFAULT_NAME_DEFAULT) final String defaultFileSystemName)
+        throws ConnectionException
     {
+        // FIXME the default value is always passed to defaultFileSystemName!
+        final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
+
         final Configuration configuration = new Configuration();
 
-        if (StringUtils.isNotBlank(defaultFileSystemName))
+        final boolean isDefaultFileSystem = CommonConfigurationKeys.FS_DEFAULT_NAME_DEFAULT.equals(defaultFileSystemName);
+
+        if (StringUtils.isNotBlank(defaultFileSystemName)
+        // avoid overriding values in configurationResources
+            && (!hasConfigurationResources || (hasConfigurationResources && !isDefaultFileSystem)))
         {
             configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, defaultFileSystemName);
         }
 
-        if (CollectionUtils.isNotEmpty(configurationResources))
+        if (hasConfigurationResources)
         {
             for (final String configurationResource : configurationResources)
             {
@@ -154,12 +163,11 @@ public class HdfsModule
     }
 
     /**
-     * Disconnects from the Hadoop File System.
+     * Disconnects from the Hadoop Distributed File System.
      * 
      * @throws IOException if there is an issue connecting with the file system.
      */
-    // FIXME figure out why DevKit crashes if this is uncommented
-    // @Disconnect
+    @Disconnect
     public void disconnect() throws IOException
     {
         if (fileSystem != null)
@@ -193,7 +201,7 @@ public class HdfsModule
     {
         try
         {
-            final Path hdfsPath = new Path("/tmp/deptree");
+            final Path hdfsPath = new Path(path);
             return bufferSize == null ? fileSystem.open(hdfsPath) : fileSystem.open(hdfsPath, bufferSize);
         }
         catch (final FileNotFoundException fnfe)
@@ -204,15 +212,9 @@ public class HdfsModule
         }
     }
 
-    public String getDefaultFileSystemName()
-    {
-        return defaultFileSystemName;
-    }
-
-    public void setDefaultFileSystemName(final String defaultFileSystemName)
-    {
-        this.defaultFileSystemName = defaultFileSystemName;
-    }
+    // TODO write
+    // TODO delete
+    // TODO exists-filter
 
     public List<String> getConfigurationResources()
     {
