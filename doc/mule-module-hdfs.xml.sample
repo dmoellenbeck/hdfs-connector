@@ -12,3 +12,23 @@
 <!-- Ensures a path exists -->
 <hdfs:exists-filter path="/tmp/test.dat" />
 <!-- END_INCLUDE(hdfs:exists) -->
+
+<!-- BEGIN_INCLUDE(hdfs:append-1) -->
+<!-- Appending to a file using the default buffer size -->
+<hdfs:append path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:append-1) -->
+
+<!-- BEGIN_INCLUDE(hdfs:append-2) -->
+<!-- Appending to a file using a specific buffer size -->
+<hdfs:append path="/tmp/test.dat" bufferSize="8192" />
+<!-- END_INCLUDE(hdfs:append-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:write-1) -->
+<!-- Writing to a file using the configuration -->
+<hdfs:write path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:write-1) -->
+
+<!-- BEGIN_INCLUDE(hdfs:write-2) -->
+<!-- Writing to a file using all the configurable parameters -->
+<hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" />
+<!-- END_INCLUDE(hdfs:write-2) -->

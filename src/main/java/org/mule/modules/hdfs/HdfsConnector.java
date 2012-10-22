@@ -19,8 +19,10 @@ import java.util.concurrent.Callable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.MuleRuntimeException;
@@ -36,8 +38,10 @@ import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
+import org.mule.api.annotations.param.Payload;
 import org.mule.api.callback.SourceCallback;
 import org.mule.util.CollectionUtils;
+import org.mule.util.IOUtils;
 import org.mule.util.MapUtils;
 import org.mule.util.StringUtils;
 import org.slf4j.Logger;
@@ -53,9 +57,9 @@ import org.slf4j.LoggerFactory;
 @Connector(name = "hdfs", schemaVersion = "3.3", friendlyName = "HDFS", minMuleVersion = "3.3.0", description = "HDFS Connector")
 // TODO use a relevant category
 // @Category(name = "org.mule.tooling.category.security", description = "Security")
-public class HdfsModule
+public class HdfsConnector
 {
-    private final static Logger LOGGER = LoggerFactory.getLogger(HdfsModule.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(HdfsConnector.class);
 
     /**
      * A {@link List} of configuration resource files to be loaded by the HDFS
@@ -193,25 +197,98 @@ public class HdfsModule
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-2}
      * 
      * @param path the path of the file to read.
-     * @param bufferSize an optional buffer size to be used when reading the file.
+     * @param bufferSize the buffer size to use when reading the file.
      * @return an {@link InputStream} that contains the file content.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor
+    @Processor(name = "read")
     @InvalidateConnectionOn(exception = IOException.class)
-    public InputStream read(final String path, @Optional final Integer bufferSize) throws Exception
+    public InputStream readFromPath(final String path, @Optional @Default("4096") final int bufferSize)
+        throws Exception
     {
         return runHdfsAction(new Callable<InputStream>()
         {
             public InputStream call() throws IOException
             {
                 final Path hdfsPath = new Path(path);
-                return bufferSize == null ? fileSystem.open(hdfsPath) : fileSystem.open(hdfsPath, bufferSize);
+                return fileSystem.open(hdfsPath, bufferSize);
             }
         });
     }
 
-    // TODO write
+    /**
+     * Write the current payload to the designated path, either creating a new file
+     * or appending to an existing one.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:write-1}
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:write-2}
+     * 
+     * @param path the path of the file to write to.
+     * @param permission the file system permission to use if a new file is created.
+     * @param overwrite if a pre-existing file should be overwritten with the new
+     *            content.
+     * @param bufferSize the buffer size to use when appending to the file.
+     * @param replication block replication for the file.
+     * @param blockSize the buffer size to use when appending to the file.
+     * @param payload the payload to append to the file.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor(name = "write")
+    @InvalidateConnectionOn(exception = IOException.class)
+    public void writeToPath(final String path,
+                            @Optional @Default("511") final short permission,
+                            @Optional @Default("true") final boolean overwrite,
+                            @Optional @Default("4096") final int bufferSize,
+                            @Optional @Default("1") final short replication,
+                            @Optional @Default("4096") final long blockSize,
+                            @Payload final InputStream payload) throws Exception
+    {
+        runHdfsAction(new Callable<Void>()
+        {
+            public Void call() throws IOException
+            {
+                final Path hdfsPath = new Path(path);
+                final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath, new FsPermission(
+                    permission), overwrite, bufferSize, replication, blockSize, null);
+                IOUtils.copyLarge(payload, fsDataOutputStream);
+                IOUtils.closeQuietly(fsDataOutputStream);
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Append the current payload to a file located at the designated path.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:append-1}
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:append-2}
+     * 
+     * @param path the path of the file to write to.
+     * @param bufferSize the buffer size to use when appending to the file.
+     * @param payload the payload to append to the file.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor(name = "append")
+    @InvalidateConnectionOn(exception = IOException.class)
+    public void appendToPath(final String path,
+                             @Optional @Default("4096") final int bufferSize,
+                             @Payload final InputStream payload) throws Exception
+    {
+        runHdfsAction(new Callable<Void>()
+        {
+            public Void call() throws IOException
+            {
+                final Path hdfsPath = new Path(path);
+                final FSDataOutputStream fsDataOutputStream = fileSystem.append(hdfsPath, bufferSize);
+                IOUtils.copyLarge(payload, fsDataOutputStream);
+                IOUtils.closeQuietly(fsDataOutputStream);
+                return null;
+            }
+        });
+    }
+
     // TODO delete
 
     /**
@@ -227,7 +304,7 @@ public class HdfsModule
      */
     @Processor(name = "exists-filter", intercepting = true)
     @InvalidateConnectionOn(exception = IOException.class)
-    public Object exists(final String path, final SourceCallback sourceCallback) throws Exception
+    public Object pathExistsFilter(final String path, final SourceCallback sourceCallback) throws Exception
     {
         return runHdfsAction(new Callable<Object>()
         {

@@ -14,7 +14,7 @@
     <name>HDFS Connector</name>
 
     <properties>
-        <hadoop.version>1.0.3</hadoop.version>
+        <hadoop.version>1.0.4</hadoop.version>
         <devkit.studio.package.skip>true</devkit.studio.package.skip>
     </properties>
 
