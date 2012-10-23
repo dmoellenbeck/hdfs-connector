@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -60,6 +59,16 @@ import org.slf4j.LoggerFactory;
 public class HdfsConnector
 {
     private final static Logger LOGGER = LoggerFactory.getLogger(HdfsConnector.class);
+
+    private interface HdfsPathAction<T>
+    {
+        T run(Path hdfsPath) throws Exception;
+    }
+
+    private interface VoidHdfsPathAction
+    {
+        void run(Path hdfsPath) throws Exception;
+    }
 
     /**
      * A {@link List} of configuration resource files to be loaded by the HDFS
@@ -206,11 +215,10 @@ public class HdfsConnector
     public InputStream readFromPath(final String path, @Optional @Default("4096") final int bufferSize)
         throws Exception
     {
-        return runHdfsAction(new Callable<InputStream>()
+        return runHdfsPathAction(path, new HdfsPathAction<InputStream>()
         {
-            public InputStream call() throws IOException
+            public InputStream run(final Path hdfsPath) throws Exception
             {
-                final Path hdfsPath = new Path(path);
                 return fileSystem.open(hdfsPath, bufferSize);
             }
         });
@@ -244,16 +252,14 @@ public class HdfsConnector
                             @Optional @Default("4096") final long blockSize,
                             @Payload final InputStream payload) throws Exception
     {
-        runHdfsAction(new Callable<Void>()
+        runHdfsPathAction(path, new VoidHdfsPathAction()
         {
-            public Void call() throws IOException
+            public void run(final Path hdfsPath) throws Exception
             {
-                final Path hdfsPath = new Path(path);
                 final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath, new FsPermission(
                     permission), overwrite, bufferSize, replication, blockSize, null);
                 IOUtils.copyLarge(payload, fsDataOutputStream);
                 IOUtils.closeQuietly(fsDataOutputStream);
-                return null;
             }
         });
     }
@@ -276,20 +282,57 @@ public class HdfsConnector
                              @Optional @Default("4096") final int bufferSize,
                              @Payload final InputStream payload) throws Exception
     {
-        runHdfsAction(new Callable<Void>()
+        runHdfsPathAction(path, new VoidHdfsPathAction()
         {
-            public Void call() throws IOException
+            public void run(final Path hdfsPath) throws Exception
             {
-                final Path hdfsPath = new Path(path);
                 final FSDataOutputStream fsDataOutputStream = fileSystem.append(hdfsPath, bufferSize);
                 IOUtils.copyLarge(payload, fsDataOutputStream);
                 IOUtils.closeQuietly(fsDataOutputStream);
-                return null;
             }
         });
     }
 
-    // TODO delete
+    /**
+     * Delete the file or directory located at the designated path.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-file}
+     * 
+     * @param path the path of the file to delete.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor(name = "delete-file")
+    @InvalidateConnectionOn(exception = IOException.class)
+    public void deleteFile(final String path) throws Exception
+    {
+        deletePath(path, false);
+    }
+
+    /**
+     * Delete the file or directory located at the designated path.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-directory}
+     * 
+     * @param path the path of the directory to delete.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor(name = "delete-directory")
+    @InvalidateConnectionOn(exception = IOException.class)
+    public void deleteDirectory(final String path) throws Exception
+    {
+        deletePath(path, true);
+    }
+
+    private void deletePath(final String path, final boolean recursive) throws Exception
+    {
+        runHdfsPathAction(path, new VoidHdfsPathAction()
+        {
+            public void run(final Path hdfsPath) throws Exception
+            {
+                fileSystem.delete(hdfsPath, recursive);
+            }
+        });
+    }
 
     /**
      * Verifies if a path exists and stops the flow execution if it doesn't.
@@ -306,11 +349,10 @@ public class HdfsConnector
     @InvalidateConnectionOn(exception = IOException.class)
     public Object pathExistsFilter(final String path, final SourceCallback sourceCallback) throws Exception
     {
-        return runHdfsAction(new Callable<Object>()
+        return runHdfsPathAction(path, new HdfsPathAction<Object>()
         {
-            public Object call() throws Exception
+            public Object run(final Path hdfsPath) throws Exception
             {
-                final Path hdfsPath = new Path(path);
                 if (fileSystem.exists(hdfsPath))
                 {
                     return sourceCallback.process();
@@ -323,11 +365,52 @@ public class HdfsConnector
         });
     }
 
-    private <T> T runHdfsAction(final Callable<T> action) throws Exception
+    /**
+     * Make the given file and all non-existent parents into directories. Has the
+     * semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an
+     * error.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:make-directories-1}
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:make-directories-2}
+     * 
+     * @param path the path to create directories for.
+     * @param permission the file system permission to use when creating the
+     *            directories.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor(name = "make-directories")
+    @InvalidateConnectionOn(exception = IOException.class)
+    public void makeDirectories(final String path, @Optional @Default("511") final short permission)
+        throws Exception
+    {
+        runHdfsPathAction(path, new VoidHdfsPathAction()
+        {
+            public void run(final Path hdfsPath) throws Exception
+            {
+                fileSystem.mkdirs(hdfsPath, new FsPermission(permission));
+            }
+        });
+    }
+
+    private void runHdfsPathAction(final String path, final VoidHdfsPathAction action) throws Exception
+    {
+        runHdfsPathAction(path, new HdfsPathAction<Void>()
+        {
+            public Void run(final Path hdfsPath) throws Exception
+            {
+                action.run(hdfsPath);
+                return null;
+            }
+        });
+    }
+
+    private <T> T runHdfsPathAction(final String path, final HdfsPathAction<T> action) throws Exception
     {
         try
         {
-            return action.call();
+            final Path hdfsPath = new Path(path);
+            return action.run(hdfsPath);
         }
         catch (final FileNotFoundException fnfe)
         {

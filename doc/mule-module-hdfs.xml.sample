@@ -32,3 +32,23 @@
 <!-- Writing to a file using all the configurable parameters -->
 <hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" />
 <!-- END_INCLUDE(hdfs:write-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:delete-file) -->
+<!-- Delete a file -->
+<hdfs:delete-file path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:delete-file) -->
+
+<!-- BEGIN_INCLUDE(hdfs:delete-directory) -->
+<!-- Delete a directory -->
+<hdfs:delete-directory path="/tmp/my-dir" />
+<!-- END_INCLUDE(hdfs:delete-directory) -->
+
+<!-- BEGIN_INCLUDE(hdfs:make-directories-1) -->
+<!-- Make any missing directories for the specified path, using the default file system permission -->
+<hdfs:make-directories path="/tmp/my-dir" />
+<!-- END_INCLUDE(hdfs:make-directories-1) -->
+
+<!-- BEGIN_INCLUDE(hdfs:make-directories-2) -->
+<!-- Make any missing directories for the specified path, using the provided file system permission -->
+<hdfs:make-directories path="/tmp/my-dir" permission="511" />
+<!-- END_INCLUDE(hdfs:make-directories-2) -->
