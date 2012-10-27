@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:spring="http://www.springframework.org/schema/beans" xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            ">
+
+    <!--
+    The following can't be tested because of DEVKIT-257
+
+    <hdfs:config name="simpleConfiguration" defaultFileSystemName="hdfs://localhost:8020/" />
+
+    <hdfs:config name="resourceBasedConfiguration">
+        <hdfs:configuration-resources>
+            <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
+            <hdfs:configuration-resource>/etc/hadoop/hdfs-site.xml</hdfs:configuration-resource>
+            <hdfs:configuration-resource>/etc/hadoop/mapred-site.xml</hdfs:configuration-resource>
+        </hdfs:configuration-resources>
+    </hdfs:config>
+     -->
+
+    <hdfs:config name="entriesBasedConfiguration">
+        <hdfs:configuration-entries>
+            <hdfs:configuration-entry key="fs.default.name">${test.hdfs.fs.default.name}</hdfs:configuration-entry>
+        </hdfs:configuration-entries>
+    </hdfs:config>
+
+    <flow name="pathExistsFlow">
+        <vm:inbound-endpoint path="pathExistsFlow.in" exchange-pattern="request-response" />
+        <hdfs:set-path-exists-variable variableName="hdfsPathExists" path="#[message.inboundProperties.hdfsPath]" />
+        <set-payload value="#[hdfsPathExists]" />
+    </flow>
+
+    <flow name="makeDirectoriesFlow">
+        <vm:inbound-endpoint path="makeDirectoriesFlow.in" exchange-pattern="request-response" />
+        <hdfs:make-directories path="#[message.inboundProperties.hdfsPath]" />
+        <set-payload value="DONE" />
+    </flow>
+    
+    <flow name="deleteDirectoryFlow">
+        <vm:inbound-endpoint path="deleteDirectoryFlow.in" exchange-pattern="request-response" />
+        <hdfs:delete-directory path="#[message.inboundProperties.hdfsPath]" />
+        <set-payload value="DONE" />
+    </flow>
+
+    <flow name="readFlow">
+        <vm:inbound-endpoint path="readFlow.in" exchange-pattern="request-response" />
+        <hdfs:read path="#[message.inboundProperties.hdfsPath]" />
+    </flow>
+</mule>

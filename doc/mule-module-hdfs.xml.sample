@@ -8,10 +8,10 @@
 <hdfs:read path="/tmp/test.dat" bufferSize="8192" />
 <!-- END_INCLUDE(hdfs:read-2) -->
 
-<!-- BEGIN_INCLUDE(hdfs:exists) -->
+<!-- BEGIN_INCLUDE(hdfs:set-path-exists-variable) -->
 <!-- Ensures a path exists -->
-<hdfs:exists-filter path="/tmp/test.dat" />
-<!-- END_INCLUDE(hdfs:exists) -->
+<hdfs:set-path-exists-variable variableName="hdfsPathExists" path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:set-path-exists-variable) -->
 
 <!-- BEGIN_INCLUDE(hdfs:append-1) -->
 <!-- Appending to a file using the default buffer size -->

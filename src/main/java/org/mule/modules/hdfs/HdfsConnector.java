@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -24,6 +26,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
+import org.mule.api.MuleEvent;
 import org.mule.api.MuleRuntimeException;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connect;
@@ -38,7 +41,6 @@ import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
-import org.mule.api.callback.SourceCallback;
 import org.mule.util.CollectionUtils;
 import org.mule.util.IOUtils;
 import org.mule.util.MapUtils;
@@ -104,7 +106,6 @@ public class HdfsConnector
     public void connect(@ConnectionKey @Default(CommonConfigurationKeys.FS_DEFAULT_NAME_DEFAULT) final String defaultFileSystemName)
         throws ConnectionException
     {
-        // FIXME the default value is always passed to defaultFileSystemName!
         final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
 
         final Configuration configuration = new Configuration();
@@ -335,32 +336,31 @@ public class HdfsConnector
     }
 
     /**
-     * Verifies if a path exists and stops the flow execution if it doesn't.
+     * Stores true in a flow variable whose name is provided if the path exists,
+     * false otherwise.
      * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:exists}
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample
+     * hdfs:set-path-exists-variable}
      * 
+     * @param variableName the name of the variable to store the existence boolean
+     *            under.
      * @param path the path whose existence must be checked.
-     * @param sourceCallback to invoke the next processor in the chain.
+     * @param muleEvent the {@link MuleEvent} currently being processed.
      * @throws Exception if any issue occurs during the execution.
      * @return the result of executing the next message processors if the path
      *         exists, otherwise null.
      */
-    @Processor(name = "exists-filter", intercepting = true)
+    @Processor(name = "set-path-exists-variable")
     @InvalidateConnectionOn(exception = IOException.class)
-    public Object pathExistsFilter(final String path, final SourceCallback sourceCallback) throws Exception
+    @Inject
+    public void setPathExistsVariable(final String variableName, final String path, final MuleEvent muleEvent)
+        throws Exception
     {
-        return runHdfsPathAction(path, new HdfsPathAction<Object>()
+        runHdfsPathAction(path, new VoidHdfsPathAction()
         {
-            public Object run(final Path hdfsPath) throws Exception
+            public void run(final Path hdfsPath) throws Exception
             {
-                if (fileSystem.exists(hdfsPath))
-                {
-                    return sourceCallback.process();
-                }
-                else
-                {
-                    return null;
-                }
+                muleEvent.setFlowVariable(variableName, fileSystem.exists(hdfsPath));
             }
         });
     }
@@ -418,6 +418,11 @@ public class HdfsConnector
             // another exception to prevent the connection to be invalidated
             throw new MuleRuntimeException(fnfe);
         }
+    }
+
+    public FileSystem getFileSystem()
+    {
+        return fileSystem;
     }
 
     public List<String> getConfigurationResources()
