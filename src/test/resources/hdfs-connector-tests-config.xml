@@ -29,10 +29,11 @@
         </hdfs:configuration-entries>
     </hdfs:config>
 
-    <flow name="pathExistsFlow">
-        <vm:inbound-endpoint path="pathExistsFlow.in" exchange-pattern="request-response" />
-        <hdfs:set-path-exists-variable variableName="hdfsPathExists" path="#[message.inboundProperties.hdfsPath]" />
-        <set-payload value="#[hdfsPathExists]" />
+    <flow name="pathMetaFlow">
+        <vm:inbound-endpoint path="pathMetaFlow.in" exchange-pattern="request-response" />
+        <hdfs:get-meta-information path="#[message.inboundProperties.hdfsPath]" />
+        <!-- copy the meta flow vars to a map returned to the caller for testing -->
+        <set-payload value="#[['pathExists':flowVars['hdfs.path.exists'],'contentSummary':flowVars['hdfs.content.summary'],'fileStatus':flowVars['hdfs.file.status'],'fileChecksum':flowVars['hdfs.file.checksum']]]" />
     </flow>
 
     <flow name="makeDirectoriesFlow">

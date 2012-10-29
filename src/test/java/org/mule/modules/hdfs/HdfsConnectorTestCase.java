@@ -8,9 +8,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.hadoop.fs.ContentSummary;
+import org.apache.hadoop.fs.FileChecksum;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.LocalFileSystem;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
 import org.mule.modules.hdfs.adapters.HdfsConnectorConnectionIdentifierAdapter;
 import org.mule.modules.hdfs.connectivity.HdfsConnectorConnectionKey;
@@ -20,6 +25,8 @@ import org.mule.util.StringUtils;
 
 public class HdfsConnectorTestCase extends FunctionalTestCase
 {
+    private boolean localFileSystem;
+
     @BeforeClass
     public static void setupEnvironment()
     {
@@ -39,6 +46,12 @@ public class HdfsConnectorTestCase extends FunctionalTestCase
         return "hdfs-connector-tests-config.xml";
     }
 
+    @Before
+    public void initialize() throws Exception
+    {
+        localFileSystem = isLocalFileSystem();
+    }
+
     @Test
     public void fileSystemOperations() throws Exception
     {
@@ -50,14 +63,15 @@ public class HdfsConnectorTestCase extends FunctionalTestCase
             "hdfsPath", System.getProperty("test.hdfs.temp.dir") + "/" + testDirName);
 
         // create a directory and assert it exists
-        MuleMessage response = muleContext.getClient().send("vm://pathExistsFlow.in", null,
-            dirNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(false));
+        Map<String, Object> metaMap = getPathMetaMap(dirNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(false));
 
         muleContext.getClient().send("vm://makeDirectoriesFlow.in", null, dirNamePathProperties);
 
-        response = muleContext.getClient().send("vm://pathExistsFlow.in", null, dirNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(true));
+        metaMap = getPathMetaMap(dirNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(true));
+        assertThat(((FileStatus) metaMap.get("fileStatus")).isDir(), is(true));
+        assertThat(((ContentSummary) metaMap.get("contentSummary")).getFileCount(), is(0L));
 
         // create a file, assert it exists and read it back
         final Map<String, Object> fileNamePathProperties = Collections.<String, Object> singletonMap(
@@ -66,26 +80,23 @@ public class HdfsConnectorTestCase extends FunctionalTestCase
         final String testInitialData = RandomStringUtils.randomAlphanumeric(20);
         muleContext.getClient().send("vm://writeFlow.in", testInitialData, fileNamePathProperties);
 
-        response = muleContext.getClient().send("vm://pathExistsFlow.in", null, fileNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(true));
-
-        response = muleContext.getClient().send("vm://readFlow.in", null, fileNamePathProperties);
-        assertThat(response.getPayload(String.class), is(testInitialData));
-
-        if (isAppendSupported())
+        metaMap = getPathMetaMap(fileNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(true));
+        assertThat(((FileStatus) metaMap.get("fileStatus")).isDir(), is(false));
+        if (!localFileSystem)
         {
-            // append data to existing file, read it back
-            final String testAppendData = RandomStringUtils.randomAlphanumeric(20);
-            muleContext.getClient().send("vm://appendFlow.in", testAppendData, fileNamePathProperties);
-
-            response = muleContext.getClient().send("vm://readFlow.in", null, fileNamePathProperties);
-            assertThat(response.getPayload(String.class), is(testInitialData + testAppendData));
+            assertThat(metaMap.get("fileChecksum"), is(FileChecksum.class));
         }
+        assertThat(((ContentSummary) metaMap.get("contentSummary")).getFileCount(), is(1L));
+
+        final MuleMessage response = muleContext.getClient().send("vm://readFlow.in", null,
+            fileNamePathProperties);
+        assertThat(response.getPayload(String.class), is(testInitialData));
 
         // delete existing file and check its gone
         muleContext.getClient().send("vm://deleteFileFlow.in", null, fileNamePathProperties);
-        response = muleContext.getClient().send("vm://pathExistsFlow.in", null, fileNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(false));
+        metaMap = getPathMetaMap(fileNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(false));
 
         // re-create the file ...
         muleContext.getClient().send("vm://writeFlow.in", testInitialData, fileNamePathProperties);
@@ -93,18 +104,28 @@ public class HdfsConnectorTestCase extends FunctionalTestCase
         // ... then delete a directory and assert its content and itself are gone
         muleContext.getClient().send("vm://deleteDirectoryFlow.in", null, dirNamePathProperties);
 
-        response = muleContext.getClient().send("vm://pathExistsFlow.in", null, dirNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(false));
-        response = muleContext.getClient().send("vm://pathExistsFlow.in", null, fileNamePathProperties);
-        assertThat(response.getPayload(Boolean.class), is(false));
+        metaMap = getPathMetaMap(dirNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(false));
+
+        metaMap = getPathMetaMap(fileNamePathProperties);
+        assertThat((Boolean) metaMap.get("pathExists"), is(false));
     }
 
-    private boolean isAppendSupported() throws Exception
+    private boolean isLocalFileSystem() throws Exception
     {
         final HdfsConnectorConnectionManager hdfsConnectorConnectionManager = muleContext.getRegistry()
             .lookupObject(HdfsConnectorConnectionManager.class);
         final HdfsConnectorConnectionIdentifierAdapter connection = hdfsConnectorConnectionManager.acquireConnection(new HdfsConnectorConnectionKey(
             "DEFAULT"));
-        return !(connection.getFileSystem() instanceof LocalFileSystem);
+        return connection.getFileSystem() instanceof LocalFileSystem;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getPathMetaMap(final Map<String, Object> pathSelectionProperties)
+        throws MuleException
+    {
+        final MuleMessage response = muleContext.getClient().send("vm://pathMetaFlow.in", null,
+            pathSelectionProperties);
+        return (Map<String, Object>) response.getPayload();
     }
 }
