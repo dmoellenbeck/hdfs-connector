@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -56,8 +55,6 @@ import org.slf4j.LoggerFactory;
  * @author MuleSoft, Inc.
  */
 @Connector(name = "hdfs", schemaVersion = "3.3", friendlyName = "HDFS", minMuleVersion = "3.3.0", description = "HDFS Connector")
-// TODO use a relevant category
-// @Category(name = "org.mule.tooling.category.security", description = "Security")
 public class HdfsConnector
 {
     private final static Logger LOGGER = LoggerFactory.getLogger(HdfsConnector.class);
@@ -71,6 +68,15 @@ public class HdfsConnector
     {
         void run(Path hdfsPath) throws Exception;
     }
+
+    /**
+     * The name of the file system to connect to. It is passed to HDFS client as the
+     * {@value FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
+     * overriden by values in configurationResources and configurationEntries.
+     */
+    @Configurable
+    @Optional
+    private String defaultFileSystemName;
 
     /**
      * A {@link List} of configuration resource files to be loaded by the HDFS
@@ -89,36 +95,32 @@ public class HdfsConnector
     @Placement(group = "Advanced")
     private Map<String, String> configurationEntries;
 
+    /**
+     * A readily configured {@link FileSystem} to use to connect to HDFS.
+     */
+    @Configurable
+    @Optional
+    @Placement(group = "Advanced")
     private FileSystem fileSystem;
 
     /**
      * Establish the connection to the Hadoop Distributed File System.
      * 
-     * @param defaultFileSystemName the name of the file system to connect to. It is
-     *            passed to HDFS client as the
-     *            {@value FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can
-     *            be overriden by values in configurationResources and
-     *            configurationEntries.
+     * @param connectionKey a connection key.
      * @throws ConnectionException Holding one of the possible values in
      *             {@link ConnectionExceptionCode}.
      */
     @Connect
-    public void connect(@ConnectionKey @Default(CommonConfigurationKeys.FS_DEFAULT_NAME_DEFAULT) final String defaultFileSystemName)
+    public void connect(@ConnectionKey @Default("DEFAULT") final String connectionKey)
         throws ConnectionException
     {
-        final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
-
         final Configuration configuration = new Configuration();
-
-        final boolean isDefaultFileSystem = CommonConfigurationKeys.FS_DEFAULT_NAME_DEFAULT.equals(defaultFileSystemName);
-
-        if (StringUtils.isNotBlank(defaultFileSystemName)
-        // avoid overriding values in configurationResources
-            && (!hasConfigurationResources || (hasConfigurationResources && !isDefaultFileSystem)))
+        if (StringUtils.isNotBlank(defaultFileSystemName))
         {
             configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, defaultFileSystemName);
         }
 
+        final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
         if (hasConfigurationResources)
         {
             for (final String configurationResource : configurationResources)
@@ -240,7 +242,9 @@ public class HdfsConnector
      * @param bufferSize the buffer size to use when appending to the file.
      * @param replication block replication for the file.
      * @param blockSize the buffer size to use when appending to the file.
-     * @param payload the payload to append to the file.
+     * @param ownerUserName the username owner of the file.
+     * @param ownerGroupName the group owner of the file.
+     * @param payload the payload to write to the file.
      * @throws Exception if any issue occurs during the execution.
      */
     @Processor(name = "write")
@@ -251,6 +255,8 @@ public class HdfsConnector
                             @Optional @Default("4096") final int bufferSize,
                             @Optional @Default("1") final short replication,
                             @Optional @Default("4096") final long blockSize,
+                            @Optional final String ownerUserName,
+                            @Optional final String ownerGroupName,
                             @Payload final InputStream payload) throws Exception
     {
         runHdfsPathAction(path, new VoidHdfsPathAction()
@@ -261,6 +267,11 @@ public class HdfsConnector
                     permission), overwrite, bufferSize, replication, blockSize, null);
                 IOUtils.copyLarge(payload, fsDataOutputStream);
                 IOUtils.closeQuietly(fsDataOutputStream);
+
+                if ((StringUtils.isNotBlank(ownerUserName)) || (StringUtils.isNotBlank(ownerGroupName)))
+                {
+                    fileSystem.setOwner(hdfsPath, ownerUserName, ownerGroupName);
+                }
             }
         });
     }
@@ -423,6 +434,21 @@ public class HdfsConnector
     public FileSystem getFileSystem()
     {
         return fileSystem;
+    }
+
+    public void setFileSystem(final FileSystem fileSystem)
+    {
+        this.fileSystem = fileSystem;
+    }
+
+    public String getDefaultFileSystemName()
+    {
+        return defaultFileSystemName;
+    }
+
+    public void setDefaultFileSystemName(final String defaultFileSystemName)
+    {
+        this.defaultFileSystemName = defaultFileSystemName;
     }
 
     public List<String> getConfigurationResources()

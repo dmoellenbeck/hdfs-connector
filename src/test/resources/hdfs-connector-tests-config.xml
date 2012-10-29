@@ -40,15 +40,31 @@
         <hdfs:make-directories path="#[message.inboundProperties.hdfsPath]" />
         <set-payload value="DONE" />
     </flow>
-    
+
     <flow name="deleteDirectoryFlow">
         <vm:inbound-endpoint path="deleteDirectoryFlow.in" exchange-pattern="request-response" />
         <hdfs:delete-directory path="#[message.inboundProperties.hdfsPath]" />
         <set-payload value="DONE" />
     </flow>
 
+    <flow name="deleteFileFlow">
+        <vm:inbound-endpoint path="deleteFileFlow.in" exchange-pattern="request-response" />
+        <hdfs:delete-file path="#[message.inboundProperties.hdfsPath]" />
+        <set-payload value="DONE" />
+    </flow>
+
     <flow name="readFlow">
         <vm:inbound-endpoint path="readFlow.in" exchange-pattern="request-response" />
         <hdfs:read path="#[message.inboundProperties.hdfsPath]" />
+    </flow>
+
+    <flow name="writeFlow">
+        <vm:inbound-endpoint path="writeFlow.in" exchange-pattern="request-response" />
+        <hdfs:write path="#[message.inboundProperties.hdfsPath]" />
+    </flow>
+
+    <flow name="appendFlow">
+        <vm:inbound-endpoint path="appendFlow.in" exchange-pattern="request-response" />
+        <hdfs:append path="#[message.inboundProperties.hdfsPath]" />
     </flow>
 </mule>

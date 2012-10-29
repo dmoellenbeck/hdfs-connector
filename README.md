@@ -4,7 +4,7 @@
 
 ## Testing
 
-By default, tests run with:
+By default, tests that are run with:
 
     mvn test
 
