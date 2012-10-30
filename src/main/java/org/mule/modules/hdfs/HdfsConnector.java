@@ -9,6 +9,10 @@
 
 package org.mule.modules.hdfs;
 
+import static org.apache.commons.collections.MapUtils.isNotEmpty;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,8 +51,6 @@ import org.mule.api.annotations.param.Payload;
 import org.mule.api.callback.SourceCallback;
 import org.mule.util.CollectionUtils;
 import org.mule.util.IOUtils;
-import org.mule.util.MapUtils;
-import org.mule.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +128,7 @@ public class HdfsConnector
         throws ConnectionException
     {
         final Configuration configuration = new Configuration();
-        if (StringUtils.isNotBlank(defaultFileSystemName))
+        if (isNotBlank(defaultFileSystemName))
         {
             configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, defaultFileSystemName);
         }
@@ -140,7 +142,7 @@ public class HdfsConnector
             }
         }
 
-        if (MapUtils.isNotEmpty(configurationEntries))
+        if (isNotEmpty(configurationEntries))
         {
             for (final Entry<String, String> configurationEntry : configurationEntries.entrySet())
             {
@@ -322,7 +324,8 @@ public class HdfsConnector
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:write-2}
      * 
      * @param path the path of the file to write to.
-     * @param permission the file system permission to use if a new file is created.
+     * @param permission the file system permission to use if a new file is created,
+     *            either in octal or symbolic format (umask).
      * @param overwrite if a pre-existing file should be overwritten with the new
      *            content.
      * @param bufferSize the buffer size to use when appending to the file.
@@ -336,10 +339,10 @@ public class HdfsConnector
     @Processor(name = "write")
     @InvalidateConnectionOn(exception = IOException.class)
     public void writeToPath(final String path,
-                            @Optional @Default("511") final short permission,
+                            @Optional final String permission,
                             @Optional @Default("true") final boolean overwrite,
                             @Optional @Default("4096") final int bufferSize,
-                            @Optional @Default("1") final short replication,
+                            @Optional @Default("1") final int replication,
                             @Optional @Default("4096") final long blockSize,
                             @Optional final String ownerUserName,
                             @Optional final String ownerGroupName,
@@ -349,12 +352,13 @@ public class HdfsConnector
         {
             public void run(final Path hdfsPath) throws Exception
             {
-                final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath, new FsPermission(
-                    permission), overwrite, bufferSize, replication, blockSize, null);
+                final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath,
+                    getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
+                    blockSize, null);
                 IOUtils.copyLarge(payload, fsDataOutputStream);
                 IOUtils.closeQuietly(fsDataOutputStream);
 
-                if ((StringUtils.isNotBlank(ownerUserName)) || (StringUtils.isNotBlank(ownerGroupName)))
+                if ((isNotBlank(ownerUserName)) || (isNotBlank(ownerGroupName)))
                 {
                     fileSystem.setOwner(hdfsPath, ownerUserName, ownerGroupName);
                 }
@@ -443,19 +447,18 @@ public class HdfsConnector
      * 
      * @param path the path to create directories for.
      * @param permission the file system permission to use when creating the
-     *            directories.
+     *            directories, either in octal or symbolic format (umask).
      * @throws Exception if any issue occurs during the execution.
      */
     @Processor(name = "make-directories")
     @InvalidateConnectionOn(exception = IOException.class)
-    public void makeDirectories(final String path, @Optional @Default("511") final short permission)
-        throws Exception
+    public void makeDirectories(final String path, @Optional final String permission) throws Exception
     {
         runHdfsPathAction(path, new VoidHdfsPathAction()
         {
             public void run(final Path hdfsPath) throws Exception
             {
-                fileSystem.mkdirs(hdfsPath, new FsPermission(permission));
+                fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
             }
         });
     }
@@ -485,6 +488,11 @@ public class HdfsConnector
             // another exception to prevent the connection to be invalidated
             throw new MuleRuntimeException(fnfe);
         }
+    }
+
+    private FsPermission getFileSystemPermission(final String permission)
+    {
+        return isBlank(permission) ? FsPermission.getDefault() : new FsPermission(permission);
     }
 
     public FileSystem getFileSystem()

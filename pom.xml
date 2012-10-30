@@ -15,7 +15,7 @@
 
     <properties>
         <hadoop.version>1.0.4</hadoop.version>
-        <devkit.studio.package.skip>true</devkit.studio.package.skip>
+        <devkit.studio.package.skip>false</devkit.studio.package.skip>
     </properties>
 
     <dependencies>
