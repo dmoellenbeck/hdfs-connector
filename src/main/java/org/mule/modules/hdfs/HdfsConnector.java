@@ -12,6 +12,7 @@ package org.mule.modules.hdfs;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,6 +44,7 @@ import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
+import org.mule.api.callback.SourceCallback;
 import org.mule.util.CollectionUtils;
 import org.mule.util.IOUtils;
 import org.mule.util.MapUtils;
@@ -190,7 +192,7 @@ public class HdfsConnector
     }
 
     /**
-     * Disconnects from the Hadoop Distributed File System.
+     * Disconnect from the Hadoop Distributed File System.
      * 
      * @throws IOException if there is an issue connecting with the file system.
      */
@@ -211,27 +213,102 @@ public class HdfsConnector
     }
 
     /**
-     * Reads the content of a file designated by its path.
-     * <p/>
+     * Read the content of a file designated by its path and streams it to the rest
+     * of the flow, while adding the path metadata in the following inbound
+     * properties:
+     * <ul>
+     * <li>{@link HdfsConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path
+     * exists</li>
+     * <li>{@link HdfsConnector#HDFS_CONTENT_SUMMARY}: an instance of
+     * {@link ContentSummary} if the path exists.</li>
+     * <li>{@link HdfsConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus}
+     * if the path exists.</li>
+     * <li>{@link HdfsConnector#HDFS_FILE_CHECKSUM}: an instance of
+     * {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
+     * </ul>
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-1}
      * <p/>
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-2}
      * 
      * @param path the path of the file to read.
      * @param bufferSize the buffer size to use when reading the file.
-     * @return an {@link InputStream} that contains the file content.
+     * @param sourceCallback the {@link SourceCallback} used to propagate the event
+     *            to the rest of the flow.
+     * @return the result from executing the rest of the flow.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "read")
+    @Processor(name = "read", intercepting = true)
     @InvalidateConnectionOn(exception = IOException.class)
-    public InputStream readFromPath(final String path, @Optional @Default("4096") final int bufferSize)
-        throws Exception
+    public Object readFromPath(final String path,
+                               @Optional @Default("4096") final int bufferSize,
+                               final SourceCallback sourceCallback) throws Exception
     {
-        return runHdfsPathAction(path, new HdfsPathAction<InputStream>()
+        return runHdfsPathAction(path, new HdfsPathAction<Object>()
         {
-            public InputStream run(final Path hdfsPath) throws Exception
+            public Object run(final Path hdfsPath) throws Exception
             {
-                return fileSystem.open(hdfsPath, bufferSize);
+                return sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
+                    getPathMetaData(hdfsPath));
+            }
+        });
+    }
+
+    private Map<String, Object> getPathMetaData(final Path hdfsPath) throws IOException
+    {
+        final Map<String, Object> metaData = new HashMap<String, Object>();
+
+        final boolean pathExists = fileSystem.exists(hdfsPath);
+        metaData.put(HDFS_PATH_EXISTS, pathExists);
+        if (!pathExists)
+        {
+            return metaData;
+        }
+
+        metaData.put(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
+
+        final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
+        metaData.put(HDFS_FILE_STATUS, fileStatus);
+        if (fileStatus.isDir())
+        {
+            return metaData;
+        }
+
+        final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
+        if (fileChecksum != null)
+        {
+            metaData.put(HDFS_FILE_CHECKSUM, fileChecksum);
+        }
+
+        return metaData;
+    }
+
+    /**
+     * Get the metadata of a path, as described in
+     * {@link HdfsConnector#readFromPath(String, int, SourceCallback)}, and store it
+     * in flow variables.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:get-metadata}
+     * 
+     * @param path the path whose existence must be checked.
+     * @param muleEvent the {@link MuleEvent} currently being processed.
+     * @throws Exception if any issue occurs during the execution.
+     * @return the result of executing the next message processors if the path
+     *         exists, otherwise null.
+     */
+    @Processor(name = "get-metadata")
+    @InvalidateConnectionOn(exception = IOException.class)
+    @Inject
+    public void getPathMetaData(final String path, final MuleEvent muleEvent) throws Exception
+    {
+        runHdfsPathAction(path, new VoidHdfsPathAction()
+        {
+            public void run(final Path hdfsPath) throws Exception
+            {
+                final Map<String, Object> pathMetaData = getPathMetaData(hdfsPath);
+                for (final Entry<String, Object> pathMetaDatum : pathMetaData.entrySet())
+                {
+                    muleEvent.setFlowVariable(pathMetaDatum.getKey(), pathMetaDatum.getValue());
+                }
             }
         });
     }
@@ -351,63 +428,6 @@ public class HdfsConnector
             public void run(final Path hdfsPath) throws Exception
             {
                 fileSystem.delete(hdfsPath, recursive);
-            }
-        });
-    }
-
-    /**
-     * Get the meta-information of a path and stores it in the following flow
-     * variables:
-     * <ul>
-     * <li>{@link HdfsConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path
-     * exists</li>
-     * <li>{@link HdfsConnector#HDFS_CONTENT_SUMMARY}: an instance of
-     * {@link ContentSummary} if the path exists.</li>
-     * <li>{@link HdfsConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus}
-     * if the path exists.</li>
-     * <li>{@link HdfsConnector#HDFS_FILE_CHECKSUM}: an instance of
-     * {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
-     * </ul>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample
-     * hdfs:get-meta-information}
-     * 
-     * @param path the path whose existence must be checked.
-     * @param muleEvent the {@link MuleEvent} currently being processed.
-     * @throws Exception if any issue occurs during the execution.
-     * @return the result of executing the next message processors if the path
-     *         exists, otherwise null.
-     */
-    @Processor(name = "get-meta-information")
-    @InvalidateConnectionOn(exception = IOException.class)
-    @Inject
-    public void getPathMetaInformation(final String path, final MuleEvent muleEvent) throws Exception
-    {
-        runHdfsPathAction(path, new VoidHdfsPathAction()
-        {
-            public void run(final Path hdfsPath) throws Exception
-            {
-                final boolean pathExists = fileSystem.exists(hdfsPath);
-                muleEvent.setFlowVariable(HDFS_PATH_EXISTS, pathExists);
-                if (!pathExists)
-                {
-                    return;
-                }
-
-                muleEvent.setFlowVariable(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
-
-                final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
-                muleEvent.setFlowVariable(HDFS_FILE_STATUS, fileStatus);
-                if (fileStatus.isDir())
-                {
-                    return;
-                }
-
-                final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
-                if (fileChecksum == null)
-                {
-                    return;
-                }
-                muleEvent.setFlowVariable(HDFS_FILE_CHECKSUM, fileChecksum);
             }
         });
     }

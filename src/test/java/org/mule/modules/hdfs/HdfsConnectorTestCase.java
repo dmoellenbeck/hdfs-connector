@@ -1,9 +1,19 @@
+/*
+ * $Id: LicenseManager.java 10480 2007-12-19 00:47:04Z moosa $
+ * --------------------------------------------------------------------------------------
+ * (c) 2003-2008 MuleSource, Inc. This software is protected under international copyright
+ * law. All use of this software is subject to MuleSource's Master Subscription Agreement
+ * (or other master license agreement) separately entered into in writing between you and
+ * MuleSource. If such an agreement is not in place, you may not use the software.
+ */
 
 package org.mule.modules.hdfs;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -12,9 +22,11 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileChecksum;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.LocalFileSystem;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
 import org.mule.modules.hdfs.adapters.HdfsConnectorConnectionIdentifierAdapter;
@@ -23,9 +35,24 @@ import org.mule.modules.hdfs.connectivity.HdfsConnectorConnectionManager;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.util.StringUtils;
 
+@RunWith(Parameterized.class)
 public class HdfsConnectorTestCase extends FunctionalTestCase
 {
     private boolean localFileSystem;
+    private final String connectorConfigFile;
+
+    public HdfsConnectorTestCase(final String connectorConfigFile)
+    {
+        super();
+        this.connectorConfigFile = connectorConfigFile;
+    }
+
+    @Parameters
+    public static Collection<Object[]> data()
+    {
+        return Arrays.asList(new Object[][]{{"hdfs-connector-entries-config.xml"},
+            {"hdfs-connector-simple-config.xml"}});
+    }
 
     @BeforeClass
     public static void setupEnvironment()
@@ -43,11 +70,11 @@ public class HdfsConnectorTestCase extends FunctionalTestCase
     @Override
     protected String getConfigResources()
     {
-        return "hdfs-connector-tests-config.xml";
+        return connectorConfigFile + ", hdfs-connector-tests-config.xml";
     }
 
-    @Before
-    public void initialize() throws Exception
+    @Override
+    protected void doSetUp() throws Exception
     {
         localFileSystem = isLocalFileSystem();
     }

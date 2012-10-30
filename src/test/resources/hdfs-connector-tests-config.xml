@@ -9,29 +9,9 @@
             http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
             ">
 
-    <!--
-    The following can't be tested because of DEVKIT-257
-
-    <hdfs:config name="simpleConfiguration" defaultFileSystemName="hdfs://localhost:8020/" />
-
-    <hdfs:config name="resourceBasedConfiguration">
-        <hdfs:configuration-resources>
-            <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
-            <hdfs:configuration-resource>/etc/hadoop/hdfs-site.xml</hdfs:configuration-resource>
-            <hdfs:configuration-resource>/etc/hadoop/mapred-site.xml</hdfs:configuration-resource>
-        </hdfs:configuration-resources>
-    </hdfs:config>
-     -->
-
-    <hdfs:config name="entriesBasedConfiguration">
-        <hdfs:configuration-entries>
-            <hdfs:configuration-entry key="fs.default.name">${test.hdfs.fs.default.name}</hdfs:configuration-entry>
-        </hdfs:configuration-entries>
-    </hdfs:config>
-
     <flow name="pathMetaFlow">
         <vm:inbound-endpoint path="pathMetaFlow.in" exchange-pattern="request-response" />
-        <hdfs:get-meta-information path="#[message.inboundProperties.hdfsPath]" />
+        <hdfs:get-metadata path="#[message.inboundProperties.hdfsPath]" />
         <!-- copy the meta flow vars to a map returned to the caller for testing -->
         <set-payload value="#[['pathExists':flowVars['hdfs.path.exists'],'contentSummary':flowVars['hdfs.content.summary'],'fileStatus':flowVars['hdfs.file.status'],'fileChecksum':flowVars['hdfs.file.checksum']]]" />
     </flow>

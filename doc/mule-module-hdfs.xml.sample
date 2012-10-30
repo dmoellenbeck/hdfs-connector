@@ -8,10 +8,10 @@
 <hdfs:read path="/tmp/test.dat" bufferSize="8192" />
 <!-- END_INCLUDE(hdfs:read-2) -->
 
-<!-- BEGIN_INCLUDE(hdfs:get-meta-information) -->
-<!-- Ensures a path exists -->
-<hdfs:get-meta-information path="/tmp/test.dat" />
-<!-- END_INCLUDE(hdfs:get-meta-information) -->
+<!-- BEGIN_INCLUDE(hdfs:get-metadata) -->
+<!-- Store the meta-information of a path in flow variables -->
+<hdfs:get-metadata path="/tmp/test.dat" />
+<!-- END_INCLUDE(hdfs:get-metadata) -->
 
 <!-- BEGIN_INCLUDE(hdfs:write-1) -->
 <!-- Writing to a file using the configuration -->
