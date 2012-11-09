@@ -464,9 +464,23 @@ Summary:
 <p><p>
  Hadoop Distributed File System (HDFS) Connector.
  </p>
- {@sample.config INCLUDE_ERROR}
- {@sample.config INCLUDE_ERROR}
- {@sample.config INCLUDE_ERROR}</p>
+ {@sample.config &lt;!-- Simple configuration --&gt;
+&lt;hdfs:config defaultFileSystemName="hdfs://localhost:8020/" /&gt;}
+ {@sample.config &lt;!-- Entries-based configuration --&gt;
+&lt;hdfs:config&gt;
+    &lt;hdfs:configuration-entries&gt;
+        &lt;hdfs:configuration-entry key="fs.default.name"&gt;hdfs://localhost:8020/&lt;/hdfs:configuration-entry&gt;
+        &lt;hdfs:configuration-entry key="dfs.data.dir"&gt;/home/username/hdfs/data&lt;/hdfs:configuration-entry&gt;
+    &lt;/hdfs:configuration-entries&gt;
+&lt;/hdfs:config&gt;}
+ {@sample.config &lt;!-- Resources-based configuration --&gt;
+&lt;hdfs:config&gt;
+    &lt;hdfs:configuration-resources&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/core-site.xml&lt;/hdfs:configuration-resource&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/hdfs-site.xml&lt;/hdfs:configuration-resource&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/mapred-site.xml&lt;/hdfs:configuration-resource&gt;
+    &lt;/hdfs:configuration-resources&gt;
+&lt;/hdfs:config&gt;}</p>
 
 
 

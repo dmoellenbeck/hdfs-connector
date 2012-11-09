@@ -482,9 +482,23 @@ specify which configuration to use.</p>
     
     
 </table>
-<div class="jd-tagdata"><h3>Example</h3><pre>INCLUDE_ERROR</pre></div>
-    <div class="jd-tagdata"><h3>Example</h3><pre>INCLUDE_ERROR</pre></div>
-    <div class="jd-tagdata"><h3>Example</h3><pre>INCLUDE_ERROR</pre></div>
+<div class="jd-tagdata"><h3>Example</h3><pre>&lt;!-- Simple configuration --&gt;
+&lt;hdfs:config defaultFileSystemName="hdfs://localhost:8020/" /&gt;</pre></div>
+    <div class="jd-tagdata"><h3>Example</h3><pre>&lt;!-- Entries-based configuration --&gt;
+&lt;hdfs:config&gt;
+    &lt;hdfs:configuration-entries&gt;
+        &lt;hdfs:configuration-entry key="fs.default.name"&gt;hdfs://localhost:8020/&lt;/hdfs:configuration-entry&gt;
+        &lt;hdfs:configuration-entry key="dfs.data.dir"&gt;/home/username/hdfs/data&lt;/hdfs:configuration-entry&gt;
+    &lt;/hdfs:configuration-entries&gt;
+&lt;/hdfs:config&gt;</pre></div>
+    <div class="jd-tagdata"><h3>Example</h3><pre>&lt;!-- Resources-based configuration --&gt;
+&lt;hdfs:config&gt;
+    &lt;hdfs:configuration-resources&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/core-site.xml&lt;/hdfs:configuration-resource&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/hdfs-site.xml&lt;/hdfs:configuration-resource&gt;
+        &lt;hdfs:configuration-resource&gt;/etc/hadoop/mapred-site.xml&lt;/hdfs:configuration-resource&gt;
+    &lt;/hdfs:configuration-resources&gt;
+&lt;/hdfs:config&gt;</pre></div>
     
 
 
@@ -592,9 +606,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       
   <div class="jd-tagdata jd-tagdescr"><p>Append the current payload to a file located at the designated path.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using the default buffer size --&gt;
+&lt;hdfs:append path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using a specific buffer size --&gt;
+&lt;hdfs:append path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -699,7 +715,8 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       
   <div class="jd-tagdata jd-tagdescr"><p>Delete the file or directory located at the designated path.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a directory --&gt;
+&lt;hdfs:delete-directory path="/tmp/my-dir" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -780,7 +797,8 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       
   <div class="jd-tagdata jd-tagdescr"><p>Delete the file or directory located at the designated path.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a file --&gt;
+&lt;hdfs:delete-file path="/tmp/test.dat" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -863,7 +881,8 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
  <code><a href="../java/org/mule/modules/hdfs/HdfsConnector.html#readFromPath(java.lang.String, int, org.mule.api.callback.SourceCallback)">readFromPath(String, int, SourceCallback)</a></code>, and store it
  in flow variables.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Store the meta-information of a path in flow variables --&gt;
+&lt;hdfs:get-metadata path="/tmp/test.dat" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -972,9 +991,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
  semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an
  error.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Make any missing directories for the specified path, using the default file system permission --&gt;
+&lt;hdfs:make-directories path="/tmp/my-dir" /&gt;</pre></div>
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Make any missing directories for the specified path, using the provided file system permission --&gt;
+&lt;hdfs:make-directories path="/tmp/my-dir" permission="511" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -1079,9 +1100,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
  <li><code><a href="../java/org/mule/modules/hdfs/HdfsConnector.html#HDFS_FILE_CHECKSUM">HDFS_FILE_CHECKSUM</a></code>: an instance of
  FileChecksum if the path exists, is a file and has a checksum.</li>
  </ul>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Reading a file using the default buffer size --&gt;
+&lt;hdfs:read path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Reading a file using a specific buffer size --&gt;
+&lt;hdfs:read path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -1201,9 +1224,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
   <div class="jd-tagdata jd-tagdescr"><p>Write the current payload to the designated path, either creating a new file
  or appending to an existing one.
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using the configuration --&gt;
+&lt;hdfs:write path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
- <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>INCLUDE_ERROR</pre></div></p></div>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using all the configurable parameters --&gt;
+&lt;hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" ownerUserName="" ownerGroupName="" /&gt;</pre></div></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
