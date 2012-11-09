@@ -18,6 +18,12 @@
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
+        <developerConnection>scm:git:git@github.com:mulesoft/hdfs-connector.git</developerConnection>
+        <url>https://github.com/mulesoft/hdfs-connector</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.hadoop</groupId>

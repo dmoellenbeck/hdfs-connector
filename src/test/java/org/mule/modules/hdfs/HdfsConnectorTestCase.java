@@ -1,10 +1,9 @@
 /*
- * $Id: LicenseManager.java 10480 2007-12-19 00:47:04Z moosa $
- * --------------------------------------------------------------------------------------
- * (c) 2003-2008 MuleSource, Inc. This software is protected under international copyright
- * law. All use of this software is subject to MuleSource's Master Subscription Agreement
- * (or other master license agreement) separately entered into in writing between you and
- * MuleSource. If such an agreement is not in place, you may not use the software.
+ * Copyright (c) MuleSoft, Inc. All rights reserved. http://www.mulesoft.com
+ *
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.md file.
  */
 
 package org.mule.modules.hdfs;

@@ -1,3 +1,29 @@
+<!-- BEGIN_INCLUDE(hdfs:config-1) -->
+<!-- Simple configuration  -->
+<hdfs:config defaultFileSystemName="hdfs://localhost:8020/" />
+<!-- END_INCLUDE(hdfs:config-1) -->
+
+<!-- BEGIN_INCLUDE(hdfs:config-2) -->
+<!-- Entries-based configuration  -->
+<hdfs:config>
+    <hdfs:configuration-entries>
+        <hdfs:configuration-entry key="fs.default.name">hdfs://localhost:8020/</hdfs:configuration-entry>
+        <hdfs:configuration-entry key="dfs.data.dir">/home/username/hdfs/data</hdfs:configuration-entry>
+    </hdfs:configuration-entries>
+</hdfs:config>
+<!-- END_INCLUDE(hdfs:config-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:config-3) -->
+<!-- Resources-based configuration  -->
+<hdfs:config>
+    <hdfs:configuration-resources>
+        <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
+        <hdfs:configuration-resource>/etc/hadoop/hdfs-site.xml</hdfs:configuration-resource>
+        <hdfs:configuration-resource>/etc/hadoop/mapred-site.xml</hdfs:configuration-resource>
+    </hdfs:configuration-resources>
+</hdfs:config>
+<!-- END_INCLUDE(hdfs:config-3) -->
+
 <!-- BEGIN_INCLUDE(hdfs:read-1) -->
 <!-- Reading a file using the default buffer size -->
 <hdfs:read path="/tmp/test.dat" />
