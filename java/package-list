@@ -1,0 +1,9 @@
+java.lang.holders
+org.mule.modules.hdfs
+org.mule.modules.hdfs.adapters
+org.mule.modules.hdfs.agents
+org.mule.modules.hdfs.config
+org.mule.modules.hdfs.connectivity
+org.mule.modules.hdfs.process
+org.mule.modules.hdfs.processors
+
