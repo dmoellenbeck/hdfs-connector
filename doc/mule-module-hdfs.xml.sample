@@ -1,10 +1,10 @@
 <!-- BEGIN_INCLUDE(hdfs:config-1) -->
-<!-- Simple configuration  -->
+<!-- Simple configuration -->
 <hdfs:config defaultFileSystemName="hdfs://localhost:8020/" />
 <!-- END_INCLUDE(hdfs:config-1) -->
 
 <!-- BEGIN_INCLUDE(hdfs:config-2) -->
-<!-- Entries-based configuration  -->
+<!-- Entries-based configuration -->
 <hdfs:config>
     <hdfs:configuration-entries>
         <hdfs:configuration-entry key="fs.default.name">hdfs://localhost:8020/</hdfs:configuration-entry>
@@ -14,7 +14,7 @@
 <!-- END_INCLUDE(hdfs:config-2) -->
 
 <!-- BEGIN_INCLUDE(hdfs:config-3) -->
-<!-- Resources-based configuration  -->
+<!-- Resources-based configuration -->
 <hdfs:config>
     <hdfs:configuration-resources>
         <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
