@@ -1,22 +1,16 @@
-# Mule HDFS Connector
+Hadoop File System (HDFS) Cloud Connector
+=========================================
 
-<img src="http://hadoop.apache.org/docs/hdfs/current/images/hdfs-logo.jpg" />
+The Apache™ Hadoop® project develops open-source software for reliable, scalable, distributed computing.
 
-## Testing
+The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage. Rather than rely on hardware to deliver high-avaiability, the library itself is designed to detect and handle failures at the application layer, so delivering a highly-availabile service on top of a cluster of computers, each of which may be prone to failures.
 
-By default, tests that are run with:
+Installation and Usage
+----------------------
 
-    mvn test
+For information about usage and installation you can check our documentation at http://mulesoft.github.com/hdfs-connector.
 
-are against the local file system, effectively validating the connector's capacity to interact with an `org.apache.hadoop.fs.FileSystem`.
+Reporting Issues
+----------------
 
-To run the tests on the default local HDFS setup (ie. `hdfs://localhost:8020/`), use:
-
-    mvn -Pit test
-
-All what this profile does is setting the following Java system properties:
-
-- `test.hdfs.fs.default.name` to `hdfs://localhost:8020/`
-- `test.hdfs.temp.dir` to `/tmp`
-
-To test against a different HDFS setup, use `mvn test` while setting appropriate values for the above system properties.
+We use GitHub:Issues for tracking issues with this connector. You can report new issues at this link https://github.com/mulesoft/hdfs-connector/issues
