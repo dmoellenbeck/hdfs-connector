@@ -291,6 +291,14 @@ public class HdfsConnector
      * {@link HdfsConnector#readFromPath(String, int, SourceCallback)}, and store it
      * in flow variables.
      * <p/>
+     * This flow variables are:
+     * <ul>
+     * <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+	 * <li>hdfs.content.summary - A resume of the path info</li>
+	 * <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+	 * <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+     * </ul>
+     * <p/>
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:get-metadata}
      * 
      * @param path the path whose existence must be checked.
