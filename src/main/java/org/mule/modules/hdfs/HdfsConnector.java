@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author MuleSoft Inc.
  */
-@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.3", friendlyName = "HDFS", minMuleVersion = "3.3.0", description = "HDFS Connector")
+@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.3.0", description = "HDFS Connector")
 public class HdfsConnector
 {
     public static final String HDFS = "hdfs";
@@ -370,6 +370,8 @@ public class HdfsConnector
 
     /**
      * Append the current payload to a file located at the designated path.
+     * <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file 
+     * refer to dfs.support.append configuration parameter
      * <p/>
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:append-1}
      * <p/>
