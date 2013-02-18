@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>org.mule.tools.devkit</groupId>
 		<artifactId>mule-devkit-parent</artifactId>
-		<version>3.3.2</version>
+		<version>3.4.0-RC1</version>
 	</parent>
 	<groupId>org.mule.modules</groupId>
 	<artifactId>mule-module-hdfs</artifactId>
-	<version>3.4</version>
+	<version>3.5-SNASHOT</version>
 	<packaging>mule-module</packaging>
 	<name>HDFS Connector</name>
 
