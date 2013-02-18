@@ -1,7 +1,5 @@
 var NAVTREE_DATA =
-[ [ "java.lang.holders", "java/lang/holders/package-summary.html", [ [ "Classes", null, [ [ "StringExpressionHolder", "java/lang/holders/StringExpressionHolder.html", null, "" ] ]
-, "" ] ]
-, "" ], [ "org.mule.modules.hdfs", "org/mule/modules/hdfs/package-summary.html", [ [ "Classes", null, [ [ "HdfsConnector", "org/mule/modules/hdfs/HdfsConnector.html", null, "" ] ]
+[ [ "org.mule.modules.hdfs", "org/mule/modules/hdfs/package-summary.html", [ [ "Classes", null, [ [ "HdfsConnector", "org/mule/modules/hdfs/HdfsConnector.html", null, "" ] ]
 , "" ] ]
 , "" ], [ "org.mule.modules.hdfs.adapters", "org/mule/modules/hdfs/adapters/package-summary.html", [ [ "Classes", null, [ [ "HdfsConnectorCapabilitiesAdapter", "org/mule/modules/hdfs/adapters/HdfsConnectorCapabilitiesAdapter.html", null, "" ], [ "HdfsConnectorConnectionIdentifierAdapter", "org/mule/modules/hdfs/adapters/HdfsConnectorConnectionIdentifierAdapter.html", null, "" ], [ "HdfsConnectorLifecycleAdapter", "org/mule/modules/hdfs/adapters/HdfsConnectorLifecycleAdapter.html", null, "" ], [ "HdfsConnectorMetadataAdapater", "org/mule/modules/hdfs/adapters/HdfsConnectorMetadataAdapater.html", null, "" ], [ "HdfsConnectorProcessAdapter", "org/mule/modules/hdfs/adapters/HdfsConnectorProcessAdapter.html", null, "" ] ]
 , "" ] ]

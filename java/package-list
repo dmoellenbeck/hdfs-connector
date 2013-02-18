@@ -1,4 +1,3 @@
-java.lang.holders
 org.mule.modules.hdfs
 org.mule.modules.hdfs.adapters
 org.mule.modules.hdfs.agents

@@ -202,8 +202,6 @@
               </div>
               <ul>
                 
-    <li class="api apilevel-">
-  <a href="../../../../../java/java/lang/holders/package-summary.html">java.lang.holders</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../java/org/mule/modules/hdfs/package-summary.html">org.mule.modules.hdfs</a></li>
     <li class="api apilevel-">
@@ -1695,6 +1693,8 @@ From class
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Append the current payload to a file located at the designated path.
+ <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file 
+ refer to dfs.support.append configuration parameter
  <p/>
  
  <p/>
@@ -2110,6 +2110,14 @@ From class
   <div class="jd-tagdata jd-tagdescr"><p>Get the metadata of a path, as described in
  <code><a href="../../../../../java/org/mule/modules/hdfs/HdfsConnector.html#readFromPath(java.lang.String, int, org.mule.api.callback.SourceCallback)">readFromPath(String, int, SourceCallback)</a></code>, and store it
  in flow variables.
+ <p/>
+ This flow variables are:
+ <ul>
+ <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+ <li>hdfs.content.summary - A resume of the path info</li>
+ <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+ <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+ </ul>
  <p/>
  </p></div>
   <div class="jd-tagdata">

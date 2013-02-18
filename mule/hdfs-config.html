@@ -237,7 +237,7 @@ Summary:
           <th>Schema Location</th><td>http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd&nbsp;&nbsp;(<a href="hdfs-schema.html">View Schema</a>)</td>
         </tr>
 <tr>
-          <th>Schema Version</th><td>3.3</td>
+          <th>Schema Version</th><td>3.4</td>
         </tr>
 <tr>
           <th>Minimum Mule Version</th><td>3.3.0</td>
@@ -514,7 +514,7 @@ create one. That lookup mechanism is done in the connection pool via the use of 
 <p>The user of the connector can configure the pool by adding a <code>connection-pooling-profile</code> to the connector configuration like this:</p>
 <pre>
     &lt;hdfs:connection-pooling-profile maxActive="10" maxIdle="10"
-                             exhaustedAction="WHEN_EXHAUSTED_GROW" maxWait="120"/&gt;
+                             exhaustedAction="WHEN_EXHAUSTED_GROW" maxWait="120" minEvictionMillis="60000" evictionCheckIntervalMillis="30000"/&gt;
 </pre>
 <p>The following is a list of connection attributes, each connection attribute can be configured at the config element level or
 they can also be added to each processor. If they are used at the processor level they get the benefit of full expression
@@ -605,6 +605,8 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Append the current payload to a file located at the designated path.
+ <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file 
+ refer to dfs.support.append configuration parameter
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using the default buffer size --&gt;
 &lt;hdfs:append path="/tmp/test.dat" /&gt;</pre></div>
@@ -880,6 +882,14 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
   <div class="jd-tagdata jd-tagdescr"><p>Get the metadata of a path, as described in
  <code><a href="../java/org/mule/modules/hdfs/HdfsConnector.html#readFromPath(java.lang.String, int, org.mule.api.callback.SourceCallback)">readFromPath(String, int, SourceCallback)</a></code>, and store it
  in flow variables.
+ <p/>
+ This flow variables are:
+ <ul>
+ <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+ <li>hdfs.content.summary - A resume of the path info</li>
+ <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+ <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+ </ul>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Store the meta-information of a path in flow variables --&gt;
 &lt;hdfs:get-metadata path="/tmp/test.dat" /&gt;</pre></div></p></div>

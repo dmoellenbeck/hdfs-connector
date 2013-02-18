@@ -225,7 +225,7 @@
           <th>Schema Location</th><td>http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd&nbsp;&nbsp;(<a href="hdfs-schema.html">View Schema</a>)</td>
         </tr>
 <tr>
-          <th>Schema Version</th><td>3.3</td>
+          <th>Schema Version</th><td>3.4</td>
         </tr>
 <tr>
           <th>Minimum Mule Version</th><td>3.3.0</td>
@@ -390,6 +390,14 @@ if the path exists.&amp;lt;/li&amp;gt;
       &lt;xs:documentation&gt;Get the metadata of a path, as described in
 , and store it
 in flow variables.
+&amp;lt;p/&amp;gt;
+This flow variables are:
+&amp;lt;ul&amp;gt;
+&amp;lt;li&amp;gt;hdfs.path.exists - Indicates if the path exists (true or false)&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;hdfs.content.summary - A resume of the path info&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
 &amp;lt;p/&amp;gt;&lt;/xs:documentation&gt;
     &lt;/xs:annotation&gt;
   &lt;/xs:element&gt;
@@ -482,6 +490,8 @@ or appending to an existing one.
   &lt;xs:element xmlns=&quot;http://www.mulesoft.org/schema/mule/hdfs&quot; xmlns:mule=&quot;http://www.mulesoft.org/schema/mule/core&quot; name=&quot;append&quot; substitutionGroup=&quot;mule:abstract-message-processor&quot; type=&quot;AppendType&quot;&gt;
     &lt;xs:annotation&gt;
       &lt;xs:documentation&gt;Append the current payload to a file located at the designated path.
+&amp;lt;b&amp;gt;Note:&amp;lt;/b&amp;gt; by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file
+refer to dfs.support.append configuration parameter
 &amp;lt;p/&amp;gt;
 
 &amp;lt;p/&amp;gt;&lt;/xs:documentation&gt;
