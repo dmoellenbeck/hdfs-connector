@@ -55,7 +55,17 @@ public class MyMuleEvent implements MuleEvent {
 		sessionVars.clear();
 	}
 
-	@Override
+    @Override
+    public boolean isNotificationsEnabled() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setEnableNotifications(boolean b) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public Credentials getCredentials() {
 		// TODO Auto-generated method stub
 		return null;
