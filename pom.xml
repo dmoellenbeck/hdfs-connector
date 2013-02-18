@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.mule.modules</groupId>
 	<artifactId>mule-module-hdfs</artifactId>
-	<version>3.5</version>
+	<version>3.6-SNAPSHOT</version>
 	<packaging>mule-module</packaging>
 	<name>HDFS Connector</name>
 
