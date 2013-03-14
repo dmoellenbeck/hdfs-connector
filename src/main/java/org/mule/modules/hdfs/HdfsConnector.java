@@ -40,6 +40,7 @@ import org.mule.api.annotations.ConnectionIdentifier;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.InvalidateConnectionOn;
+import org.mule.api.annotations.MetaDataSwitch;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.display.Placement;
@@ -63,7 +64,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author MuleSoft Inc.
  */
-@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.3.0", description = "HDFS Connector")
+@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.3.0", 
+			description = "HDFS Connector", metaData = MetaDataSwitch.OFF)
 public class HdfsConnector
 {
     public static final String HDFS = "hdfs";
