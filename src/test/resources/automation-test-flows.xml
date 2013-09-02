@@ -27,6 +27,9 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 		<hdfs:delete-file config-ref="HDFS" path="#[payload.path]" />
 	</flow>
 	
+	<flow name="get-metadata">
+		<hdfs:get-metadata config-ref="HDFS" path="#[payload.path]" />
+	</flow>
 	
 	
 </mule>

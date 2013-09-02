@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.mule.api.MuleEvent;
 import org.mule.api.processor.MessageProcessor;
+import org.mule.modules.hdfs.HdfsConnector;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -67,5 +68,14 @@ public class HDFSTestParent extends FunctionalTestCase {
 		MessageProcessor flow = lookupFlowConstruct("write");
 		flow.process(getTestEvent(testObjects));
 	}
+	
+	public boolean fileExists(String path) throws Exception {
+		testObjects.put("path", path);
+		
+		MessageProcessor flow = lookupFlowConstruct("get-metadata");
+		MuleEvent response = flow.process(getTestEvent(testObjects));
+		return response.getMessage().getInvocationProperty(HdfsConnector.HDFS_PATH_EXISTS, false);
+	}
+	
 	
 }
