@@ -16,5 +16,10 @@
 		<entry key="blockSize" value="#{8192}" />
 		<entry key="replication" value="#{1}" />
 	</util:map>
-                          
+	
+	<util:map id="delete" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value="Some file data" />
+		<entry key="path" value="/myfile.txt" />
+	</util:map>
+
 </beans>
