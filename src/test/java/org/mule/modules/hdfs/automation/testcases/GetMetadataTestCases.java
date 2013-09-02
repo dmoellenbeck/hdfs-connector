@@ -1,6 +1,5 @@
 package org.mule.modules.hdfs.automation.testcases;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -8,11 +7,9 @@ import static org.junit.Assert.fail;
 
 import java.util.Map;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.MD5MD5CRC32FileChecksum;
-import org.apache.hadoop.io.MD5Hash;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +24,7 @@ public class GetMetadataTestCases extends HDFSTestParent {
 	@Before
 	public void setUp() {
 		try {
-			testObjects = (Map<String, Object>) context.getBean("delete");
+			testObjects = (Map<String, Object>) context.getBean("getMetadata");
 			
 			String path = (String) testObjects.get("path");
 			String fileContent = (String) testObjects.get("payloadRef");
