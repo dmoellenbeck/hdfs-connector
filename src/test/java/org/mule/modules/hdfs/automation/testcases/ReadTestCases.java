@@ -32,7 +32,7 @@ public class ReadTestCases extends HDFSTestParent {
 		}
 	}
 	
-	@Category({SmokeTests.class})
+	@Category({RegressionTests.class})
 	@Test
 	public void testRead() {
 		try {
