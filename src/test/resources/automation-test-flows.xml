@@ -19,6 +19,10 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 			replication="#[payload.replication]" payload-ref="#[payload.payloadRef]" permission="#[payload.permission]" />
 	</flow>
 	
+	<flow name="write-default-values">
+		<hdfs:write config-ref="HDFS" path="#[payload.path]" payload-ref="#[payload.payloadRef]" />
+	</flow>
+	
 	<flow name="delete-file">
 		<hdfs:delete-file config-ref="HDFS" path="#[payload.path]" />
 	</flow>

@@ -46,23 +46,26 @@ public class HDFSTestParent extends FunctionalTestCase {
 		MuleEvent response = flow.process(getTestEvent(testObjects));
 	}
 	
+	public void write(String path, String fileContent) throws Exception {
+		testObjects.put("path", path);
+		testObjects.put("payloadRef", fileContent);
+		
+		MessageProcessor flow = lookupFlowConstruct("write-default-values");
+		flow.process(getTestEvent(testObjects));
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void write(String path, String fileContent, String permission, boolean overwrite, int bufferSize,
+						int replication, long blockSize) throws Exception {
+		testObjects.put("path", path);
+		testObjects.put("payloadRef", fileContent);
+		testObjects.put("permission", permission);
+		testObjects.put("overwrite", overwrite);
+		testObjects.put("bufferSize", bufferSize);
+		testObjects.put("replication", replication);
+		testObjects.put("blockSize", blockSize);
+
+		MessageProcessor flow = lookupFlowConstruct("write");
+		flow.process(getTestEvent(testObjects));
+	}
 	
 }
