@@ -47,7 +47,7 @@ public class GetMetadataTestCases extends HDFSTestParent {
 			MessageProcessor flow = lookupFlowConstruct("get-metadata");
 			MuleEvent response = flow.process(getTestEvent(testObjects));
 			
-			boolean exists = response.getMessage().getInvocationProperty(HdfsConnector.HDFS_PATH_EXISTS);
+			boolean exists =(Boolean) response.getMessage().getInvocationProperty(HdfsConnector.HDFS_PATH_EXISTS);
 			assertTrue(exists);
 			
 			MD5MD5CRC32FileChecksum fileMd5 = response.getMessage().getInvocationProperty(HdfsConnector.HDFS_FILE_CHECKSUM);
