@@ -31,5 +31,9 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 		<hdfs:get-metadata config-ref="HDFS" path="#[payload.path]" />
 	</flow>
 	
+	<flow name="read">
+		<hdfs:read config-ref="HDFS" path="#[payload.path]" bufferSize="#[payload.bufferSize]" />
+	</flow>
+	
 	
 </mule>

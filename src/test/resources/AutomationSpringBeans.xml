@@ -21,5 +21,16 @@
 		<entry key="payloadRef" value="Some file data" />
 		<entry key="path" value="/myfile.txt" />
 	</util:map>
-
+	
+	<util:map id="getMetadata" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value="Some file data" />
+		<entry key="path" value="/myfile.txt" />
+	</util:map>
+	
+	<util:map id="read" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value="This is a slightly longer file data" />
+		<entry key="path" value="/myfile.txt" />
+		<entry key="bufferSize" value="8192" />
+	</util:map>
+	
 </beans>
