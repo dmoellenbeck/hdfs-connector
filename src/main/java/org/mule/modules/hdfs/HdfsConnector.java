@@ -358,7 +358,7 @@ public class HdfsConnector
                             @Optional @Default("4096") final long blockSize,
                             @Optional final String ownerUserName,
                             @Optional final String ownerGroupName,
-                            @Payload final InputStream payload) throws Exception
+                            @Optional @Default("#[payload]") final InputStream payload) throws Exception
     {
         runHdfsPathAction(path, new VoidHdfsPathAction()
         {
