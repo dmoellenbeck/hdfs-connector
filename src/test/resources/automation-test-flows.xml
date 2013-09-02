@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.0"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+
+	<context:property-placeholder location="automation-credentials.properties" />
+	
+	<hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}">
+		<hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW" />
+	</hdfs:config>
+	
+	<flow name="write">
+		<hdfs:write config-ref="HDFS" path="#[payload.path]" overwrite="#[payload.overwrite]" bufferSize="#[payload.bufferSize]" 
+			replication="#[payload.replication]" payload-ref="#[payload.payloadRef]" permission="#[payload.permission]" />
+	</flow>
+	
+	<flow name="delete-file">
+		<hdfs:delete-file config-ref="HDFS" path="#[payload.path]" />
+	</flow>
+	
+	
+	
+</mule>
