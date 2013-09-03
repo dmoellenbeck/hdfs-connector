@@ -1,6 +1,8 @@
 package org.mule.modules.hdfs.automation.testcases;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -69,12 +71,32 @@ public class HDFSTestParent extends FunctionalTestCase {
 		flow.process(getTestEvent(testObjects));
 	}
 	
-	public boolean fileExists(String path) throws Exception {
+	public Map<String, Object> getMetadata(String path) throws Exception {
 		testObjects.put("path", path);
 		
 		MessageProcessor flow = lookupFlowConstruct("get-metadata");
 		MuleEvent response = flow.process(getTestEvent(testObjects));
-		return response.getMessage().getInvocationProperty(HdfsConnector.HDFS_PATH_EXISTS, false);
+
+		// Create the map which stores metadata
+		HashMap<String, Object> metadata = new HashMap<String, Object>();
+		
+		// Get the names of every invocation property on the Mule message
+		Set<String> invocationPropertyNames = response.getMessage().getInvocationPropertyNames();
+		
+		// Loop through the set of invocation property names, and get the value for each
+		// Store the value in the metadata HashMap
+		for (String property : invocationPropertyNames) {
+			Object value = response.getMessage().getInvocationProperty(property);
+			metadata.put(property, value);
+		}
+		
+		// Return the metadata HashMap
+		return metadata;
+	}
+	
+	public boolean fileExists(String path) throws Exception {
+		Map<String, Object> metadata = getMetadata(path);
+		return (Boolean) metadata.get(HdfsConnector.HDFS_PATH_EXISTS);
 	}
 	
 	
