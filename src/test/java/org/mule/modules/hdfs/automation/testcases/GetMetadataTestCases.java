@@ -41,9 +41,6 @@ public class GetMetadataTestCases extends HDFSTestParent {
 	@Test
 	public void testGetMetadata() {
 		try {
-			String path = (String) testObjects.get("path");
-			String content = (String) testObjects.get("payloadRef");
-			
 			MessageProcessor flow = lookupFlowConstruct("get-metadata");
 			MuleEvent response = flow.process(getTestEvent(testObjects));
 			
