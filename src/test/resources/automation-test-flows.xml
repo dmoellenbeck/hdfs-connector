@@ -39,5 +39,11 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 		<hdfs:append config-ref="HDFS" path="#[payload.path]" bufferSize="#[payload.bufferSize]" payload-ref="#[payload.payloadRef]" />
 	</flow>
 	
+	<flow name="make-directories">
+		<hdfs:make-directories config-ref="HDFS" path="#[payload.path]" />
+	</flow>
 	
+	<flow name="delete-directory">
+		<hdfs:delete-directory config-ref="HDFS" path="#[payload.path]" />
+	</flow>
 </mule>

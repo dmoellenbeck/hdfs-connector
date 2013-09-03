@@ -40,4 +40,13 @@
 		<entry key="toAppend" value="Appended text" />
 	</util:map>
 	
+	<util:map id="makeDirectories" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+<!-- 		<entry key="root" value="/parent1" /> -->
+<!-- 		<entry key="filename" value="myfile.txt" /> -->
+		<entry key="path" value="/parent1/parent2/myfile.txt" />
+	</util:map>
+	
+	<util:map id="deleteDirectory" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="path" value="/parent1" />
+	</util:map>
 </beans>

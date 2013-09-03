@@ -42,11 +42,25 @@ public class HDFSTestParent extends FunctionalTestCase {
 	 * Helper method below
 	 */
 	
+	public void makeDirectories(String path) throws Exception {
+		testObjects.put("path", path);
+		
+		MessageProcessor flow = lookupFlowConstruct("make-directories");
+		flow.process(getTestEvent(testObjects));
+	}
+	
+	public void deleteDirectory(String path) throws Exception {
+		testObjects.put("path", path);
+		
+		MessageProcessor flow = lookupFlowConstruct("delete-directory");
+		flow.process(getTestEvent(testObjects));
+	}
+	
 	public void deleteFile(String path) throws Exception {
 		testObjects.put("path", path);
 		
 		MessageProcessor flow = lookupFlowConstruct("delete-file");
-		MuleEvent response = flow.process(getTestEvent(testObjects));
+		flow.process(getTestEvent(testObjects));
 	}
 	
 	public void write(String path, Object fileContent) throws Exception {
