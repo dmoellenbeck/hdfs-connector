@@ -35,5 +35,9 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 		<hdfs:read config-ref="HDFS" path="#[payload.path]" bufferSize="#[payload.bufferSize]" />
 	</flow>
 	
+	<flow name="append">
+		<hdfs:append config-ref="HDFS" path="#[payload.path]" bufferSize="#[payload.bufferSize]" payload-ref="#[payload.payloadRef]" />
+	</flow>
+	
 	
 </mule>

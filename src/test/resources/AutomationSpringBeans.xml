@@ -32,5 +32,12 @@
 		<entry key="path" value="/myfile.txt" />
 		<entry key="bufferSize" value="8192" />
 	</util:map>
+
+	<util:map id="append" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value="This is a slightly longer file data." />
+		<entry key="path" value="/myfile.txt" />
+		<entry key="bufferSize" value="8192" />
+		<entry key="toAppend" value="Appended text" />
+	</util:map>
 	
 </beans>
