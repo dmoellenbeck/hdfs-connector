@@ -33,7 +33,7 @@ public class AppendTestCases extends HDFSTestParent {
 		}
 	}
 	
-	@Category({SmokeTests.class})
+	@Category({RegressionTests.class})
 	@Test
 	@Ignore
 	public void testAppend() {
