@@ -66,6 +66,49 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -582,6 +625,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
 
 
 
+
+
+
+
+
 <!-- ========= MESSAGE PROCESSOR DETAIL ======== -->
 <!-- Message Processors -->
 <h2>Message Processors</h2>
@@ -604,7 +652,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Append the current payload to a file located at the designated path.
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Append the current payload to a file located at the designated path.
  <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file 
  refer to dfs.support.append configuration parameter
  <p/>
@@ -612,7 +662,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
 &lt;hdfs:append path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using a specific buffer size --&gt;
-&lt;hdfs:append path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div></p></div>
+&lt;hdfs:append path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -629,38 +681,44 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path of the file to write to.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to write to.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
-                        <td class="jd-descrcol">4096</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
-                        <td class="jd-descrcol">int</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>payload</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The payload to append to the file.</td>
-                        <td class="jd-descrcol">InputStream</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>payload</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The payload to append to the file.</td>
+                            <td class="jd-descrcol">InputStream</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
@@ -715,10 +773,14 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Delete the file or directory located at the designated path.
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Delete the file or directory located at the designated path.
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a directory --&gt;
-&lt;hdfs:delete-directory path="/tmp/my-dir" /&gt;</pre></div></p></div>
+&lt;hdfs:delete-directory path="/tmp/my-dir" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -735,14 +797,16 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path of the directory to delete.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the directory to delete.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
@@ -797,10 +861,14 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Delete the file or directory located at the designated path.
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Delete the file or directory located at the designated path.
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a file --&gt;
-&lt;hdfs:delete-file path="/tmp/test.dat" /&gt;</pre></div></p></div>
+&lt;hdfs:delete-file path="/tmp/test.dat" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -817,14 +885,16 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path of the file to delete.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to delete.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
@@ -879,7 +949,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Get the metadata of a path, as described in
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Get the metadata of a path, as described in
  <code><a href="../java/org/mule/modules/hdfs/HdfsConnector.html#readFromPath(java.lang.String, int, org.mule.api.callback.SourceCallback)">readFromPath(String, int, SourceCallback)</a></code>, and store it
  in flow variables.
  <p/>
@@ -892,7 +964,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
  </ul>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Store the meta-information of a path in flow variables --&gt;
-&lt;hdfs:get-metadata path="/tmp/test.dat" /&gt;</pre></div></p></div>
+&lt;hdfs:get-metadata path="/tmp/test.dat" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -909,26 +983,30 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path whose existence must be checked.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path whose existence must be checked.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>muleEvent</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The MuleEvent currently being processed.</td>
-                        <td class="jd-descrcol">MuleEvent</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>muleEvent</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The MuleEvent currently being processed.</td>
+                            <td class="jd-descrcol">MuleEvent</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
@@ -959,10 +1037,13 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
                 <th>Description</th>
              </tr>
              <tr>
-                <td class="jd-descrcol">void</td>
-                <td class="jd-descrcol">the result of executing the next message processors if the path
+                
+                    <td class="jd-descrcol">void</td>
+                    <td class="jd-descrcol">the result of executing the next message processors if the path
          exists, otherwise null.
 </td>
+                
+
              </tr>
          </table>
   </div>
@@ -997,7 +1078,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Make the given file and all non-existent parents into directories. Has the
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Make the given file and all non-existent parents into directories. Has the
  semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an
  error.
  <p/>
@@ -1005,7 +1088,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
 &lt;hdfs:make-directories path="/tmp/my-dir" /&gt;</pre></div>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Make any missing directories for the specified path, using the provided file system permission --&gt;
-&lt;hdfs:make-directories path="/tmp/my-dir" permission="511" /&gt;</pre></div></p></div>
+&lt;hdfs:make-directories path="/tmp/my-dir" permission="511" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -1022,27 +1107,31 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path to create directories for.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path to create directories for.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>permission</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The file system permission to use when creating the
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>permission</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The file system permission to use when creating the
             directories, either in octal or symbolic format (umask).</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
@@ -1097,7 +1186,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Read the content of a file designated by its path and streams it to the rest
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Read the content of a file designated by its path and streams it to the rest
  of the flow, while adding the path metadata in the following inbound
  properties:
  <ul>
@@ -1114,7 +1205,9 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
 &lt;hdfs:read path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Reading a file using a specific buffer size --&gt;
-&lt;hdfs:read path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div></p></div>
+&lt;hdfs:read path="/tmp/test.dat" bufferSize="8192" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -1131,39 +1224,45 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path of the file to read.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to read.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
-                        <td class="jd-descrcol">4096</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when reading the file.</td>
-                        <td class="jd-descrcol">int</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when reading the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>sourceCallback</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The SourceCallback used to propagate the event
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>sourceCallback</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The SourceCallback used to propagate the event
             to the rest of the flow.</td>
-                        <td class="jd-descrcol">SourceCallback</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                            <td class="jd-descrcol">SourceCallback</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
@@ -1194,8 +1293,11 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
                 <th>Description</th>
              </tr>
              <tr>
-                <td class="jd-descrcol">Object</td>
-                <td class="jd-descrcol">the result from executing the rest of the flow.</td>
+                
+                    <td class="jd-descrcol">Object</td>
+                    <td class="jd-descrcol">the result from executing the rest of the flow.</td>
+                
+
              </tr>
          </table>
   </div>
@@ -1231,14 +1333,18 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write the current payload to the designated path, either creating a new file
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Write the current payload to the designated path, either creating a new file
  or appending to an existing one.
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using the configuration --&gt;
 &lt;hdfs:write path="/tmp/test.dat" /&gt;</pre></div>
  <p/>
  <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using all the configurable parameters --&gt;
-&lt;hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" ownerUserName="" ownerGroupName="" /&gt;</pre></div></p></div>
+&lt;hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" ownerUserName="" ownerGroupName="" /&gt;</pre></div>
+      
+  </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Attributes</h5>
 
@@ -1255,112 +1361,130 @@ attempts to reconnect only during business hours. Such a setting can prove usefu
           
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>path</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The path of the file to write to.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to write to.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>permission</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The file system permission to use if a new file is created,
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>permission</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The file system permission to use if a new file is created,
             either in octal or symbolic format (umask).</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>overwrite</nobr></td>
-                        <td class="jd-descrcol">true</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>If a pre-existing file should be overwritten with the new
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>overwrite</nobr></td>
+                            <td class="jd-descrcol">true</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>If a pre-existing file should be overwritten with the new
             content.</td>
-                        <td class="jd-descrcol">boolean</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
-                        <td class="jd-descrcol">4096</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
-                        <td class="jd-descrcol">int</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>replication</nobr></td>
-                        <td class="jd-descrcol">1</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>Block replication for the file.</td>
-                        <td class="jd-descrcol">int</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>replication</nobr></td>
+                            <td class="jd-descrcol">1</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>Block replication for the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>blockSize</nobr></td>
-                        <td class="jd-descrcol">4096</td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
-                        <td class="jd-descrcol">long</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>blockSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">long</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>ownerUserName</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The username owner of the file.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>ownerUserName</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The username owner of the file.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class="alt-color api apilevel-" >
-                        <td class="jd-linkcol"><nobr>ownerGroupName</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol"><i>Optional.&nbsp;</i>The group owner of the file.</td>
-                        <td class="jd-descrcol">String</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol">UTF-8</td>
-                    </tr>
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>ownerGroupName</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The group owner of the file.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
                 
                 
           
                 
-                    <tr class=" api apilevel-" >
-                        <td class="jd-linkcol"><nobr>payload</nobr></td>
-                        <td class="jd-descrcol"></td>
-                        <td class="jd-descrcol">The payload to write to the file.</td>
-                        <td class="jd-descrcol">InputStream</td>
-                        <td class="jd-descrcol">*/*</td>
-                        <td class="jd-descrcol"></td>
-                    </tr>
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>payload</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The payload to write to the file.</td>
+                            <td class="jd-descrcol">InputStream</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
                 
                 
           

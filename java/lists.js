@@ -73,14 +73,15 @@ var DATA = [
       { id:71, label:"org.mule.modules.hdfs.processors.AbstractExpressionEvaluator", link:"java/org/mule/modules/hdfs/processors/AbstractExpressionEvaluator.html", type:"class" },
       { id:72, label:"org.mule.modules.hdfs.processors.AbstractListeningMessageProcessor", link:"java/org/mule/modules/hdfs/processors/AbstractListeningMessageProcessor.html", type:"class" },
       { id:73, label:"org.mule.modules.hdfs.processors.AbstractMessageProcessor", link:"java/org/mule/modules/hdfs/processors/AbstractMessageProcessor.html", type:"class" },
-      { id:74, label:"org.mule.modules.hdfs.processors.AppendToPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/AppendToPathMessageProcessor.html", type:"class" },
-      { id:75, label:"org.mule.modules.hdfs.processors.DeleteDirectoryMessageProcessor", link:"java/org/mule/modules/hdfs/processors/DeleteDirectoryMessageProcessor.html", type:"class" },
-      { id:76, label:"org.mule.modules.hdfs.processors.DeleteFileMessageProcessor", link:"java/org/mule/modules/hdfs/processors/DeleteFileMessageProcessor.html", type:"class" },
-      { id:77, label:"org.mule.modules.hdfs.processors.GetPathMetaDataMessageProcessor", link:"java/org/mule/modules/hdfs/processors/GetPathMetaDataMessageProcessor.html", type:"class" },
-      { id:78, label:"org.mule.modules.hdfs.processors.MakeDirectoriesMessageProcessor", link:"java/org/mule/modules/hdfs/processors/MakeDirectoriesMessageProcessor.html", type:"class" },
-      { id:79, label:"org.mule.modules.hdfs.processors.ReadFromPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/ReadFromPathMessageProcessor.html", type:"class" },
-      { id:80, label:"org.mule.modules.hdfs.processors.WriteToPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/WriteToPathMessageProcessor.html", type:"class" },
-      { id:81, label:"read", link:"mule/hdfs-config.html#read", type:"method" },
-      { id:82, label:"write", link:"mule/hdfs-config.html#write", type:"method" }
+      { id:74, label:"org.mule.modules.hdfs.processors.AbstractPagedConnectedProcessor", link:"java/org/mule/modules/hdfs/processors/AbstractPagedConnectedProcessor.html", type:"class" },
+      { id:75, label:"org.mule.modules.hdfs.processors.AppendToPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/AppendToPathMessageProcessor.html", type:"class" },
+      { id:76, label:"org.mule.modules.hdfs.processors.DeleteDirectoryMessageProcessor", link:"java/org/mule/modules/hdfs/processors/DeleteDirectoryMessageProcessor.html", type:"class" },
+      { id:77, label:"org.mule.modules.hdfs.processors.DeleteFileMessageProcessor", link:"java/org/mule/modules/hdfs/processors/DeleteFileMessageProcessor.html", type:"class" },
+      { id:78, label:"org.mule.modules.hdfs.processors.GetPathMetaDataMessageProcessor", link:"java/org/mule/modules/hdfs/processors/GetPathMetaDataMessageProcessor.html", type:"class" },
+      { id:79, label:"org.mule.modules.hdfs.processors.MakeDirectoriesMessageProcessor", link:"java/org/mule/modules/hdfs/processors/MakeDirectoriesMessageProcessor.html", type:"class" },
+      { id:80, label:"org.mule.modules.hdfs.processors.ReadFromPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/ReadFromPathMessageProcessor.html", type:"class" },
+      { id:81, label:"org.mule.modules.hdfs.processors.WriteToPathMessageProcessor", link:"java/org/mule/modules/hdfs/processors/WriteToPathMessageProcessor.html", type:"class" },
+      { id:82, label:"read", link:"mule/hdfs-config.html#read", type:"method" },
+      { id:83, label:"write", link:"mule/hdfs-config.html#write", type:"method" }
 
     ];
