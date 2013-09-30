@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author MuleSoft Inc.
  */
-@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.3.0", 
+@Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.5", 
 			description = "HDFS Connector", metaData = MetaDataSwitch.OFF)
 public class HdfsConnector
 {
