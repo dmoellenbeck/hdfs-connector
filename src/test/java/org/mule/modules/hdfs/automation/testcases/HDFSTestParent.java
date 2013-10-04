@@ -36,10 +36,6 @@ public class HDFSTestParent extends FunctionalTestCase {
 	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-
-	protected MessageProcessor lookupFlowConstruct(String name) {
-		return (MessageProcessor) muleContext.getRegistry().lookupFlowConstruct(name);
-	}
 	
 	@BeforeClass
 	public static void beforeClass() {
