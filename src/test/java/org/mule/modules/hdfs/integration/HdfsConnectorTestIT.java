@@ -138,7 +138,7 @@ public class HdfsConnectorTestIT {
 		
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
-		Assert.assertEquals(result, "true");
+		Assert.assertEquals("true", result);
     }
     
     private void assertFileNotExists() throws Exception {
@@ -147,7 +147,7 @@ public class HdfsConnectorTestIT {
 		
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
-		Assert.assertEquals(result, "false");
+		Assert.assertEquals("false", result);
     }
     
     private void assertDirExists() throws Exception {
@@ -156,7 +156,7 @@ public class HdfsConnectorTestIT {
 		
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
-		Assert.assertEquals(result, "true");
+		Assert.assertEquals("true", result);
     }
     
     private void assertDirNotExists() throws Exception {
@@ -165,7 +165,7 @@ public class HdfsConnectorTestIT {
 		
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
-		Assert.assertEquals(result, "false");
+		Assert.assertEquals("false", result);
     }  
     
 }
