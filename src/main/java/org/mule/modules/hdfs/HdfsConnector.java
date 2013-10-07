@@ -37,6 +37,7 @@ import org.mule.api.MuleRuntimeException;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.ConnectionIdentifier;
+import org.mule.api.annotations.ConnectivityTesting;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.InvalidateConnectionOn;
@@ -65,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * @author MuleSoft Inc.
  */
 @Connector(name = HdfsConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.3.0", 
-			description = "HDFS Connector", metaData = MetaDataSwitch.OFF)
+			description = "HDFS Connector", metaData = MetaDataSwitch.OFF, connectivityTesting = ConnectivityTesting.DISABLED)
 public class HdfsConnector
 {
     public static final String HDFS = "hdfs";
