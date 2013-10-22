@@ -11,55 +11,35 @@ package org.mule.modules.hdfs.automation.testcases;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.util.Map;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mule.modules.hdfs.HdfsConnector;
+import org.mule.modules.tests.ConnectorTestUtils;
 
 public class MakeDirectoriesTestCases extends HDFSTestParent {
 
-	@SuppressWarnings("unchecked")
 	@Before
-	public void setUp() {
-		try {
-			testObjects = (Map<String, Object>) context.getBean("makeDirectories");
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void setUp() throws Exception {
+		initializeTestRunMessage("makeDirectoriesTestData");
 	}
 	
 	@Category({SmokeTests.class, RegressionTests.class})
 	@Test
 	public void testMakeDirectories() {
 		try {
-			String path = (String) testObjects.get("path");
-			makeDirectories(path);
+			runFlowAndGetPayload("make-directories");
+			assertTrue((Boolean) runFlowAndGetInvocationProperty("get-metadata", HdfsConnector.HDFS_PATH_EXISTS));
 			
-			assertTrue(fileExists(path));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail();
+		} catch (Exception e) {
+			fail(ConnectorTestUtils.getStackTrace(e));
 		}
 	}
 	
 	@After
-	public void tearDown() {
-		try {
-			String path = (String) testObjects.get("path");
-			String rootDir = path.substring(0, path.indexOf(File.separator, 1));
-			
-			deleteDirectory(rootDir);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void tearDown() throws Exception {
+		runFlowAndGetPayload("delete-directory");			
 	}
 	
 }

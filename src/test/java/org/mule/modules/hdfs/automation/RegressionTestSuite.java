@@ -18,10 +18,11 @@ import org.mule.modules.hdfs.automation.testcases.DeleteFileTestCases;
 import org.mule.modules.hdfs.automation.testcases.GetMetadataTestCases;
 import org.mule.modules.hdfs.automation.testcases.MakeDirectoriesTestCases;
 import org.mule.modules.hdfs.automation.testcases.ReadTestCases;
+import org.mule.modules.hdfs.automation.testcases.RegressionTests;
 import org.mule.modules.hdfs.automation.testcases.WriteTestCases;
 
 @RunWith(Categories.class)
-@IncludeCategory(RegressionTestSuite.class)
+@IncludeCategory(RegressionTests.class)
 @SuiteClasses({
 	AppendTestCases.class,
 	DeleteDirectoryTestCases.class,

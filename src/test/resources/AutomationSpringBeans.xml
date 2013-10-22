@@ -7,8 +7,10 @@
                            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
                           
-	<util:map id="write" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-		<entry key="payloadRef" value="Some file data" />
+    <bean id="randomInputStream" class="org.mule.modules.tests.ConnectorTestUtils" factory-method="generateRandomInputStream" scope="prototype"/>
+                          
+	<util:map id="writeTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value-ref="randomInputStream" />
 		<entry key="path" value="/myfile.txt" />
 		<entry key="permission" value="777" />
 		<entry key="overwrite" value="true" />
@@ -17,36 +19,33 @@
 		<entry key="replication" value="#{1}" />
 	</util:map>
 	
-	<util:map id="delete" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-		<entry key="payloadRef" value="Some file data" />
+	<util:map id="deleteTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value-ref="randomInputStream" />
 		<entry key="path" value="/myfile.txt" />
 	</util:map>
 	
-	<util:map id="getMetadata" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-		<entry key="payloadRef" value="Some file data" />
+	<util:map id="getMetadataTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value-ref="randomInputStream" />
 		<entry key="path" value="/myfile.txt" />
 	</util:map>
 	
-	<util:map id="read" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-		<entry key="payloadRef" value="This is a slightly longer file data" />
+	<util:map id="readTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value-ref="randomInputStream" />
 		<entry key="path" value="/myfile.txt" />
 		<entry key="bufferSize" value="8192" />
 	</util:map>
 
-	<util:map id="append" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-		<entry key="payloadRef" value="This is a slightly longer file data." />
+	<util:map id="appendTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+		<entry key="payloadRef" value-ref="randomInputStream" />
 		<entry key="path" value="/myfile.txt" />
 		<entry key="bufferSize" value="8192" />
-		<entry key="toAppend" value="Appended text" />
 	</util:map>
 	
-	<util:map id="makeDirectories" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
-<!-- 		<entry key="root" value="/parent1" /> -->
-<!-- 		<entry key="filename" value="myfile.txt" /> -->
+	<util:map id="makeDirectoriesTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
 		<entry key="path" value="/parent1/parent2/myfile.txt" />
 	</util:map>
 	
-	<util:map id="deleteDirectory" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
+	<util:map id="deleteDirectoryTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object" scope="prototype">
 		<entry key="path" value="/parent1" />
 	</util:map>
 </beans>
