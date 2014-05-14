@@ -33,6 +33,7 @@ public class AppendTestCases extends HDFSTestParent {
 	
 	@Category({RegressionTests.class})
 	@Test
+	@org.junit.Ignore("Append is broken in Hadoop 1.x")
 	public void testAppend() {
 
 		Vector<InputStream> inputStreams = new Vector<InputStream>();
