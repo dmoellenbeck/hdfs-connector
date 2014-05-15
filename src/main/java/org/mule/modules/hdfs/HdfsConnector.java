@@ -243,9 +243,9 @@ public class HdfsConnector
      * @return the result from executing the rest of the flow.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "read", intercepting = true)
+    @Processor(friendlyName = "Read from path", intercepting = true)
     @InvalidateConnectionOn(exception = IOException.class)
-    public Object readFromPath(final String path,
+    public Object read(final String path,
                                @Optional @Default("4096") final int bufferSize,
                                final SourceCallback sourceCallback) throws Exception
     {
@@ -290,7 +290,7 @@ public class HdfsConnector
 
     /**
      * Get the metadata of a path, as described in
-     * {@link HdfsConnector#readFromPath(String, int, SourceCallback)}, and store it
+     * {@link HdfsConnector#read(String, int, SourceCallback)}, and store it
      * in flow variables.
      * <p/>
      * This flow variables are:
@@ -309,10 +309,10 @@ public class HdfsConnector
      * @return the result of executing the next message processors if the path
      *         exists, otherwise null.
      */
-    @Processor(name = "get-metadata")
+    @Processor(friendlyName = "Get path meta data")
     @InvalidateConnectionOn(exception = IOException.class)
     @Inject
-    public void getPathMetaData(final String path, final MuleEvent muleEvent) throws Exception
+    public void getMetadata(final String path, final MuleEvent muleEvent) throws Exception
     {
         runHdfsPathAction(path, new VoidHdfsPathAction()
         {
@@ -348,9 +348,9 @@ public class HdfsConnector
      * @param payload the payload to write to the file.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "write")
+    @Processor(friendlyName = "Write to path")
     @InvalidateConnectionOn(exception = IOException.class)
-    public void writeToPath(final String path,
+    public void write(final String path,
                             @Optional final String permission,
                             @Optional @Default("true") final boolean overwrite,
                             @Optional @Default("4096") final int bufferSize,
@@ -392,9 +392,9 @@ public class HdfsConnector
      * @param payload the payload to append to the file.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "append")
+    @Processor(friendlyName = "Append to file")
     @InvalidateConnectionOn(exception = IOException.class)
-    public void appendToPath(final String path,
+    public void append(final String path,
                              @Optional @Default("4096") final int bufferSize,
                              @Optional @Default("#[payload]") final InputStream payload) throws Exception
     {
@@ -417,7 +417,7 @@ public class HdfsConnector
      * @param path the path of the file to delete.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "delete-file")
+    @Processor
     @InvalidateConnectionOn(exception = IOException.class)
     public void deleteFile(final String path) throws Exception
     {
@@ -432,7 +432,7 @@ public class HdfsConnector
      * @param path the path of the directory to delete.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "delete-directory")
+    @Processor
     @InvalidateConnectionOn(exception = IOException.class)
     public void deleteDirectory(final String path) throws Exception
     {
@@ -464,7 +464,7 @@ public class HdfsConnector
      *            directories, either in octal or symbolic format (umask).
      * @throws Exception if any issue occurs during the execution.
      */
-    @Processor(name = "make-directories")
+    @Processor
     @InvalidateConnectionOn(exception = IOException.class)
     public void makeDirectories(final String path, @Optional final String permission) throws Exception
     {

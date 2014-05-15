@@ -104,23 +104,23 @@ public class HdfsConnectorTestIT {
     	// **** CREATE A NEW FILE (OVERWRITE IF EXISTS) ****
 		StringBuffer StringBuffer1 = new StringBuffer(messagepart1);
 		InputStream inputStream = new ByteArrayInputStream(StringBuffer1.toString().getBytes(encoding));
-		
-		conn.writeToPath(String.format("/%s/%s", dir, filename), permission, true, 4096, 1, 4096, username, usergroup, inputStream);
+
+		conn.write(String.format("/%s/%s", dir, filename), permission, true, 4096, 1, 4096, username, usergroup, inputStream);
     }
     
     private void appendToFile() throws Exception {
     	// **** APPEND DATA TO THE FILE ****
     	StringBuffer StringBuffer1 = new StringBuffer(messagepart2);
     	InputStream inputStream = new ByteArrayInputStream(StringBuffer1.toString().getBytes(encoding));
-		
-		conn.appendToPath(String.format("/%s/%s", dir, filename), 4096, inputStream);
+
+		conn.append(String.format("/%s/%s", dir, filename), 4096, inputStream);
     }
     
     private String retrieveFromFile() throws Exception {
     	// **** RETRIEVE DATA FROM FILE ****
 		MySourceCallback sc = new MySourceCallback();
-		
-		return (String) conn.readFromPath(String.format("/%s/%s", dir, filename), 4096, sc);
+
+		return (String) conn.read(String.format("/%s/%s", dir, filename), 4096, sc);
     }
     
     private void deleteFile() throws Exception {
@@ -135,8 +135,7 @@ public class HdfsConnectorTestIT {
     
     private void assertFileExists() throws Exception {
 		MyMuleEvent me = new MyMuleEvent();
-		conn.getPathMetaData(String.format("/%s/%s", dir, filename), me);
-		
+		conn.getMetadata(String.format("/%s/%s", dir, filename), me);
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
 		Assert.assertEquals("true", result);
@@ -144,8 +143,7 @@ public class HdfsConnectorTestIT {
     
     private void assertFileNotExists() throws Exception {
     	MyMuleEvent me = new MyMuleEvent();
-		conn.getPathMetaData(String.format("/%s/%s", dir, filename), me);
-		
+		conn.getMetadata(String.format("/%s/%s", dir, filename), me);
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
 		Assert.assertEquals("false", result);
@@ -153,8 +151,7 @@ public class HdfsConnectorTestIT {
     
     private void assertDirExists() throws Exception {
     	MyMuleEvent me = new MyMuleEvent();
-		conn.getPathMetaData(String.format("/%s", dir), me);
-		
+		conn.getMetadata(String.format("/%s", dir), me);
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
 		Assert.assertEquals("true", result);
@@ -162,8 +159,7 @@ public class HdfsConnectorTestIT {
     
     private void assertDirNotExists() throws Exception {
     	MyMuleEvent me = new MyMuleEvent();
-		conn.getPathMetaData(String.format("/%s", dir), me);
-		
+		conn.getMetadata(String.format("/%s", dir), me);
 		String result = me.getFlowVariable("hdfs.path.exists").toString();
 		
 		Assert.assertEquals("false", result);
