@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<connector name="HDFS">
+    <global-config>
+        <config>
+            <attributes>
+                <optional caption="Name" group="Basic Settings" javaType="java.lang.String" name="name" type="name"/>
+                <optional caption="Default File System Name" group="General" javaType="java.lang.String" name="defaultFileSystemName" type="string"/>
+                <optional caption="File System Reference" group="Advanced" javaType="org.apache.hadoop.fs.FileSystem" name="fileSystem-ref" type="string"/>
+                <optional caption="Connection Key" default="DEFAULT" group="Connection" javaType="java.lang.String" name="connectionKey" type="string"/>
+            </attributes>
+            <childElements>
+                <optional name="configuration-entries">
+                    <attributes controlled="complex">
+                        <optional name="key"/>
+                        <optional name="ref"/>
+                    </attributes>
+                    <attributes controlled="useReference">
+                        <required name="ref"/>
+                    </attributes>
+                    <childElements>
+                        <optional name="configuration-entry">
+                            <attributes controlled="complex">
+                                <optional name="key"/>
+                            </attributes>
+                            <attributes controlled="useReference">
+                                <required name="ref"/>
+                            </attributes>
+                        </optional>
+                    </childElements>
+                </optional>
+                <optional name="configuration-resource">
+                    <attributes controlled="useReference">
+                        <required name="ref"/>
+                    </attributes>
+                </optional>
+                <optional name="configuration-entry">
+                    <attributes controlled="complex">
+                        <optional name="key"/>
+                    </attributes>
+                    <attributes controlled="useReference">
+                        <required name="ref"/>
+                    </attributes>
+                </optional>
+                <optional name="configuration-resources">
+                    <attributes controlled="complex">
+                        <optional name="ref"/>
+                    </attributes>
+                    <attributes controlled="useReference">
+                        <required name="ref"/>
+                    </attributes>
+                    <childElements>
+                        <optional name="configuration-resource">
+                            <attributes controlled="useReference">
+                                <required name="ref"/>
+                            </attributes>
+                        </optional>
+                    </childElements>
+                </optional>
+            </childElements>
+        </config>
+    </global-config>
+    <message-processors>
+        <read>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+                <optional caption="Buffer Size" default="4096" group="General" javaType="int" name="bufferSize" type="integer"/>
+            </attributes>
+        </read>
+        <get-metadata>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+            </attributes>
+        </get-metadata>
+        <write>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+                <optional caption="Permission" group="General" javaType="java.lang.String" name="permission" type="string"/>
+                <optional caption="Overwrite" default="true" group="General" javaType="boolean" name="overwrite" type="boolean"/>
+                <optional caption="Buffer Size" default="4096" group="General" javaType="int" name="bufferSize" type="integer"/>
+                <optional caption="Replication" default="1" group="General" javaType="int" name="replication" type="integer"/>
+                <optional caption="Block Size" default="4096" group="General" javaType="long" name="blockSize" type="integer"/>
+                <optional caption="Owner User Name" group="General" javaType="java.lang.String" name="ownerUserName" type="string"/>
+                <optional caption="Owner Group Name" group="General" javaType="java.lang.String" name="ownerGroupName" type="string"/>
+                <optional caption="Payload Reference" default="#[payload]" group="General" javaType="java.io.InputStream" name="payload-ref" type="string"/>
+            </attributes>
+        </write>
+        <append>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+                <optional caption="Buffer Size" default="4096" group="General" javaType="int" name="bufferSize" type="integer"/>
+                <optional caption="Payload Reference" default="#[payload]" group="General" javaType="java.io.InputStream" name="payload-ref" type="string"/>
+            </attributes>
+        </append>
+        <delete-file>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+            </attributes>
+        </delete-file>
+        <delete-directory>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+            </attributes>
+        </delete-directory>
+        <make-directories>
+            <attributes>
+                <required caption="Path" group="General" javaType="java.lang.String" name="path" type="string"/>
+                <optional caption="Permission" group="General" javaType="java.lang.String" name="permission" type="string"/>
+            </attributes>
+        </make-directories>
+    </message-processors>
+    <inbound-endpoint/>
+    <outbound-endpoints/>
+</connector>
