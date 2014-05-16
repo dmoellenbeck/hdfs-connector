@@ -1,36 +1,24 @@
-3.4
-===
-  * Added demo project
-  * Added integration test cases
-  * Added CHANGELOG
-  * Replaces old test for Integration test and Mule Studio Demo project
+HDFS Anypoint Connector Release Notes
+=====================================
 
-3.3.2
-=====
-  * Added configuration samples
+Date: 15-May-2014
 
-3.1
-===
-  * Added CPAL license
+Version: 3.7.1
 
-3.0
-===
-  * Added Studio Support
+Supported API versions: [v1.x](http://hadoop.apache.org/docs/r1.2.1/api/)
 
-2.1 Beta
-========
-  * Replaced path-exists with more capable get-meta MP
+Supported Mule Runtime Versions: 3.4.x, 3.5.0
 
-2.0 Beta
-========
-  * Added first tests
+Features and functionality
+--------------------------
 
-1.1 Beta
-========
-  * Added delete processor
-  * Added mkdir processor
+* Create/delete directories
+* Read/write from path
+* Get path metadata
+* Append to path
 
-1.0 Beta
-========
-  * added connection support
-  * added read processor
+Known issues
+------------
+
+* Appending to paths has been disabled since Hadoop 1.1.0. See this [Hadoop issue](https://issues.apache.org/jira/browse/HADOOP-8230)
+* Reading from paths is currently broken
