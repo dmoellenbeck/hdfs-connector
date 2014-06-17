@@ -8,55 +8,56 @@
 
 package org.mule.modules.hdfs.automation.testcases;
 
-import static org.junit.Assert.fail;
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mule.modules.hdfs.automation.RegressionTests;
+import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.mule.modules.tests.ConnectorTestUtils;
+import static org.junit.Assert.fail;
 
+@Ignore
 public class AppendTestCases extends HDFSTestParent {
 
-	@Before
-	public void setUp() throws Exception {
-			initializeTestRunMessage("appendTestData");
-			runFlowAndGetPayload("write-default-values");
+    @Before
+    public void setUp() throws Exception {
+        initializeTestRunMessage("appendTestData");
+        runFlowAndGetPayload("write-default-values");
+    }
 
-	}
-	
-	@Category({RegressionTests.class})
-	@Test
-	@org.junit.Ignore("Append is broken in Hadoop 1.x")
-	public void testAppend() {
+    @Category({RegressionTests.class})
+    @Test
+    public void testAppend() {
 
-		Vector<InputStream> inputStreams = new Vector<InputStream>();
-		inputStreams.add((InputStream) getTestRunMessageValue("payloadRef"));
-		
-		InputStream inputStreamToAppend = getBeanFromContext("randomInputStream");
-		inputStreams.add(inputStreamToAppend);
-		upsertOnTestRunMessage("payloadRef", inputStreamToAppend);
+        Vector<InputStream> inputStreams = new Vector<InputStream>();
+        inputStreams.add((InputStream) getTestRunMessageValue("payloadRef"));
 
-		SequenceInputStream inputStreamsSequence = new SequenceInputStream((Enumeration<InputStream>) inputStreams.elements());
-		
-		try {
-			runFlowAndGetPayload("append");
-			IOUtils.contentEquals(inputStreamsSequence, (InputStream) runFlowAndGetPayload("read"));
-			
-		} catch (Exception e) {
-			fail(ConnectorTestUtils.getStackTrace(e));
-		}
+        InputStream inputStreamToAppend = getBeanFromContext("randomInputStream");
+        inputStreams.add(inputStreamToAppend);
+        upsertOnTestRunMessage("payloadRef", inputStreamToAppend);
 
-	}
+        SequenceInputStream inputStreamsSequence = new SequenceInputStream((Enumeration<InputStream>) inputStreams.elements());
 
-	@After
-	public void tearDown() throws Exception {
-		runFlowAndGetPayload("delete-file");
-	}
+        try {
+            runFlowAndGetPayload("append");
+            IOUtils.contentEquals(inputStreamsSequence, (InputStream) runFlowAndGetPayload("read"));
+
+        } catch (Exception e) {
+            fail(ConnectorTestUtils.getStackTrace(e));
+        }
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        runFlowAndGetPayload("delete-file");
+    }
 }

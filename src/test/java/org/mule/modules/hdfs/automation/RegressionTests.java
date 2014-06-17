@@ -6,15 +6,8 @@
  * LICENSE.md file.
  */
 
-package org.mule.modules.hdfs.unit;
+package org.mule.modules.hdfs.automation;
 
-import org.junit.Assert;
-import org.junit.Test;
+public interface RegressionTests {
 
-public class HdfsConnectorTestCase {
-	
-	@Test
-	public void simpleTest() {
-		Assert.assertNotNull(new Object());
-	}
 }

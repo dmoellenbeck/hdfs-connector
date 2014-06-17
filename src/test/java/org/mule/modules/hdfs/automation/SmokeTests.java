@@ -6,7 +6,7 @@
  * LICENSE.md file.
  */
 
-package org.mule.modules.hdfs.automation.testcases;
+package org.mule.modules.hdfs.automation;
 
 public interface SmokeTests {
 

@@ -13,10 +13,10 @@ import org.junit.rules.Timeout;
 import org.mule.modules.tests.ConnectorTestCase;
 
 public class HDFSTestParent extends ConnectorTestCase {
-	
-	// Set global timeout of tests to 5 minutes
+
+    // Set global timeout of tests to 5 minutes
     @Rule
     public Timeout globalTimeout = new Timeout(300000);
-	
-	
+
+
 }

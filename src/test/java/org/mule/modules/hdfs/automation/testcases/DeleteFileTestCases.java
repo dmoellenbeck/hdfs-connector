@@ -8,35 +8,37 @@
 
 package org.mule.modules.hdfs.automation.testcases;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mule.modules.hdfs.HdfsConnector;
+import org.mule.modules.hdfs.HDFSConnector;
+import org.mule.modules.hdfs.automation.RegressionTests;
+import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class DeleteFileTestCases extends HDFSTestParent {
 
-	@Before
-	public void setUp() throws Exception {
-			initializeTestRunMessage("deleteTestData");
-			runFlowAndGetPayload("write-default-values");
+    @Before
+    public void setUp() throws Exception {
+        initializeTestRunMessage("deleteTestData");
+        runFlowAndGetPayload("write-default-values");
 
-	}
-	
-	@Category({SmokeTests.class, RegressionTests.class})
-	@Test
-	public void testDeleteFile() {
-		try {
-			runFlowAndGetPayload("delete-file");
-			assertFalse((Boolean) runFlowAndGetInvocationProperty("get-metadata", HdfsConnector.HDFS_PATH_EXISTS));
-			
-		} catch (Exception e) {
-			fail(ConnectorTestUtils.getStackTrace(e));
-		}
+    }
 
-	}
-	
+    @Category({SmokeTests.class, RegressionTests.class})
+    @Test
+    public void testDeleteFile() {
+        try {
+            runFlowAndGetPayload("delete-file");
+            assertFalse((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
+
+        } catch (Exception e) {
+            fail(ConnectorTestUtils.getStackTrace(e));
+        }
+
+    }
+
 }
