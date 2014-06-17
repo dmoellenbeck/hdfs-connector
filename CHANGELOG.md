@@ -1,15 +1,15 @@
 HDFS Anypoint Connector Release Notes
 =====================================
 
-Date: 15-May-2014
+Date: 15-Jun-2014
 
-Version: 3.7.1
+Version: 3.8.0
 
-Supported API versions: [v1.x](http://hadoop.apache.org/docs/r1.2.1/api/)
+Supported API versions: [v2.4.0](http://hadoop.apache.org/docs/r2.4.0/api/)
 
-Supported Mule Runtime Versions: 3.4.x, 3.5.0
+Supported Mule Runtime Versions: 3.5.0
 
-Features and functionality
+Features and Functionality
 --------------------------
 
 * Create/delete directories
@@ -17,8 +17,15 @@ Features and functionality
 * Get path metadata
 * Append to path
 
-Known issues
-------------
+Closed Issues in this release
+-----------------------------
 
-* Appending to paths has been disabled since Hadoop 1.1.0. See this [Hadoop issue](https://issues.apache.org/jira/browse/HADOOP-8230)
-* Reading from paths is currently broken
+* Updated the HDFS Java Client to support 2.4.x hosts.
+* Appending to paths has been fixed.
+* Reading from paths has been fixed.
+
+Known Issues in this release
+----------------------------
+
+* Currently reading from paths does not support polling and move functionality.
+* Functional test cases for Append & Read have been annotated @Ignore.
