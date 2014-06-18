@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.collections.MapUtils.isNotEmpty;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -387,6 +388,103 @@ public class HDFSConnector {
         runHdfsPathAction(path, new VoidHdfsPathAction() {
             public void run(final Path hdfsPath) throws Exception {
                 fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
+            }
+        });
+    }
+
+    /**
+     * Renames path target to path destination.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:rename}
+     *
+     * @param source the source path to be renamed.
+     * @param target the target new path after rename.
+     * @return Boolean  true if rename is successful.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public Boolean rename(final String source, final String target) throws Exception {
+        return runHdfsPathAction(source, new HdfsPathAction<Boolean>() {
+            public Boolean run(final Path hdfsPath) throws Exception {
+                return fileSystem.rename(hdfsPath, new Path(target));
+            }
+        });
+    }
+
+    /**
+     * List the statuses of the files/directories in the given path if the path
+     * is a directory
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:list-status}
+     *
+     * @param path   the given path
+     * @param filter the user supplied path filter
+     * @return FileStatus   the statuses of the files/directories in the given path
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public FileStatus[] listStatus(@Default("#[payload]") final String path, @Default(".*") final String filter) throws Exception {
+        return runHdfsPathAction(path, new HdfsPathAction<FileStatus[]>() {
+            public FileStatus[] run(final Path hdfsPath) throws Exception {
+                final Pattern pattern = Pattern.compile(filter);
+                PathFilter pathFilter = new PathFilter() {
+                    @Override
+                    public boolean accept(Path path) {
+                        try {
+                            if (fileSystem.isDirectory(path))
+                                return true;
+                            else {
+                                return pattern.matcher(path.toString()).matches();
+                            }
+                        } catch (IOException e) {
+                            throw new MuleRuntimeException(e);
+                        }
+                    }
+                };
+                return fileSystem.listStatus(hdfsPath, pathFilter);
+            }
+        });
+    }
+
+    /**
+     * Copy the source file on the local disk to the FileSystem at the given target
+     * path, set deleteSource if the source should be removed.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-from-local-file}
+     *
+     * @param deleteSource whether to delete the source.
+     * @param overwrite    whether to overwrite a existing file.
+     * @param source       the source path on the local disk.
+     * @param target       the target path on the File System.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void copyFromLocalFile(@Default("false") final boolean deleteSource, @Default("true") final boolean overwrite, final String source, final String target) throws Exception {
+        runHdfsPathAction(source, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                fileSystem.copyFromLocalFile(deleteSource, overwrite, hdfsPath, new Path(target));
+            }
+        });
+    }
+
+    /**
+     * Copy the source file on the FileSystem to local disk at the given target
+     * path, set deleteSource if the source should be removed. useRawLocalFileSystem
+     * indicates whether to use RawLocalFileSystem as it is a non CRC File System.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-to-local-file}
+     *
+     * @param deleteSource          whether to delete the source.
+     * @param useRawLocalFileSystem whether to use RawLocalFileSystem as local file system or not.
+     * @param source                the source path on the File System.
+     * @param target                the target path on the local disk.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void copyToLocalFile(@Default("false") final boolean deleteSource, @Default("false") final boolean useRawLocalFileSystem, final String source, final String target) throws Exception {
+        runHdfsPathAction(source, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                fileSystem.copyToLocalFile(deleteSource, hdfsPath, new Path(target), useRawLocalFileSystem);
             }
         });
     }

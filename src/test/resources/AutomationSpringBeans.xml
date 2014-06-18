@@ -7,6 +7,13 @@
     <bean id="randomInputStream" class="org.mule.modules.tests.ConnectorTestUtils"
           factory-method="generateRandomInputStream" scope="prototype"/>
 
+    <bean id="randomUniqueText" class="org.mule.modules.tests.ConnectorTestUtils"
+          factory-method="generateRandomShortString" scope="prototype"/>
+
+    <bean id="rootDirectory" class="java.lang.String">
+        <constructor-arg value="hadoop"/>
+    </bean>
+
     <util:map id="writeTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object"
               scope="prototype">
         <entry key="payloadRef" value-ref="randomInputStream"/>
@@ -51,5 +58,35 @@
     <util:map id="deleteDirectoryTestData" map-class="java.util.HashMap" key-type="java.lang.String"
               value-type="java.lang.Object" scope="prototype">
         <entry key="path" value="hadoop"/>
+    </util:map>
+
+    <util:map id="renameTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="fromPath" value="hadoop-data"/>
+        <entry key="toPath" value="hadoop"/>
+    </util:map>
+
+    <util:map id="listStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="payloadRef" value-ref="randomInputStream"/>
+        <entry key="path" value-ref="rootDirectory"/>
+        <entry key="size" value="5"/>
+        <entry key="filter" value=".*txt"/>
+    </util:map>
+
+    <util:map id="copyFromLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="deleteSrc" value="false"/>
+        <entry key="overwrite" value="true"/>
+        <entry key="source" value="src/test/resources/data-set"/>
+        <entry key="target" value="hadoop/data-set"/>
+    </util:map>
+
+    <util:map id="copyToLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="deleteSrc" value="false"/>
+        <entry key="useRawLocalFileSystem" value="false"/>
+        <entry key="source" value="hadoop/data-set"/>
+        <entry key="target" value="src/test/resources/data-set"/>
     </util:map>
 </beans>
