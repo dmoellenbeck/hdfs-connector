@@ -11,7 +11,8 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
 
-    <hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}" doc:name="HDFS">
+    <hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}" connectionKey="${hdfs.connectionKey}"
+                 doc:name="HDFS">
         <hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </hdfs:config>
 
@@ -70,5 +71,10 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:copy-to-local-file config-ref="HDFS" deleteSource="#[flowVars.deleteSrc]"
                                  useRawLocalFileSystem="#[flowVars.useRawLocalFileSystem]" source="#[flowVars.source]"
                                  target="#[flowVars.target]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="set-permission" doc:name="set-permission">
+        <hdfs:set-permission config-ref="HDFS" path="#[flowVars.path]" permission="#[flowVars.permission]"
+                             doc:name="HDFS"/>
     </flow>
 </mule>

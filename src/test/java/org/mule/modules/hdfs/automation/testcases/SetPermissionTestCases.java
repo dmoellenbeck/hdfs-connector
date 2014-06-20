@@ -1,6 +1,7 @@
 package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,22 +13,25 @@ import org.mule.modules.tests.ConnectorTestUtils;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class CopyFromLocalFileTestCases extends HDFSTestParent {
+@Category({SmokeTests.class, RegressionTests.class})
+public class SetPermissionTestCases extends HDFSTestParent {
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("copyFromLocalFileTestData");
-        upsertOnTestRunMessage("path", getTestRunMessageValue("target"));
+        initializeTestRunMessage("setPermissionTestData");
+        runFlowAndGetPayload("make-directories");
     }
 
-    @Category({SmokeTests.class, RegressionTests.class})
     @Test
-    public void testCopyFromLocalFile() {
+    public void testSetPermission() {
         try {
-            runFlowAndGetPayload("copy-from-local-file");
+            FsPermission oldPermission = new FsPermission((String) getTestRunMessageValue("permission"));
+            runFlowAndGetPayload("set-permission");
+            upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
 
             FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            assertTrue(fileStatuses.length != 0);
+            FsPermission newPermission = fileStatuses[0].getPermission();
+            assertTrue(newPermission.equals(oldPermission));
 
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
