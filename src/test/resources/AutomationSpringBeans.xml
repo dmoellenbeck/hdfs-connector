@@ -71,7 +71,7 @@
         <entry key="payloadRef" value-ref="randomInputStream"/>
         <entry key="path" value-ref="rootDirectory"/>
         <entry key="size" value="5"/>
-        <entry key="filter" value="*.txt"/>
+        <entry key="filter" value=".*txt"/>
     </util:map>
 
     <util:map id="copyFromLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"

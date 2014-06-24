@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
-import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.assertTrue;
@@ -20,7 +19,7 @@ public class CopyFromLocalFileTestCases extends HDFSTestParent {
         upsertOnTestRunMessage("path", getTestRunMessageValue("target"));
     }
 
-    @Category({SmokeTests.class, RegressionTests.class})
+    @Category({RegressionTests.class})
     @Test
     public void testCopyFromLocalFile() {
         try {

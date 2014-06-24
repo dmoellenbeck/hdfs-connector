@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.HDFSConnector;
 import org.mule.modules.hdfs.automation.RegressionTests;
-import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.assertTrue;
@@ -22,7 +21,7 @@ public class RenameTestCases extends HDFSTestParent {
         runFlowAndGetPayload("make-directories");
     }
 
-    @Category({SmokeTests.class, RegressionTests.class})
+    @Category({RegressionTests.class})
     @Test
     public void testRename() {
         try {

@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
-import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class ListStatusTestCases extends HDFSTestParent {
         upsertOnTestRunMessage("path", root);
     }
 
-    @Category({SmokeTests.class, RegressionTests.class})
+    @Category({RegressionTests.class})
     @Test
     public void testListStatus() {
         try {

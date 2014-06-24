@@ -7,13 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
-import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Category({SmokeTests.class, RegressionTests.class})
+@Category({RegressionTests.class})
 public class SetPermissionTestCases extends HDFSTestParent {
 
     @Before
