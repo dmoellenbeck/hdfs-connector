@@ -24,6 +24,7 @@ import org.mule.modules.hdfs.automation.testcases.*;
         DeleteFileTestCases.class,
         GetMetadataTestCases.class,
         ListStatusTestCases.class,
+        GlobStatusTestCases.class,
         MakeDirectoriesTestCases.class,
         ReadTestCases.class,
         RenameTestCases.class,

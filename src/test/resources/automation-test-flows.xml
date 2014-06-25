@@ -77,4 +77,9 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:set-permission config-ref="HDFS" path="#[flowVars.path]" permission="#[flowVars.permission]"
                              doc:name="HDFS"/>
     </flow>
+
+    <flow name="glob-status" doc:name="glob-status">
+        <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
+                          doc:name="HDFS"/>
+    </flow>
 </mule>

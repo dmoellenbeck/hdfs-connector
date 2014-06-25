@@ -14,6 +14,10 @@
         <constructor-arg value="hadoop"/>
     </bean>
 
+    <bean id="filterRegex" class="org.mule.modules.hdfs.utils.RegexExcludePathFilter">
+        <constructor-arg value="^.*2013/12/31$"/>
+    </bean>
+
     <util:map id="writeTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object"
               scope="prototype">
         <entry key="payloadRef" value-ref="randomInputStream"/>
@@ -100,5 +104,20 @@
             </bean>
         </entry>
         <entry key="permission" value="754"/>
+    </util:map>
+
+    <util:map id="globStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="pathList">
+            <list value-type="java.lang.String">
+                <value>2013/12/30</value>
+                <value>2013/12/31</value>
+                <value>2014/03/20</value>
+                <value>2014/04/22</value>
+            </list>
+        </entry>
+        <entry key="pathPattern" value="2013/*/*"/>
+        <entry key="filter" value-ref="filterRegex"/>
+        <entry key="result" value="2013/12/30"/>
     </util:map>
 </beans>
