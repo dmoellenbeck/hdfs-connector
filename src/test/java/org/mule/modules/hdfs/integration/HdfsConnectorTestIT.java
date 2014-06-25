@@ -8,6 +8,7 @@
 
 package org.mule.modules.hdfs.integration;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -21,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class HdfsConnectorTestIT {
+import static org.junit.Assert.fail;
 
-    static private final Log logger = LogFactory.getLog(HdfsConnectorTestIT.class);
+public class HDFSConnectorTestIT {
+
+    static private final Log logger = LogFactory.getLog(HDFSConnectorTestIT.class);
 
     private String filesystemname;
     private String username;
@@ -55,6 +58,9 @@ public class HdfsConnectorTestIT {
         messagepart1 = prop.getProperty("hadoop.it.messagepart1");
         messagepart2 = prop.getProperty("hadoop.it.messagepart2");
 
+        if (StringUtils.isEmpty(filesystemname) && StringUtils.isEmpty(usergroup))
+            fail();
+
         conn = new HDFSConnector();
         conn.setDefaultFileSystemName(filesystemname);
         conn.connect(username);
@@ -64,12 +70,14 @@ public class HdfsConnectorTestIT {
             logger.debug(String.format("BEFORE - Delete if exists file /%s/%s", dir, filename));
             conn.deleteFile(String.format("/%s/%s", dir, filename));
         } catch (Throwable e) {
+            fail();
         }
 
         try {
             logger.debug(String.format("BEFORE - Delete if exists directory /%s", dir));
             conn.deleteDirectory(String.format("/%s", dir));
         } catch (Throwable e) {
+            fail();
         }
     }
 
