@@ -8,10 +8,10 @@
 
 package org.mule.modules.hdfs;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.mule.MessageExchangePattern;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.MuleEvent;
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.collections.MapUtils.isNotEmpty;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -63,14 +64,14 @@ public class HDFSConnector {
     private final static Logger LOGGER = LoggerFactory.getLogger(HDFSConnector.class);
     /**
      * The name of the file system to connect to. It is passed to HDFS client as the
-     * {@value FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
+     * {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
      * overriden by values in configurationResources and configurationEntries.
      */
     @Configurable
     @Optional
     private String defaultFileSystemName;
     /**
-     * A {@link List} of configuration resource files to be loaded by the HDFS
+     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS
      * client.
      */
     @Configurable
@@ -78,7 +79,7 @@ public class HDFSConnector {
     @Placement(group = "Advanced")
     private List<String> configurationResources;
     /**
-     * A {@link Map} of configuration entries to be used by the HDFS client.
+     * A {@link java.util.Map} of configuration entries to be used by the HDFS client.
      */
     @Configurable
     @Optional
@@ -95,7 +96,7 @@ public class HDFSConnector {
      *                             {@link ConnectionExceptionCode}.
      */
     @Connect
-    public void connect(@ConnectionKey @Default("DEFAULT") final String connectionKey)
+    public void connect(@ConnectionKey final String connectionKey)
             throws ConnectionException {
         final Configuration configuration = new Configuration();
         if (isNotBlank(defaultFileSystemName)) {
@@ -190,7 +191,7 @@ public class HDFSConnector {
      * @return the result from executing the rest of the flow.
      * @throws Exception if any issue occurs during the execution.
      */
-    @Source(friendlyName = "Read from path", exchangePattern = MessageExchangePattern.ONE_WAY)
+    @Source(friendlyName = "Read from path", primaryNodeOnly = true)
     public Object read(final String path,
                        @Default("4096") final int bufferSize,
                        final SourceCallback sourceCallback) throws Exception {
@@ -298,6 +299,7 @@ public class HDFSConnector {
                         getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
                         blockSize, null);
                 IOUtils.copyLarge(payload, fsDataOutputStream);
+                fsDataOutputStream.hsync();
                 IOUtils.closeQuietly(fsDataOutputStream);
 
                 if ((isNotBlank(ownerUserName)) || (isNotBlank(ownerGroupName))) {
@@ -387,6 +389,175 @@ public class HDFSConnector {
         runHdfsPathAction(path, new VoidHdfsPathAction() {
             public void run(final Path hdfsPath) throws Exception {
                 fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
+            }
+        });
+    }
+
+    /**
+     * Renames path target to path destination.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:rename}
+     *
+     * @param source the source path to be renamed.
+     * @param target the target new path after rename.
+     * @return Boolean  true if rename is successful.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public Boolean rename(final String source, final String target) throws Exception {
+        return runHdfsPathAction(source, new HdfsPathAction<Boolean>() {
+            public Boolean run(final Path hdfsPath) throws Exception {
+                return fileSystem.rename(hdfsPath, new Path(target));
+            }
+        });
+    }
+
+    /**
+     * List the statuses of the files/directories in the given path if the path
+     * is a directory
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:list-status}
+     *
+     * @param path   the given path
+     * @param filter the user supplied path filter
+     * @return FileStatus   the statuses of the files/directories in the given path
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public FileStatus[] listStatus(final String path, @Optional final String filter) throws Exception {
+        return runHdfsPathAction(path, new HdfsPathAction<FileStatus[]>() {
+            public FileStatus[] run(final Path hdfsPath) throws Exception {
+                if (StringUtils.isNotEmpty(filter)) {
+                    final Pattern pattern = Pattern.compile(filter);
+                    PathFilter pathFilter = new PathFilter() {
+                        @Override
+                        public boolean accept(Path path) {
+                            try {
+                                if (fileSystem.isDirectory(path))
+                                    return true;
+                                else {
+                                    return pattern.matcher(path.toString()).matches();
+                                }
+                            } catch (IOException e) {
+                                throw new MuleRuntimeException(e);
+                            }
+                        }
+                    };
+                    return fileSystem.listStatus(hdfsPath, pathFilter);
+                }
+
+                return fileSystem.listStatus(hdfsPath);
+            }
+        });
+    }
+
+    /**
+     * Return all the files that match file pattern and are not checksum files. Results
+     * are sorted by their names.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:glob-status}
+     *
+     * @param pathPattern a regular expression specifying the path pattern.
+     * @param filter      the user supplied path filter
+     * @return FileStatus an array of paths that match the path pattern.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public FileStatus[] globStatus(final String pathPattern, @Optional final PathFilter filter) throws Exception {
+        return runHdfsPathAction(pathPattern, new HdfsPathAction<FileStatus[]>() {
+            public FileStatus[] run(final Path hdfsPath) throws Exception {
+                if (filter == null) {
+                    return fileSystem.globStatus(hdfsPath, new PathFilter() {
+                        @Override
+                        public boolean accept(Path path) {
+                            return true;
+                        }
+                    });
+                }
+                return fileSystem.globStatus(hdfsPath, filter);
+            }
+        });
+    }
+
+    /**
+     * Copy the source file on the local disk to the FileSystem at the given target
+     * path, set deleteSource if the source should be removed.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-from-local-file}
+     *
+     * @param deleteSource whether to delete the source.
+     * @param overwrite    whether to overwrite a existing file.
+     * @param source       the source path on the local disk.
+     * @param target       the target path on the File System.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void copyFromLocalFile(@Default("false") final boolean deleteSource, @Default("true") final boolean overwrite, final String source, final String target) throws Exception {
+        runHdfsPathAction(source, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                fileSystem.copyFromLocalFile(deleteSource, overwrite, hdfsPath, new Path(target));
+            }
+        });
+    }
+
+    /**
+     * Copy the source file on the FileSystem to local disk at the given target
+     * path, set deleteSource if the source should be removed. useRawLocalFileSystem
+     * indicates whether to use RawLocalFileSystem as it is a non CRC File System.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-to-local-file}
+     *
+     * @param deleteSource          whether to delete the source.
+     * @param useRawLocalFileSystem whether to use RawLocalFileSystem as local file system or not.
+     * @param source                the source path on the File System.
+     * @param target                the target path on the local disk.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void copyToLocalFile(@Default("false") final boolean deleteSource, @Default("false") final boolean useRawLocalFileSystem, final String source, final String target) throws Exception {
+        runHdfsPathAction(source, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                fileSystem.copyToLocalFile(deleteSource, hdfsPath, new Path(target), useRawLocalFileSystem);
+            }
+        });
+    }
+
+    /**
+     * Set permission of a path (i.e., a file or a directory).
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:set-permission}
+     *
+     * @param path       the path of the file or directory to set permission.
+     * @param permission the file system permission to be set.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void setPermission(final String path, final String permission) throws Exception {
+        runHdfsPathAction(path, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
+            }
+        });
+    }
+
+    /**
+     * Set owner of a path (i.e., a file or a directory). The parameters username and groupname
+     * cannot both be null.
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:set-owner}
+     *
+     * @param path      the path of the file or directory to set owner.
+     * @param ownername If it is null, the original username remains unchanged.
+     * @param groupname If it is null, the original groupname remains unchanged.
+     * @throws Exception if any issue occurs during the execution.
+     */
+    @Processor
+    public void setOwner(final String path, @Optional final String ownername, @Optional final String groupname) throws Exception {
+        runHdfsPathAction(path, new VoidHdfsPathAction() {
+            public void run(final Path hdfsPath) throws Exception {
+                if ((isNotBlank(ownername)) || (isNotBlank(groupname))) {
+                    fileSystem.setOwner(hdfsPath, ownername, groupname);
+                }
             }
         });
     }

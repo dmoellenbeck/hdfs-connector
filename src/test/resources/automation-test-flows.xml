@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:context="http://www.springframework.org/schema/context"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.mulesoft.org/schema/mule/core"
@@ -10,7 +11,8 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
 
-    <hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}" doc:name="HDFS">
+    <hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}" connectionKey="${hdfs.connectionKey}"
+                 doc:name="HDFS">
         <hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </hdfs:config>
 
@@ -49,5 +51,35 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <flow name="delete-directory" doc:name="delete-directory">
         <hdfs:delete-directory config-ref="HDFS" path="#[flowVars.path]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="rename" doc:name="rename">
+        <hdfs:rename config-ref="HDFS" source="#[flowVars.fromPath]" target="#[flowVars.toPath]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="list-status" doc:name="list-status">
+        <hdfs:list-status config-ref="HDFS" path="#[flowVars.path]" filter="#[flowVars.filter]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="copy-from-local-file" doc:name="copy-from-local-file">
+        <hdfs:copy-from-local-file config-ref="HDFS" deleteSource="#[flowVars.deleteSrc]"
+                                   overwrite="#[flowVars.overwrite]" source="#[flowVars.source]"
+                                   target="#[flowVars.target]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="copy-to-local-file" doc:name="copy-to-local-file">
+        <hdfs:copy-to-local-file config-ref="HDFS" deleteSource="#[flowVars.deleteSrc]"
+                                 useRawLocalFileSystem="#[flowVars.useRawLocalFileSystem]" source="#[flowVars.source]"
+                                 target="#[flowVars.target]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="set-permission" doc:name="set-permission">
+        <hdfs:set-permission config-ref="HDFS" path="#[flowVars.path]" permission="#[flowVars.permission]"
+                             doc:name="HDFS"/>
+    </flow>
+
+    <flow name="glob-status" doc:name="glob-status">
+        <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
+                          doc:name="HDFS"/>
     </flow>
 </mule>

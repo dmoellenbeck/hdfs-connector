@@ -8,6 +8,7 @@
 
 package org.mule.modules.hdfs.integration;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -21,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class HdfsConnectorTestIT {
+import static org.junit.Assert.fail;
 
-    static private final Log logger = LogFactory.getLog(HdfsConnectorTestIT.class);
+public class HDFSConnectorTestIT {
+
+    static private final Log logger = LogFactory.getLog(HDFSConnectorTestIT.class);
 
     private String filesystemname;
     private String username;
@@ -36,13 +39,12 @@ public class HdfsConnectorTestIT {
     private String messagepart2;
     private HDFSConnector conn;
 
-    @org.junit.Ignore("Have to fix intercepting message processors for read() first")
     @Before
     public void setUp() throws IOException, ConnectionException {
         // Load the .properties
         Properties prop = new Properties();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = loader.getResourceAsStream("integration.credentials.properties");
+        InputStream stream = loader.getResourceAsStream("integration-credentials.properties");
         prop.load(stream);
 
         // Save the props in the class attributes
@@ -56,6 +58,9 @@ public class HdfsConnectorTestIT {
         messagepart1 = prop.getProperty("hadoop.it.messagepart1");
         messagepart2 = prop.getProperty("hadoop.it.messagepart2");
 
+        if (StringUtils.isEmpty(filesystemname) && StringUtils.isEmpty(usergroup))
+            fail();
+
         conn = new HDFSConnector();
         conn.setDefaultFileSystemName(filesystemname);
         conn.connect(username);
@@ -65,12 +70,14 @@ public class HdfsConnectorTestIT {
             logger.debug(String.format("BEFORE - Delete if exists file /%s/%s", dir, filename));
             conn.deleteFile(String.format("/%s/%s", dir, filename));
         } catch (Throwable e) {
+            fail();
         }
 
         try {
             logger.debug(String.format("BEFORE - Delete if exists directory /%s", dir));
             conn.deleteDirectory(String.format("/%s", dir));
         } catch (Throwable e) {
+            fail();
         }
     }
 
@@ -83,11 +90,6 @@ public class HdfsConnectorTestIT {
         createFile();
         assertFileExists();
         Assert.assertEquals(retrieveFromFile(), messagepart1);
-        /**
-         * IMPORTANT:
-         * to be able append info in HDFS, you must set the property dfs.support.append in conf/hdfs-site.xml to true.
-         * Otherwise the service will throw an Exception
-         */
         appendToFile();
         Assert.assertEquals(retrieveFromFile(), messagepart1 + messagepart2);
         deleteFile();
@@ -107,7 +109,7 @@ public class HdfsConnectorTestIT {
         StringBuffer StringBuffer1 = new StringBuffer(messagepart1);
         InputStream inputStream = new ByteArrayInputStream(StringBuffer1.toString().getBytes(encoding));
 
-        conn.write(String.format("/%s/%s", dir, filename), permission, true, 4096, 1, 4096, username, usergroup, inputStream);
+        conn.write(String.format("/%s/%s", dir, filename), permission, true, 4096, 1, 1048576, username, usergroup, inputStream);
     }
 
     private void appendToFile() throws Exception {

@@ -78,3 +78,38 @@
 <!-- Make any missing directories for the specified path, using the provided file system permission -->
 <hdfs:make-directories path="/tmp/my-dir" permission="511" />
 <!-- END_INCLUDE(hdfs:make-directories-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:rename) -->
+<!-- Rename any source directory or file to the provided target path -->
+<hdfs:rename source="/tmp/my-dir" target="/tmp/new-dir" />
+<!-- END_INCLUDE(hdfs:rename) -->
+
+<!-- BEGIN_INCLUDE(hdfs:list-status) -->
+<!-- List the statuses of the given path -->
+<hdfs:list-status path="/tmp/my-dir" filter="^.*/2014/02/$" />
+<!-- END_INCLUDE(hdfs:list-status) -->
+
+<!-- BEGIN_INCLUDE(hdfs:glob-status) -->
+<!-- Return all the files that match file pattern, sorted by their names -->
+<hdfs:glob-status pathPattern="/tmp/*/*"/>
+<!-- END_INCLUDE(hdfs:glob-status) -->
+
+<!-- BEGIN_INCLUDE(hdfs:copy-from-local-file) -->
+<!-- Copy from source local disk to the target FileSystem -->
+<hdfs:copy-from-local-file deleteSource="true" overwrite="false" source="/tmp/mulesoft/" target="/user/mulesoft/" />
+<!-- END_INCLUDE(hdfs:copy-from-local-file) -->
+
+<!-- BEGIN_INCLUDE(hdfs:copy-to-local-file) -->
+<!-- Copy to source local disk from the target FileSystem -->
+<hdfs:copy-to-local-file deleteSource="false" useRawLocalFileSystem="false" source="/tmp/mulesoft/" target="/user/mulesoft/" />
+<!-- END_INCLUDE(hdfs:copy-to-local-file) -->
+
+<!-- BEGIN_INCLUDE(hdfs:set-owner) -->
+<!-- Set owner of a path to change. -->
+<hdfs:set-owner path="/tmp/my-dir" ownername="mulesoft" groupname="supergroup" />
+<!-- END_INCLUDE(hdfs:set-owner) -->
+
+<!-- BEGIN_INCLUDE(hdfs:set-permission) -->
+<!-- Set permission of a path to change. -->
+<hdfs:set-permission path="/tmp/my-dir" permission="511" />
+<!-- END_INCLUDE(hdfs:set-permission) -->

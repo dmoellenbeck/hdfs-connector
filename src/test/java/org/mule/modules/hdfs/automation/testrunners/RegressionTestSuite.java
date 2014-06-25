@@ -19,10 +19,16 @@ import org.mule.modules.hdfs.automation.testcases.*;
 @IncludeCategory(RegressionTests.class)
 @SuiteClasses({
         AppendTestCases.class,
+        CopyFromLocalFileTestCases.class,
+        CopyToLocalFileTestCases.class,
         DeleteFileTestCases.class,
         GetMetadataTestCases.class,
+        ListStatusTestCases.class,
+        GlobStatusTestCases.class,
         MakeDirectoriesTestCases.class,
         ReadTestCases.class,
+        RenameTestCases.class,
+        SetPermissionTestCases.class,
         WriteTestCases.class,
         DeleteDirectoryTestCases.class
 })
