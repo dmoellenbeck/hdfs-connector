@@ -24,9 +24,9 @@ import java.util.Properties;
 
 import static org.junit.Assert.fail;
 
-public class HDFSConnectorTestIT {
+public class HDFSConnectorTestIT1 {
 
-    static private final Log logger = LogFactory.getLog(HDFSConnectorTestIT.class);
+    static private final Log logger = LogFactory.getLog(HDFSConnectorTestIT1.class);
 
     private String filesystemname;
     private String username;
