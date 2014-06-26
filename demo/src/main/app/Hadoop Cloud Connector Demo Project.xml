@@ -9,9 +9,9 @@
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
-    <hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS"/>
+    <hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://192.168.0.25:9000"
+                 doc:name="HDFS"/>
     <spring:beans>
         <spring:bean id="regex" name="regex" class="org.mulesoft.demo.RegexIncludePathFilter">
             <spring:constructor-arg name="regex" value="#[message.inboundProperties['regex']]"/>
@@ -103,6 +103,7 @@ hdfs.file.status - The status of the file"/>
                 message="Rename path : #[message.inboundProperties['source']] to #[message.inboundProperties['target']]"/>
         <hdfs:rename config-ref="hdfs-conf" source="#[message.inboundProperties['source']]"
                      target="#[message.inboundProperties['target']]" doc:name="Rename Path"/>
+        <object-to-string-transformer doc:name="Convert payload to String"/>
     </flow>
     <flow name="Set_Permission_Flow" doc:name="Set_Permission_Flow">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8090" path="setpermission"
@@ -126,6 +127,7 @@ hdfs.file.status - The status of the file"/>
         <logger message="List Status path : #[message.inboundProperties['path']]" level="INFO"
                 doc:name="List Status Log"/>
         <hdfs:list-status config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="List Status"/>
+        <mulexml:object-to-xml-transformer doc:name="Convert payload to XML"/>
     </flow>
     <flow name="Glob_Status_Flow" doc:name="Glob_Status_Flow">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8090" path="globstatus"
