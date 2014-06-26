@@ -15,15 +15,15 @@ In order to build and run this project you'll need
 ●     A working [HDFS Server](http://hadoop.apache.org/). I used a configuration of Single-Node Cluster in local mode. I based my configuration from [this](http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/) tutorial of Michael G. Noll.
 
 
-●     To have downloaded and installed [Mule Studio Community edition](http://www.mulesoft.org/download-mule-esb-community-edition) on your computer
+●     Downloaded and installed [Anypoint Studio Community edition](http://www.mulesoft.org/download-mule-esb-community-edition) on your computer
 
-**Getting Mule Studio Ready**
+**Getting Anypoint Studio Ready**
 
-If you haven't installed Mule Studio on your computer yet, it's time to download Mule Studio from this location: [http://www.mulesoft.org/download-mule-esb-community-edition](http://www.mulesoft.org/download-mule-esb-community-edition). You also have the option of downloading a 30 day trial of Mule Enterprise Edition from this location [http://www.mulesoft.com/mule-esb-enterprise](http://www.mulesoft.com/mule-esb-enterprise) if you want to evaluate and purchase the premium edition. This demo can be built using either community or enterprise edition. There is no specific installation that you need to run. Once you unzip the zip file to your desired location, you are ready to go. To install the Amazon SQS connector, you can download and install it from MuleStudio Cloud Connectors Update Site. To do that:
+If you haven't installed Anypoint Studio on your computer yet, it's time to download Anypoint Studio from this location: [http://www.mulesoft.org/download-mule-esb-community-edition](http://www.mulesoft.org/download-mule-esb-community-edition). You also have the option of downloading a 30 day trial of Mule Enterprise Edition from this location [http://www.mulesoft.com/mule-esb-enterprise](http://www.mulesoft.com/mule-esb-enterprise) if you want to evaluate and purchase the premium edition. This demo can be built using either community or enterprise edition. There is no specific installation that you need to run. Once you unzip the zip file to your desired location, you are ready to go. To install the HDFS connector, you can download and install it from Anypoint Connectors Update Site. To do that:
 
-1. Open Mule Studio and from "Help" menu select "Install New Software...". Installation dialog box opens - Figure 4.
+1. Open Anypoint Studio and from "Help" menu select "Install New Software...". Installation dialog box opens - Figure 4.
 
-2. From "Work with" drop down, select "MuleStudio Cloud Connectors Update Site". The list of available connectors will be shown to you.
+2. From "Work with" drop down, select "Anypoint Connectors Update Site". The list of available connectors will be shown to you.
 
 3. Find and select the HDFS connector in the list of available connectors, the tree structure that is shown. A faster way to find a specific connector is to filter the list by typing the name of the connector in the input box above the list. You can choose more than one connector to be installed at once.
 
@@ -35,9 +35,9 @@ If you haven't installed Mule Studio on your computer yet, it's time to download
 
 **Setting up the project**
 
-Now that you've got your Mule Studio up and running, it's time to work on the Mule App. Create a new Mule Project by clicking on "File \> New \> Mule Project". In the new project dialog box, the only thing you are required to enter is the name of the project. You can click on "Next" to go through the rest of pages.
+Now that you've got your Anypoint Studio up and running, it's time to work on the Mule App. Create a new Mule Project by clicking on "File \> New \> Mule Project". In the new project dialog box, the only thing you are required to enter is the name of the project. You can click on "Next" to go through the rest of pages.
 
-The first thing to do in your new app is to configure the connection to HDFS. In the message flow editor, click on "Global Elements" tab on the bottom of the page. Then click on "Create" button on the top right of the tab. In the "Choose Global Element" type dialog box that opens select "HDFS" under "Cloud Connectors" and click okay.
+The first thing to do in your new app is to configure the connection to HDFS. In the message flow editor, click on "Global Elements" tab on the bottom of the page. Then click on "Create" button on the top right of the tab. In the "Choose Global Element" type dialog box that opens select "HDFS" under "Connector Configuration" and click okay.
 
 ![](images/hdfsCreateConfigRef.png)
 
@@ -47,10 +47,7 @@ In the HDFS Configuration box that follows, set the Default File System name to 
 
 The XML for the global element should look like this:  
 
-     <hdfs:config name="HDFS" connectionKey="user" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS">
-    	<hdfs:configuration-resources ref="#[payload]"/>
-    	<hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
-    </hdfs:config>
+     <hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS"/>
 
 **Building the flows**
 
@@ -92,11 +89,8 @@ The final flow XML should look like this.
     <mule xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
     http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
     http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-    http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/3.4/mule-hdfs.xsd">
-    	<hdfs:config name="HDFS" connectionKey="user" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS">
-    		<hdfs:configuration-resources ref="#[payload]"/>
-    		<hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
-    	</hdfs:config>
+    http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+    	<hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS"/>
     	<flow name="hadoop-demoFlow1" doc:name="hadoop-demoFlow1">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="dircreate" doc:name="HTTP"/>
     		<hdfs:make-directories config-ref="HDFS" path="#[message.inboundProperties['path']]" doc:name="Make directories"/>
@@ -116,7 +110,7 @@ The final flow XML should look like this.
 
 **Testing the app**
 
-Now it's time to test the app. Run the app in Mule Studio and open a browser window. Visit [http://localhost:8081/dircreate?path=muledir](http://localhost:8081/dircreate?path=muledir). This will create a directory on the HDFS server. 
+Now it's time to test the app. Run the app in Anypoint Studio and open a browser window. Visit [http://localhost:8081/dircreate?path=muledir](http://localhost:8081/dircreate?path=muledir). This will create a directory on the HDFS server. 
 Now visit [http://localhost:8081/metadata?path=muledir](http://localhost:8081/metadata?path=muledir). This will retrieve metadata about the recently created directory.
 Now visit [http://localhost:8081/dirdelete?path=muledir](http://localhost:8081/dirdelete?path=muledir). This will delete the previously created directory.
 

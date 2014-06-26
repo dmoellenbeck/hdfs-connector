@@ -1,21 +1,39 @@
-HDFS Anypoint Connector Release Notes
+HDFS Connector Release Notes
 =====================================
 
-Date: 15-Jun-2014
+Date: 25-Jun-2014
 
-Version: 3.8.0
-
-Supported API versions: [v2.4.0](http://hadoop.apache.org/docs/r2.4.0/api/)
+Version: 4.0.0
 
 Supported Mule Runtime Versions: 3.5.0
 
-Features and Functionality
---------------------------
+Supported API versions
+----------------------
+[Hadoop Client ver 2.4.0](http://hadoop.apache.org/docs/r2.4.0/api/)
 
-* Create/delete directories
-* Read/write from path
-* Get path metadata
-* Append to path
+Supported Operations:
+
+* Append to File
+* Copy from Local File
+* Copy to Local File
+* Delete Directories
+* Delete File
+* Get Path Meta Data
+* Glob Status
+* List Status
+* Make Directories
+* Rename
+* Set Owner
+* Set Permission
+* Write to Path
+* Read from Path
+
+New Features and Functionality
+------------------------------
+
+Read from path operation is now an inbound endpoint that can stream data. The connector now supports 2.4.x Hadoop hosts 
+and new operations like Copy from Local File, Copy to Local File, Glob Status, List Status, Rename, Set Owner 
+& Set Permission are supported. 
 
 Closed Issues in this release
 -----------------------------
@@ -27,5 +45,5 @@ Closed Issues in this release
 Known Issues in this release
 ----------------------------
 
-* Currently reading from paths does not support polling and move functionality.
+* Currently reading from paths does not support configuration for polling and move functionality.
 * Functional test cases for Append & Read have been annotated @Ignore.
