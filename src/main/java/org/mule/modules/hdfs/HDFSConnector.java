@@ -17,6 +17,7 @@ import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.MuleEvent;
 import org.mule.api.MuleRuntimeException;
 import org.mule.api.annotations.*;
+import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
@@ -62,14 +63,14 @@ public class HDFSConnector {
     public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HDFSConnector.class);
+
     /**
-     * The name of the file system to connect to. It is passed to HDFS client as the
-     * {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
-     * overriden by values in configurationResources and configurationEntries.
+     * A simple user identity of a client process.
      */
     @Configurable
-    @Optional
-    private String defaultFileSystemName;
+    @Placement(group = "Authentication")
+    private String username;
+
     /**
      * A {@link java.util.List} of configuration resource files to be loaded by the HDFS
      * client.
@@ -91,16 +92,23 @@ public class HDFSConnector {
     /**
      * Establish the connection to the Hadoop Distributed File System.
      *
-     * @param connectionKey a connection key.
+     * @param nameNodeUri The name of the file system to connect to. It is passed to HDFS client
+     *                    as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
+     *                    overriden by values in configurationResources and configurationEntries.
      * @throws ConnectionException Holding one of the possible values in
      *                             {@link ConnectionExceptionCode}.
      */
     @Connect
-    public void connect(@ConnectionKey final String connectionKey)
+    public void connect(@ConnectionKey @FriendlyName("NameNode URI") final String nameNodeUri)
             throws ConnectionException {
         final Configuration configuration = new Configuration();
-        if (isNotBlank(defaultFileSystemName)) {
-            configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, defaultFileSystemName);
+        if (isNotBlank(nameNodeUri)) {
+            configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, nameNodeUri);
+        }
+
+        if (isNotBlank(username)) {
+            System.setProperty("HADOOP_USER_NAME", username);
+            configuration.set("hadoop.job.ugi", username);
         }
 
         final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
@@ -586,20 +594,20 @@ public class HDFSConnector {
         return isBlank(permission) ? FsPermission.getDefault() : new FsPermission(permission);
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public FileSystem getFileSystem() {
         return fileSystem;
     }
 
     public void setFileSystem(final FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-    }
-
-    public String getDefaultFileSystemName() {
-        return defaultFileSystemName;
-    }
-
-    public void setDefaultFileSystemName(final String defaultFileSystemName) {
-        this.defaultFileSystemName = defaultFileSystemName;
     }
 
     public List<String> getConfigurationResources() {

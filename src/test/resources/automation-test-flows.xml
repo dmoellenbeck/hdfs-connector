@@ -11,8 +11,7 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
 
-    <hdfs:config name="HDFS" defaultFileSystemName="${hdfs.defaultFileSystemName}" connectionKey="${hdfs.connectionKey}"
-                 doc:name="HDFS">
+    <hdfs:config name="HDFS" nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}"  doc:name="HDFS">
         <hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </hdfs:config>
 

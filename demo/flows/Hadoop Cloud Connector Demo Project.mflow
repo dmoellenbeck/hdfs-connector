@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="Hadoop Cloud Connector Demo Project">
-    <global-element name="HDFS" type="http://www.mulesoft.org/schema/mule/hdfs/config" entity-id="HDFS#1">
-        <properties>
-            <property name="name" value="hdfs-conf"/>
-            <property name="connectionKey" value="myUser"/>
-            <property name="defaultFileSystemName" value="hdfs://192.168.0.25:9000"/>
-            <property name="auxiliary;index" value="1"/>
-        </properties>
-    </global-element>
     <global-element name="Bean" type="http://www.springframework.org/schema/beans/bean" entity-id="Bean#1">
         <properties>
             <property name="factory-bean"/>
@@ -22,23 +14,39 @@
             <property name="lazy-init"/>
             <property name="auxiliary;wrappedIn" value="beans@spring@http://www.springframework.org/schema/beans"/>
             <property name="id" value="regex"/>
-            <property name="primary"/>
             <property name="name" value="regex"/>
+            <property name="primary"/>
             <property name="autowire"/>
             <property name="destroy-method"/>
-            <property name="auxiliary;index" value="3"/>
             <property name="auxiliary;wrapIn" value="2"/>
+            <property name="auxiliary;index" value="3"/>
             <property name="depends-on"/>
             <property-collection name="@http://www.springframework.org/schema/beans/constructor-arg;0">
                 <property name="name" value="regex"/>
                 <property name="value" value="#[message.inboundProperties['regex']]"/>
                 <property name="isProcessed$$$$ " value="true"/>
-                <property name="auxiliary;wrapIn" value="4"/>
                 <property name="auxiliary;index" value="4"/>
+                <property name="auxiliary;wrapIn" value="4"/>
             </property-collection>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="Delete_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="51c22b13-6466-471d-9bf7-220e70a94381">
+    <global-element name="HDFS" type="http://www.mulesoft.org/schema/mule/hdfs/config" entity-id="!!!f91a3139-d4d7-4cd8-9cdc-6214acef1d8e">
+        <properties>
+            <property name="nameNodeUri" value="${nameNodeUri}"/>
+            <property name="username" value="${sysUser}"/>
+            <property name="name" value="hdfs-conf"/>
+            <property-collection name="">
+                <property name="blocking" value="true"/>
+                <property name="d" value=""/>
+                <property name="customReconnection" value="false"/>
+                <property name="standardReconnection" value="false"/>
+                <property name="reconnectForever" value="false"/>
+                <property name="noReconnection" value="true"/>
+            </property-collection>
+        </properties>
+        <description></description>
+    </global-element>
+    <flow SubFlow="false" name="Delete_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="dc41ae6d-3d36-4fd7-9a57-cbe1107db705">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -64,17 +72,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="filedelete"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="6"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -90,16 +98,16 @@
             <pattern name="Delete file" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#2">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/delete-file"/>
+                    <property name="nameNodeUri"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/delete-file"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="8"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Create_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="323a6789-2406-4cbd-8811-b63b2f7506e8">
+    <flow SubFlow="false" name="Create_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="09acb67e-4b53-4451-b57a-affea2eee9c2">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -125,17 +133,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="filecreate"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="10"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -158,24 +166,24 @@
             <pattern name="Write to Path" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#3">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="bufferSize"/>
                     <property name="payload-ref"/>
                     <property name="replication"/>
                     <property name="ownerUserName"/>
                     <property name="overwrite"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/write"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
-                    <property name="permission" value="755"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/write"/>
                     <property name="blockSize"/>
+                    <property name="permission" value="755"/>
                     <property name="ownerGroupName"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="13"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Append_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="f9493431-bf82-4e77-b4de-2197c205103f">
+    <flow SubFlow="false" name="Append_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="552e84be-bfad-4db5-a093-c396d4faa2b4">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -201,17 +209,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="fileappend"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="15"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -234,18 +242,18 @@
             <pattern name="Append to path" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#4">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="bufferSize"/>
                     <property name="payload-ref"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/append"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/append"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="18"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Retrieve_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="d08d2636-b2bd-4957-a0ea-097151804a95">
+    <flow SubFlow="false" name="Retrieve_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="86a75124-f512-47d8-91ed-8218ae003ca4">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -260,11 +268,11 @@
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="bufferSize"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/read"/>
                     <property name="path" value="#[payload]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/read"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="exchange-pattern" value="one-way"/>
                     <property name="auxiliary;index" value="20"/>
+                    <property name="exchange-pattern" value="one-way"/>
                 </properties>
             </endpoint>
             <pattern name="Convert payload to String" type="http://www.mulesoft.org/schema/mule/core/object-to-string-transformer" entity-id="Object to String#1">
@@ -273,8 +281,8 @@
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
                     <property name="encoding"/>
-                    <property name="mimeType"/>
                     <property name="auxiliary;index" value="21"/>
+                    <property name="mimeType"/>
                 </properties>
             </pattern>
             <pattern name="Read from Path Log" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#4">
@@ -288,7 +296,7 @@
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Delete_Directory_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="138db397-e51c-48e5-8444-6bd2a694197e">
+    <flow SubFlow="false" name="Delete_Directory_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="ece6501c-35fe-4b22-9de8-a7cdb104aa3d">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -314,17 +322,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="dirdelete"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="24"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -340,16 +348,16 @@
             <pattern name="Delete Directory" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#5">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/delete-directory"/>
+                    <property name="nameNodeUri"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/delete-directory"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="26"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Create_Directory_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="5efa9fe9-0b81-45d7-a37b-ced3d68a3e34">
+    <flow SubFlow="false" name="Create_Directory_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="fe3d4b9d-03af-46ca-9a6a-46a4b47f85ee">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -375,17 +383,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="dircreate"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="28"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -401,17 +409,17 @@
             <pattern name="Create Directory" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#6">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/make-directories"/>
+                    <property name="nameNodeUri"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/make-directories"/>
                     <property name="permission" value="755"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="30"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Meta_Data_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="02f051fe-6de1-4111-84de-c79960efb946">
+    <flow SubFlow="false" name="Meta_Data_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="5d7fb2d9-665d-4b28-9d47-5b894c202c01">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -437,17 +445,17 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="metadata"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType" value="text/plain"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="32"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType" value="text/plain"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -463,20 +471,13 @@
             <pattern name="Get Path Meta Data" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#7">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/get-metadata"/>
+                    <property name="nameNodeUri"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/get-metadata"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="34"/>
                 </properties>
-                <description>The &quot;Get Path Meta Data&quot; processor will obtain META-DATA from a path that can be either a file or a directory.
-The way that this info is gathered is that once the process is executed, the result will be stored in flowVars.
-
-These vars are:
-hdfs.path.exists - Indicates if the path exists (true or false)
-hdfs.content.summary - A resume of the path info
-hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)
-hdfs.file.status - The status of the file</description>
+                <description>The &quot;Get Path Meta Data&quot; processor will obtain META-DATA from a path that can be either a file or a directory. The way that this info is gathered is that once the process is executed, the result will be stored in flowVars.  These vars are: hdfs.path.exists - Indicates if the path exists (true or false) hdfs.content.summary - A resume of the path info hdfs.file.checksum - MD5 digest of the file (if it is a file and exists) hdfs.file.status - The status of the file</description>
             </pattern>
             <pattern name="Get the Meta-Data from the flowVars" type="http://www.mulesoft.org/schema/mule/core/set-payload" entity-id="Set Payload#3">
                 <graphicalData x="0" y="0" width="0" height="0"/>
@@ -491,13 +492,13 @@ hdfs.file.status - The status of the file</description>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
                     <property name="encoding"/>
-                    <property name="mimeType" value="text/plain"/>
                     <property name="auxiliary;index" value="36"/>
+                    <property name="mimeType" value="text/plain"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Copy_From_Local_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="969ff8cd-0d5e-4a39-ae3c-154d922b20ae">
+    <flow SubFlow="false" name="Copy_From_Local_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="4acb5c6f-77bb-40ed-940a-9b9db0ed604a">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -523,17 +524,17 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="copyfromlocalfile"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="38"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -549,19 +550,19 @@ hdfs.file.status - The status of the file</description>
             <pattern name="Copy from Local Path" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#8">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="deleteSource"/>
                     <property name="source" value="#[message.inboundProperties['source']]"/>
                     <property name="overwrite"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/copy-from-local-file"/>
                     <property name="target" value="#[message.inboundProperties['target']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/copy-from-local-file"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="40"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Copy_To_Local_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="192459c9-ab45-4edf-9e82-dbad7d725c25">
+    <flow SubFlow="false" name="Copy_To_Local_File_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="46683d54-b0cf-47cf-9f8d-30af052736ae">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -587,17 +588,17 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="copytolocalfile"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="42"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -613,19 +614,19 @@ hdfs.file.status - The status of the file</description>
             <pattern name="Copy to Local Path" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#9">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="deleteSource"/>
                     <property name="source" value="#[message.inboundProperties['source']]"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/copy-to-local-file"/>
                     <property name="target" value="#[message.inboundProperties['target']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/copy-to-local-file"/>
                     <property name="useRawLocalFileSystem"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="44"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Rename_flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="0c0450c2-21e5-4f59-a968-4c8cebdcbf39">
+    <flow SubFlow="false" name="Rename_flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="b15d48c8-b6c7-4694-befe-41f9e27a5714">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -637,7 +638,7 @@ hdfs.file.status - The status of the file</description>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#10">
             <graphicalData x="0" y="0" width="0" height="0"/>
             <endpoint direction="Inbound" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#9">
-                <graphicalData x="21" y="2164" width="68" height="169"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="port" value="8090"/>
                     <property name="host" value="localhost"/>
@@ -651,22 +652,22 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="rename"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="46"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
             <pattern name="Rename path log" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#10">
-                <graphicalData x="149" y="2164" width="105" height="67"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="message" value="Rename path : #[message.inboundProperties['source']] to #[message.inboundProperties['target']]"/>
                     <property name="category"/>
@@ -675,31 +676,36 @@ hdfs.file.status - The status of the file</description>
                 </properties>
             </pattern>
             <pattern name="Rename Path" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#10">
-                <graphicalData x="314" y="2164" width="83" height="67"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="source" value="#[message.inboundProperties['source']]"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/rename"/>
                     <property name="target" value="#[message.inboundProperties['target']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/rename"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
                     <property name="auxiliary;index" value="48"/>
                 </properties>
             </pattern>
-            <pattern name="Convert payload to String" type="http://www.mulesoft.org/schema/mule/core/object-to-string-transformer" entity-id="e67da664-f312-4f2b-8282-27701e7ebdc9">
+            <pattern name="Convert payload to String" type="http://www.mulesoft.org/schema/mule/core/object-to-string-transformer" entity-id="Object to String#3">
                 <graphicalData x="0" y="0" width="0" height="0"/>
-                <properties/>
-                <description></description>
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="auxiliary;index" value="49"/>
+                    <property name="mimeType"/>
+                </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Set_Permission_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="1f463058-1dae-4659-97ff-bb9b4c8fee9d">
+    <flow SubFlow="false" name="Set_Permission_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="d13079a8-e9cb-482f-8fef-a6b9e9018660">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property name="auxiliary;index" value="49"/>
+            <property name="auxiliary;index" value="50"/>
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#11">
             <graphicalData x="0" y="0" width="0" height="0"/>
@@ -718,17 +724,17 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="setpermission"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
+                    <property name="auxiliary;index" value="51"/>
                     <property name="responseTimeout"/>
-                    <property name="auxiliary;index" value="50"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -738,30 +744,30 @@ hdfs.file.status - The status of the file</description>
                     <property name="message" value="Set Permission on path : #[message.inboundProperties['path']]"/>
                     <property name="category"/>
                     <property name="level" value="INFO"/>
-                    <property name="auxiliary;index" value="51"/>
+                    <property name="auxiliary;index" value="52"/>
                 </properties>
             </pattern>
             <pattern name="Set Permission" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#11">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/set-permission"/>
+                    <property name="nameNodeUri"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/set-permission"/>
                     <property name="permission" value="751"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
-                    <property name="auxiliary;index" value="52"/>
+                    <property name="auxiliary;index" value="53"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Set_Owner_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="e192fcc6-e34d-42af-83cd-24a985e5cbeb">
+    <flow SubFlow="false" name="Set_Owner_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="70023e29-e20c-42db-9fb7-d177678e2892">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property name="auxiliary;index" value="53"/>
+            <property name="auxiliary;index" value="54"/>
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#12">
             <graphicalData x="0" y="0" width="0" height="0"/>
@@ -780,17 +786,17 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="setowner"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
+                    <property name="auxiliary;index" value="55"/>
                     <property name="responseTimeout"/>
-                    <property name="auxiliary;index" value="54"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -800,36 +806,36 @@ hdfs.file.status - The status of the file</description>
                     <property name="message" value="Set owner on path : #[message.inboundProperties['path']]"/>
                     <property name="category"/>
                     <property name="level" value="INFO"/>
-                    <property name="auxiliary;index" value="55"/>
+                    <property name="auxiliary;index" value="56"/>
                 </properties>
             </pattern>
             <pattern name="Set Owner" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#12">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="ownername"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/set-owner"/>
                     <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/set-owner"/>
                     <property name="groupname" value="#[message.inboundProperties['group']]"/>
                     <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
-                    <property name="auxiliary;index" value="56"/>
+                    <property name="auxiliary;index" value="57"/>
                 </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="List_Status_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="753ed821-4c71-4395-957a-448e90e6066c">
+    <flow SubFlow="false" name="List_Status_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="020340a3-458f-4303-8c0c-1eb171fde1cf">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property name="auxiliary;index" value="57"/>
+            <property name="auxiliary;index" value="58"/>
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#13">
             <graphicalData x="0" y="0" width="0" height="0"/>
             <endpoint direction="Inbound" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#12">
-                <graphicalData x="21" y="2895" width="68" height="169"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="port" value="8090"/>
                     <property name="host" value="localhost"/>
@@ -843,55 +849,62 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="liststatus"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
+                    <property name="auxiliary;index" value="59"/>
                     <property name="responseTimeout"/>
-                    <property name="auxiliary;index" value="58"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
             <pattern name="List Status Log" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#13">
-                <graphicalData x="149" y="2895" width="92" height="67"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="message" value="List Status path : #[message.inboundProperties['path']]"/>
                     <property name="category"/>
                     <property name="level" value="INFO"/>
-                    <property name="auxiliary;index" value="59"/>
-                </properties>
-            </pattern>
-            <pattern name="List Status" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#13">
-                <graphicalData x="301" y="2895" width="69" height="67"/>
-                <properties>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/list-status"/>
-                    <property name="path" value="#[message.inboundProperties['path']]"/>
-                    <property name="config-ref" value="hdfs-conf"/>
-                    <property name="connectionKey"/>
-                    <property name="filter"/>
                     <property name="auxiliary;index" value="60"/>
                 </properties>
             </pattern>
-            <pattern name="Convert payload to XML" type="http://www.mulesoft.org/schema/mule/xml/object-to-xml-transformer" entity-id="c2f1592d-5e2b-43b9-a4dc-9e7f51754113">
+            <pattern name="List Status" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#13">
                 <graphicalData x="0" y="0" width="0" height="0"/>
-                <properties/>
-                <description></description>
+                <properties>
+                    <property name="nameNodeUri"/>
+                    <property name="path" value="#[message.inboundProperties['path']]"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/list-status"/>
+                    <property name="config-ref" value="hdfs-conf"/>
+                    <property name="auxiliary;index" value="61"/>
+                    <property name="filter"/>
+                </properties>
+            </pattern>
+            <pattern name="Convert payload to XML" type="org.mule.tooling.ui.modules.core.pattern.objectToXmlTransformer" entity-id="Object to XML#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="driverClass"/>
+                    <property name="encoding"/>
+                    <property name="acceptMuleMessage"/>
+                    <property name="auxiliary;index" value="62"/>
+                    <property name="mimeType"/>
+                </properties>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="Glob_Status_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="ba07b401-ae83-4b0b-aa11-c4328313d0c8">
+    <flow SubFlow="false" name="Glob_Status_Flow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="f3b032b8-7022-4680-80db-ab5530dd25ce">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property name="auxiliary;index" value="61"/>
+            <property name="auxiliary;index" value="63"/>
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#14">
             <graphicalData x="0" y="0" width="0" height="0"/>
@@ -910,17 +923,17 @@ hdfs.file.status - The status of the file</description>
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path" value="globstatus"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
+                    <property name="auxiliary;index" value="64"/>
                     <property name="responseTimeout"/>
-                    <property name="auxiliary;index" value="62"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
             </endpoint>
@@ -930,30 +943,30 @@ hdfs.file.status - The status of the file</description>
                     <property name="message" value="Glob Status path : #[message.inboundProperties['path']]"/>
                     <property name="category"/>
                     <property name="level" value="INFO"/>
-                    <property name="auxiliary;index" value="63"/>
+                    <property name="auxiliary;index" value="65"/>
                 </properties>
             </pattern>
             <pattern name="Glob Status" type="http://www.mulesoft.org/schema/mule/hdfs/hdfs-connector" entity-id="HDFS#14">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
+                    <property name="nameNodeUri"/>
                     <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/hdfs/glob-status"/>
-                    <property name="config-ref" value="hdfs-conf"/>
                     <property name="pathPattern" value="#[message.inboundProperties['path']]"/>
-                    <property name="connectionKey"/>
+                    <property name="config-ref" value="hdfs-conf"/>
+                    <property name="auxiliary;index" value="66"/>
                     <property name="filter-ref" value="regex"/>
-                    <property name="auxiliary;index" value="64"/>
                 </properties>
             </pattern>
-            <pattern name="Convert payload to XML" type="org.mule.tooling.ui.modules.core.pattern.objectToXmlTransformer" entity-id="Object to XML#1">
+            <pattern name="Convert payload to XML" type="org.mule.tooling.ui.modules.core.pattern.objectToXmlTransformer" entity-id="Object to XML#2">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
-                    <property name="encoding"/>
                     <property name="driverClass"/>
+                    <property name="encoding"/>
                     <property name="acceptMuleMessage"/>
+                    <property name="auxiliary;index" value="67"/>
                     <property name="mimeType"/>
-                    <property name="auxiliary;index" value="65"/>
                 </properties>
             </pattern>
         </lane>
