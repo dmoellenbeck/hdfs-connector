@@ -10,13 +10,12 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
-    <hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://192.168.0.25:9000"
-                 doc:name="HDFS"/>
     <spring:beans>
         <spring:bean id="regex" name="regex" class="org.mulesoft.demo.RegexIncludePathFilter">
             <spring:constructor-arg name="regex" value="#[message.inboundProperties['regex']]"/>
         </spring:bean>
     </spring:beans>
+    <hdfs:config name="hdfs-conf" nameNodeUri="${nameNodeUri}" username="${sysUser}" doc:name="HDFS"/>
     <flow name="Delete_File_Flow" doc:name="Delete_File_Flow">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8090" path="filedelete"
                                doc:name="HTTP"/>

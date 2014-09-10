@@ -1,6 +1,6 @@
 <!-- BEGIN_INCLUDE(hdfs:config-1) -->
 <!-- Simple configuration -->
-<hdfs:config defaultFileSystemName="hdfs://localhost:8020/" />
+<hdfs:config nameNodeUri="hdfs://localhost:8020/" username="hadoopusr" />
 <!-- END_INCLUDE(hdfs:config-1) -->
 
 <!-- BEGIN_INCLUDE(hdfs:config-2) -->

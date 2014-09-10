@@ -58,12 +58,12 @@ public class HDFSConnectorTestIT {
         messagepart1 = prop.getProperty("hadoop.it.messagepart1");
         messagepart2 = prop.getProperty("hadoop.it.messagepart2");
 
-        if (StringUtils.isEmpty(filesystemname) && StringUtils.isEmpty(usergroup))
+        if (StringUtils.isEmpty(filesystemname) && StringUtils.isEmpty(username))
             fail();
 
         conn = new HDFSConnector();
-        conn.setDefaultFileSystemName(filesystemname);
-        conn.connect(username);
+        conn.setUsername(username);
+        conn.connect(filesystemname);
 
         // Clean up the directories before start the real test
         try {
