@@ -10,6 +10,7 @@ package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
@@ -20,6 +21,7 @@ import java.io.File;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@Ignore
 @Category({RegressionTests.class})
 public class CopyToLocalFileTestCases extends HDFSTestParent {
     String target;
@@ -39,7 +41,7 @@ public class CopyToLocalFileTestCases extends HDFSTestParent {
         try {
             runFlowAndGetPayload("copy-to-local-file");
 
-            assertTrue(FileUtils.sizeOfDirectory(new File(target)) != 0);
+            assertTrue(FileUtils.sizeOfDirectory(new File(target)) > 0);
 
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));

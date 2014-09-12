@@ -23,6 +23,7 @@ import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.callback.SourceCallback;
+import org.mule.modules.hdfs.exception.HDFSConnectorException;
 import org.mule.util.CollectionUtils;
 import org.mule.util.IOUtils;
 import org.slf4j.Logger;
@@ -56,14 +57,13 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
         description = "HDFS Connector", metaData = MetaDataSwitch.OFF, connectivityTesting = ConnectivityTesting.DISABLED)
 @ReconnectOn(exceptions = IOException.class)
 public class HDFSConnector {
+
     public static final String HDFS = "hdfs";
     public static final String HDFS_PATH_EXISTS = HDFS + ".path.exists";
     public static final String HDFS_FILE_STATUS = HDFS + ".file.status";
     public static final String HDFS_FILE_CHECKSUM = HDFS + ".file.checksum";
     public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(HDFSConnector.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(HDFSConnector.class);
     /**
      * A simple user identity of a client process.
      */
@@ -134,8 +134,11 @@ public class HDFSConnector {
     }
 
     @ConnectionIdentifier
+    /**
+     * Returns a prefix used in generating unique identifies for connector instances in the connection pool
+     */
     public String getFileSystemUri() {
-        return fileSystem == null ? null : fileSystem.getUri().toString();
+        return fileSystem == null ? "hdfs-" : fileSystem.getUri().toString();
     }
 
     /**
@@ -197,18 +200,22 @@ public class HDFSConnector {
      * @param sourceCallback the {@link SourceCallback} used to propagate the event
      *                       to the rest of the flow.
      * @return the result from executing the rest of the flow.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
-    @Source(friendlyName = "Read from path", primaryNodeOnly = true)
+    @Source(friendlyName = "Read from path", sourceStrategy = SourceStrategy.POLLING, pollingPeriod = 5000)
     public Object read(final String path,
                        @Default("4096") final int bufferSize,
-                       final SourceCallback sourceCallback) throws Exception {
-        return runHdfsPathAction(path, new HdfsPathAction<Object>() {
-            public Object run(final Path hdfsPath) throws Exception {
-                return sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
-                        getPathMetaData(hdfsPath));
-            }
-        });
+                       final SourceCallback sourceCallback) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(path, new HdfsPathAction<Object>() {
+                public Object run(final Path hdfsPath) throws Exception { //NOSONAR
+                    return sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
+                            getPathMetaData(hdfsPath));
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     private Map<String, Object> getPathMetaData(final Path hdfsPath) throws IOException {
@@ -255,19 +262,23 @@ public class HDFSConnector {
      * @param muleEvent the {@link MuleEvent} currently being processed.
      * @return the result of executing the next message processors if the path
      * exists, otherwise null.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Get path meta data")
     @Inject
-    public void getMetadata(final String path, final MuleEvent muleEvent) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                final Map<String, Object> pathMetaData = getPathMetaData(hdfsPath);
-                for (final Entry<String, Object> pathMetaDatum : pathMetaData.entrySet()) {
-                    muleEvent.setFlowVariable(pathMetaDatum.getKey(), pathMetaDatum.getValue());
+    public void getMetadata(final String path, final MuleEvent muleEvent) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    final Map<String, Object> pathMetaData = getPathMetaData(hdfsPath);
+                    for (final Entry<String, Object> pathMetaDatum : pathMetaData.entrySet()) {
+                        muleEvent.setFlowVariable(pathMetaDatum.getKey(), pathMetaDatum.getValue());
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -289,10 +300,10 @@ public class HDFSConnector {
      * @param ownerUserName  the username owner of the file.
      * @param ownerGroupName the group owner of the file.
      * @param payload        the payload to write to the file.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Write to path")
-    public void write(final String path,
+    public void write(final String path, //NOSONAR
                       @Default("700") final String permission,
                       @Default("true") final boolean overwrite,
                       @Default("4096") final int bufferSize,
@@ -300,21 +311,25 @@ public class HDFSConnector {
                       @Default("1048576") final long blockSize,
                       @Optional final String ownerUserName,
                       @Optional final String ownerGroupName,
-                      @Default("#[payload]") final InputStream payload) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath,
-                        getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
-                        blockSize, null);
-                IOUtils.copyLarge(payload, fsDataOutputStream);
-                fsDataOutputStream.hsync();
-                IOUtils.closeQuietly(fsDataOutputStream);
+                      @Default("#[payload]") final InputStream payload) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath,
+                            getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
+                            blockSize, null);
+                    IOUtils.copyLarge(payload, fsDataOutputStream);
+                    fsDataOutputStream.hsync();
+                    IOUtils.closeQuietly(fsDataOutputStream);
 
-                if ((isNotBlank(ownerUserName)) || (isNotBlank(ownerGroupName))) {
-                    fileSystem.setOwner(hdfsPath, ownerUserName, ownerGroupName);
+                    if ((isNotBlank(ownerUserName)) || (isNotBlank(ownerGroupName))) {
+                        fileSystem.setOwner(hdfsPath, ownerUserName, ownerGroupName);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -329,19 +344,23 @@ public class HDFSConnector {
      * @param path       the path of the file to write to.
      * @param bufferSize the buffer size to use when appending to the file.
      * @param payload    the payload to append to the file.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Append to file")
     public void append(final String path,
                        @Default("4096") final int bufferSize,
-                       @Default("#[payload]") final InputStream payload) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                final FSDataOutputStream fsDataOutputStream = fileSystem.append(hdfsPath, bufferSize);
-                IOUtils.copyLarge(payload, fsDataOutputStream);
-                IOUtils.closeQuietly(fsDataOutputStream);
-            }
-        });
+                       @Default("#[payload]") final InputStream payload) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    final FSDataOutputStream fsDataOutputStream = fileSystem.append(hdfsPath, bufferSize);
+                    IOUtils.copyLarge(payload, fsDataOutputStream);
+                    IOUtils.closeQuietly(fsDataOutputStream);
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -350,10 +369,10 @@ public class HDFSConnector {
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-file}
      *
      * @param path the path of the file to delete.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void deleteFile(final String path) throws Exception {
+    public void deleteFile(final String path) throws HDFSConnectorException {
         deletePath(path, false);
     }
 
@@ -363,19 +382,23 @@ public class HDFSConnector {
      * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-directory}
      *
      * @param path the path of the directory to delete.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void deleteDirectory(final String path) throws Exception {
+    public void deleteDirectory(final String path) throws HDFSConnectorException {
         deletePath(path, true);
     }
 
-    private void deletePath(final String path, final boolean recursive) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                fileSystem.delete(hdfsPath, recursive);
-            }
-        });
+    private void deletePath(final String path, final boolean recursive) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    fileSystem.delete(hdfsPath, recursive);
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -390,15 +413,19 @@ public class HDFSConnector {
      * @param path       the path to create directories for.
      * @param permission the file system permission to use when creating the
      *                   directories, either in octal or symbolic format (umask).
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void makeDirectories(final String path, @Optional final String permission) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
-            }
-        });
+    public void makeDirectories(final String path, @Optional final String permission) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -409,15 +436,19 @@ public class HDFSConnector {
      * @param source the source path to be renamed.
      * @param target the target new path after rename.
      * @return Boolean  true if rename is successful.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public Boolean rename(final String source, final String target) throws Exception {
-        return runHdfsPathAction(source, new HdfsPathAction<Boolean>() {
-            public Boolean run(final Path hdfsPath) throws Exception {
-                return fileSystem.rename(hdfsPath, new Path(target));
-            }
-        });
+    public Boolean rename(final String source, final String target) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(source, new HdfsPathAction<Boolean>() {
+                public Boolean run(final Path hdfsPath) throws Exception { //NOSONAR
+                    return fileSystem.rename(hdfsPath, new Path(target));
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -429,34 +460,41 @@ public class HDFSConnector {
      * @param path   the given path
      * @param filter the user supplied path filter
      * @return FileStatus   the statuses of the files/directories in the given path
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public FileStatus[] listStatus(final String path, @Optional final String filter) throws Exception {
-        return runHdfsPathAction(path, new HdfsPathAction<FileStatus[]>() {
-            public FileStatus[] run(final Path hdfsPath) throws Exception {
-                if (StringUtils.isNotEmpty(filter)) {
-                    final Pattern pattern = Pattern.compile(filter);
-                    PathFilter pathFilter = new PathFilter() {
-                        @Override
-                        public boolean accept(Path path) {
-                            try {
-                                if (fileSystem.isDirectory(path))
-                                    return true;
-                                else {
-                                    return pattern.matcher(path.toString()).matches();
-                                }
-                            } catch (IOException e) {
-                                throw new MuleRuntimeException(e);
+    public FileStatus[] listStatus(final String path, @Optional final String filter) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(path, new HdfsPathAction<FileStatus[]>() {
+                public FileStatus[] run(final Path hdfsPath) throws Exception { //NOSONAR
+                    if (StringUtils.isNotEmpty(filter)) {
+                        final Pattern pattern = Pattern.compile(filter);
+                        PathFilter pathFilter = new PathFilter() {
+                            @Override
+                            public boolean accept(Path path) {
+                                return isDirectory(path, pattern);
                             }
-                        }
-                    };
-                    return fileSystem.listStatus(hdfsPath, pathFilter);
+                        };
+                        return fileSystem.listStatus(hdfsPath, pathFilter);
+                    }
+                    return fileSystem.listStatus(hdfsPath);
                 }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
+    }
 
-                return fileSystem.listStatus(hdfsPath);
+    private boolean isDirectory(Path path, Pattern pattern) {
+        try {
+            if (fileSystem.isDirectory(path)) {
+                return true;
+            } else {
+                return pattern.matcher(path.toString()).matches();
             }
-        });
+        } catch (IOException e) {
+            throw new MuleRuntimeException(e);
+        }
     }
 
     /**
@@ -468,23 +506,27 @@ public class HDFSConnector {
      * @param pathPattern a regular expression specifying the path pattern.
      * @param filter      the user supplied path filter
      * @return FileStatus an array of paths that match the path pattern.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public FileStatus[] globStatus(final String pathPattern, @Optional final PathFilter filter) throws Exception {
-        return runHdfsPathAction(pathPattern, new HdfsPathAction<FileStatus[]>() {
-            public FileStatus[] run(final Path hdfsPath) throws Exception {
-                if (filter == null) {
-                    return fileSystem.globStatus(hdfsPath, new PathFilter() {
-                        @Override
-                        public boolean accept(Path path) {
-                            return true;
-                        }
-                    });
+    public FileStatus[] globStatus(final String pathPattern, @Optional final PathFilter filter) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(pathPattern, new HdfsPathAction<FileStatus[]>() {
+                public FileStatus[] run(final Path hdfsPath) throws Exception { //NOSONAR
+                    if (filter == null) {
+                        return fileSystem.globStatus(hdfsPath, new PathFilter() {
+                            @Override
+                            public boolean accept(Path path) {
+                                return true;
+                            }
+                        });
+                    }
+                    return fileSystem.globStatus(hdfsPath, filter);
                 }
-                return fileSystem.globStatus(hdfsPath, filter);
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -497,15 +539,19 @@ public class HDFSConnector {
      * @param overwrite    whether to overwrite a existing file.
      * @param source       the source path on the local disk.
      * @param target       the target path on the File System.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void copyFromLocalFile(@Default("false") final boolean deleteSource, @Default("true") final boolean overwrite, final String source, final String target) throws Exception {
-        runHdfsPathAction(source, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                fileSystem.copyFromLocalFile(deleteSource, overwrite, hdfsPath, new Path(target));
-            }
-        });
+    public void copyFromLocalFile(@Default("false") final boolean deleteSource, @Default("true") final boolean overwrite, final String source, final String target) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(source, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    fileSystem.copyFromLocalFile(deleteSource, overwrite, hdfsPath, new Path(target));
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -519,15 +565,19 @@ public class HDFSConnector {
      * @param useRawLocalFileSystem whether to use RawLocalFileSystem as local file system or not.
      * @param source                the source path on the File System.
      * @param target                the target path on the local disk.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void copyToLocalFile(@Default("false") final boolean deleteSource, @Default("false") final boolean useRawLocalFileSystem, final String source, final String target) throws Exception {
-        runHdfsPathAction(source, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                fileSystem.copyToLocalFile(deleteSource, hdfsPath, new Path(target), useRawLocalFileSystem);
-            }
-        });
+    public void copyToLocalFile(@Default("false") final boolean deleteSource, @Default("false") final boolean useRawLocalFileSystem, final String source, final String target) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(source, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    fileSystem.copyToLocalFile(deleteSource, hdfsPath, new Path(target), useRawLocalFileSystem);
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -537,15 +587,19 @@ public class HDFSConnector {
      *
      * @param path       the path of the file or directory to set permission.
      * @param permission the file system permission to be set.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void setPermission(final String path, final String permission) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
-            }
-        });
+    public void setPermission(final String path, final String permission) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
     /**
@@ -557,29 +611,33 @@ public class HDFSConnector {
      * @param path      the path of the file or directory to set owner.
      * @param ownername If it is null, the original username remains unchanged.
      * @param groupname If it is null, the original groupname remains unchanged.
-     * @throws Exception if any issue occurs during the execution.
+     * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public void setOwner(final String path, @Optional final String ownername, @Optional final String groupname) throws Exception {
-        runHdfsPathAction(path, new VoidHdfsPathAction() {
-            public void run(final Path hdfsPath) throws Exception {
-                if ((isNotBlank(ownername)) || (isNotBlank(groupname))) {
-                    fileSystem.setOwner(hdfsPath, ownername, groupname);
+    public void setOwner(final String path, @Optional final String ownername, @Optional final String groupname) throws HDFSConnectorException {
+        try {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
+                public void run(final Path hdfsPath) throws Exception { //NOSONAR
+                    if ((isNotBlank(ownername)) || (isNotBlank(groupname))) {
+                        fileSystem.setOwner(hdfsPath, ownername, groupname);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
     }
 
-    private void runHdfsPathAction(final String path, final VoidHdfsPathAction action) throws Exception {
+    private void runHdfsPathAction(final String path, final VoidHdfsPathAction action) throws Exception { //NOSONAR
         runHdfsPathAction(path, new HdfsPathAction<Void>() {
-            public Void run(final Path hdfsPath) throws Exception {
+            public Void run(final Path hdfsPath) throws Exception { //NOSONAR
                 action.run(hdfsPath);
                 return null;
             }
         });
     }
 
-    private <T> T runHdfsPathAction(final String path, final HdfsPathAction<T> action) throws Exception {
+    private <T> T runHdfsPathAction(final String path, final HdfsPathAction<T> action) throws Exception { //NOSONAR
         try {
             final Path hdfsPath = new Path(path);
             return action.run(hdfsPath);
@@ -627,10 +685,10 @@ public class HDFSConnector {
     }
 
     private interface HdfsPathAction<T> {
-        T run(Path hdfsPath) throws Exception;
+        T run(Path hdfsPath) throws Exception; //NOSONAR
     }
 
     private interface VoidHdfsPathAction {
-        void run(Path hdfsPath) throws Exception;
+        void run(Path hdfsPath) throws Exception; //NOSONAR
     }
 }

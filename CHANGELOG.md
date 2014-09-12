@@ -1,15 +1,15 @@
 HDFS Connector Release Notes
 =====================================
 
-Date: 25-Jun-2014
+Date: 15-Sep-2014
 
-Version: 4.0.0
+Version: 4.0.1
 
-Supported Mule Runtime Versions: 3.5.0
+Supported Mule Runtime Versions: 3.5.x
 
 Supported API versions
 ----------------------
-[Hadoop Client ver 2.4.0](http://hadoop.apache.org/docs/r2.4.0/api/)
+[Hadoop Client ver 2.5.0](http://hadoop.apache.org/docs/r2.5.0/api/)
 
 Supported Operations:
 

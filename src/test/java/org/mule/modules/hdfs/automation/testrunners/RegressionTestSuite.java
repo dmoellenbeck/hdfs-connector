@@ -28,6 +28,7 @@ import org.mule.modules.hdfs.automation.testcases.*;
         MakeDirectoriesTestCases.class,
         ReadTestCases.class,
         RenameTestCases.class,
+        SetOwnerTestCases.class,
         SetPermissionTestCases.class,
         WriteTestCases.class,
         DeleteDirectoryTestCases.class

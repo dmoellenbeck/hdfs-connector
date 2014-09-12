@@ -11,7 +11,10 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
 
-    <hdfs:config name="HDFS" nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}"  doc:name="HDFS">
+    <hdfs:config name="HDFS" nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}" doc:name="HDFS">
+        <hdfs:configuration-entries>
+            <hdfs:configuration-entry key="dfs.client.use.legacy.blockreader">true</hdfs:configuration-entry>
+        </hdfs:configuration-entries>
         <hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </hdfs:config>
 
@@ -75,6 +78,11 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
     <flow name="set-permission" doc:name="set-permission">
         <hdfs:set-permission config-ref="HDFS" path="#[flowVars.path]" permission="#[flowVars.permission]"
                              doc:name="HDFS"/>
+    </flow>
+
+    <flow name="set-owner" doc:name="set-owner">
+        <hdfs:set-owner config-ref="HDFS" path="#[flowVars.path]" groupname="#[flowVars.groupname]"
+                        ownername="#[flowVars.ownername]" doc:name="HDFS"/>
     </flow>
 
     <flow name="glob-status" doc:name="glob-status">

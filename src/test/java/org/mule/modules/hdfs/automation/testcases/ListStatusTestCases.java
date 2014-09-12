@@ -11,6 +11,7 @@ package org.mule.modules.hdfs.automation.testcases;
 import org.apache.hadoop.fs.FileStatus;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
@@ -18,9 +19,10 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+@Ignore
 public class ListStatusTestCases extends HDFSTestParent {
 
     @Before
@@ -42,7 +44,7 @@ public class ListStatusTestCases extends HDFSTestParent {
         try {
 
             FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            assertTrue(fileStatuses != null);
+            assertNotNull(fileStatuses);
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
