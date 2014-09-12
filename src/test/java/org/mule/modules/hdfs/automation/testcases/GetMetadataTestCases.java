@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.MD5MD5CRC32FileChecksum;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.api.MuleMessage;
@@ -23,7 +24,7 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.*;
 
-
+@Ignore
 public class GetMetadataTestCases extends HDFSTestParent {
 
     @Before
