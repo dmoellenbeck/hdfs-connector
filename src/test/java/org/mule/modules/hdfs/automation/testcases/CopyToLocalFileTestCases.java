@@ -39,7 +39,7 @@ public class CopyToLocalFileTestCases extends HDFSTestParent {
         try {
             runFlowAndGetPayload("copy-to-local-file");
 
-            assertTrue(FileUtils.sizeOfDirectory(new File(target)) != 0);
+            assertTrue(FileUtils.sizeOfDirectory(new File(target)) > 0);
 
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));

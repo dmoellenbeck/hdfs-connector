@@ -18,7 +18,7 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class ListStatusTestCases extends HDFSTestParent {
@@ -42,7 +42,7 @@ public class ListStatusTestCases extends HDFSTestParent {
         try {
 
             FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            assertTrue(fileStatuses != null);
+            assertNotNull(fileStatuses);
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }

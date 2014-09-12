@@ -5,20 +5,20 @@
     <parent>
         <groupId>org.mule.tools.devkit</groupId>
         <artifactId>mule-devkit-parent</artifactId>
-        <version>3.5.1-SNAPSHOT</version>
+        <version>3.5.2-SNAPSHOT</version>
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
     <packaging>mule-module</packaging>
-    <name>HDFS Connector</name>
+    <name>Mule HDFS Connector</name>
 
     <properties>
         <category>Community</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.4.0</hadoop.version>
+        <hadoop.version>2.5.0</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
-        <connector.test.version>2.0.4-SNAPSHOT</connector.test.version>
+        <connector.test.version>2.0.6</connector.test.version>
     </properties>
 
     <scm>

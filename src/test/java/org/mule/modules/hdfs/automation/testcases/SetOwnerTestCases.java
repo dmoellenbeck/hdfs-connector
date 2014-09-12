@@ -16,25 +16,36 @@ import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-public class CopyFromLocalFileTestCases extends HDFSTestParent {
+@Category({RegressionTests.class})
+public class SetOwnerTestCases extends HDFSTestParent {
+
+    String filePath;
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("copyFromLocalFileTestData");
-        upsertOnTestRunMessage("path", getTestRunMessageValue("target"));
+        initializeTestRunMessage("setOwnerTestData");
+        runFlowAndGetPayload("make-directories");
+        filePath = getTestRunMessageValue("path");
     }
 
-    @Category({RegressionTests.class})
     @Test
-    public void testCopyFromLocalFile() {
+    public void testSetOwner() {
         try {
-            runFlowAndGetPayload("copy-from-local-file");
-
+            upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
             FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            assertTrue(fileStatuses.length > 0);
+            String oldOwner = fileStatuses[0].getOwner();
+
+            upsertOnTestRunMessage("path", filePath);
+            runFlowAndGetPayload("set-owner");
+
+            upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
+            fileStatuses = runFlowAndGetPayload("list-status");
+            String newOwner = fileStatuses[0].getOwner();
+
+            assertNotSame(oldOwner, newOwner);
+            assertEquals(getTestRunMessageValue("ownername"), newOwner);
 
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));

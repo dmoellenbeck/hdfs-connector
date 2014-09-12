@@ -18,8 +18,7 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class GlobStatusTestCases extends HDFSTestParent {
 
@@ -37,7 +36,7 @@ public class GlobStatusTestCases extends HDFSTestParent {
     public void testGlobStatus() {
         try {
             FileStatus[] fileStatuses = runFlowAndGetPayload("glob-status");
-            assertTrue(fileStatuses != null);
+            assertNotNull(fileStatuses);
             assertTrue((fileStatuses[0].getPath().toString()).contains(getTestRunMessageValue("result").toString()));
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));

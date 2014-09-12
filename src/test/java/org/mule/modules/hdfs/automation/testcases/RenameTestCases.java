@@ -33,8 +33,7 @@ public class RenameTestCases extends HDFSTestParent {
     @Test
     public void testRename() {
         try {
-            Boolean status = (Boolean) runFlowAndGetPayload("rename");
-            assertTrue(status);
+            assertTrue((Boolean) runFlowAndGetPayload("rename"));
             upsertOnTestRunMessage("path", getTestRunMessageValue("toPath"));
             assertTrue((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
 

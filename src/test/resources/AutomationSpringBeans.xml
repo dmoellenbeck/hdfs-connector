@@ -106,6 +106,18 @@
         <entry key="permission" value="754"/>
     </util:map>
 
+    <util:map id="setOwnerTestData" map-class="java.util.HashMap" key-type="java.lang.String"
+              value-type="java.lang.Object" scope="prototype">
+        <entry key="rootPath" value-ref="rootDirectory"/>
+        <entry key="path">
+            <bean class="java.lang.String" factory-bean="rootDirectory" factory-method="concat">
+                <constructor-arg value="/new-file.txt"/>
+            </bean>
+        </entry>
+        <entry key="groupname" value="hadoop"/>
+        <entry key="ownername" value="qauser" />
+    </util:map>
+
     <util:map id="globStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
               value-type="java.lang.Object" scope="prototype">
         <entry key="pathList">

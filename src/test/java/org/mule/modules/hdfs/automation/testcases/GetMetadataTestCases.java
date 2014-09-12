@@ -45,7 +45,7 @@ public class GetMetadataTestCases extends HDFSTestParent {
             assertNotNull(fileMd5);
 
             FileStatus fileStatus = muleMessage.getInvocationProperty(HDFSConnector.HDFS_FILE_STATUS);
-            assertFalse(fileStatus.isDir());
+            assertFalse(fileStatus.isDirectory());
 
             ContentSummary contentSummary = muleMessage.getInvocationProperty(HDFSConnector.HDFS_CONTENT_SUMMARY);
             assertNotNull(contentSummary);
