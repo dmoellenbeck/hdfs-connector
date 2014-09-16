@@ -21,7 +21,7 @@ In order to build and run this project you'll need
 
 If you haven't installed Anypoint Studio on your computer yet, it's time to download Anypoint Studio from this location: [http://www.mulesoft.org/download-mule-esb-community-edition](http://www.mulesoft.org/download-mule-esb-community-edition). You also have the option of downloading a 30 day trial of Mule Enterprise Edition from this location [http://www.mulesoft.com/mule-esb-enterprise](http://www.mulesoft.com/mule-esb-enterprise) if you want to evaluate and purchase the premium edition. This demo can be built using either community or enterprise edition. There is no specific installation that you need to run. Once you unzip the zip file to your desired location, you are ready to go. To install the HDFS connector, you can download and install it from Anypoint Connectors Update Site. To do that:
 
-1. Open Anypoint Studio and from "Help" menu select "Install New Software...". Installation dialog box opens - Figure 4.
+1. Open Anypoint Studio and from "Help" menu select "Install New Software...". Installation dialog box opens - Figure below.
 
 2. From "Work with" drop down, select "Anypoint Connectors Update Site". The list of available connectors will be shown to you.
 
@@ -43,11 +43,11 @@ The first thing to do in your new app is to configure the connection to HDFS. In
 
 In the HDFS Configuration box that follows, set the Default File System name to the name and port for your HDFS server. In my case the value was "hdfs://localhost:9000"
 
-![](images/hdfsGlobalConfig.png)
+![](images/hdfsGlobalElement.png)
 
 The XML for the global element should look like this:  
 
-     <hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS"/>
+     <hdfs:config name="hdfs-conf" nameNodeUri="hdfs://localhost:9000" username="hduser" doc:name="HDFS"/>
 
 **Building the flows**
 
@@ -90,20 +90,20 @@ The final flow XML should look like this.
     http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
     http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
     http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
-    	<hdfs:config name="hdfs-conf" connectionKey="myUser" defaultFileSystemName="hdfs://localhost:9000" doc:name="HDFS"/>
+    	<hdfs:config name="hdfs-conf" nameNodeUri="hdfs://localhost:9000" username="hduser" doc:name="HDFS"/>
     	<flow name="hadoop-demoFlow1" doc:name="hadoop-demoFlow1">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="dircreate" doc:name="HTTP"/>
-    		<hdfs:make-directories config-ref="HDFS" path="#[message.inboundProperties['path']]" doc:name="Make directories"/>
+    		<hdfs:make-directories config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="Make directories"/>
     	</flow>
     	<flow name="hadoop-demoFlow2" doc:name="hadoop-demoFlow2">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="metadata" doc:name="HTTP"/>
-    		<hdfs:get-metadata config-ref="HDFS" path="#[message.inboundProperties['path']]" doc:name="Get path metadata"/>
+    		<hdfs:get-metadata config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="Get path metadata"/>
     		<set-payload value="#[['1.path':message.inboundProperties['path'],'2.exists':flowVars['hdfs.path.exists']" doc:name="Set Payload"/>
     		<object-to-string-transformer doc:name="Object to String"/>
     	</flow>
     	<flow name="hadoop-demoFlow3" doc:name="hadoop-demoFlow3">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="dirdelete" doc:name="HTTP"/>
-    		<hdfs:delete-directory config-ref="HDFS" path="#[message.inboundProperties['path']]" doc:name="HDFS"/>
+    		<hdfs:delete-directory config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="HDFS"/>
     	</flow>
     </mule>
     
