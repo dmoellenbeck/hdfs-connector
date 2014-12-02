@@ -51,8 +51,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author MuleSoft Inc.
  */
-@Connector(name = HDFSConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", minMuleVersion = "3.5",
-        description = "HDFS Connector", metaData = MetaDataSwitch.OFF, connectivityTesting = ConnectivityTesting.DISABLED)
+@Connector(name = HDFSConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", description = "HDFS Connector")
 @ReconnectOn(exceptions = IOException.class)
 public class HDFSConnector {
 
@@ -124,10 +123,13 @@ public class HDFSConnector {
 
         try {
             fileSystem = FileSystem.get(configuration);
-        } catch (final IOException ioe) {
-            throw new ConnectionException(ConnectionExceptionCode.CANNOT_REACH, null, ioe.getMessage(), ioe);
-        }
 
+            // Tests whether the fileSystem is valid.
+            fileSystem.getStatus();
+
+        } catch (final IOException ioe) {
+            throw new ConnectionException(ConnectionExceptionCode.UNKNOWN_HOST, null, ioe.getMessage(), ioe);
+        }
         LOGGER.info("Connected to: " + getFileSystemUri());
     }
 
@@ -418,7 +420,8 @@ public class HDFSConnector {
         try {
             runHdfsPathAction(path, new VoidHdfsPathAction() {
                 public void run(final Path hdfsPath) throws Exception { //NOSONAR
-                    fileSystem.mkdirs(hdfsPath, getFileSystemPermission(permission));
+                    FsPermission fsPermission = getFileSystemPermission(permission);
+                    fileSystem.mkdirs(hdfsPath, fsPermission);
                 }
             });
         } catch (Exception e) {
