@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.hdfs.automation.testcases.*;
+import org.mule.modules.hdfs.automation.testmetadata.GetMetaDataTestCases;
 
 @RunWith(Categories.class)
 @IncludeCategory(SmokeTests.class)
@@ -22,7 +23,8 @@ import org.mule.modules.hdfs.automation.testcases.*;
         MakeDirectoriesTestCases.class,
         ReadTestCases.class,
         WriteTestCases.class,
-        DeleteDirectoryTestCases.class
+        DeleteDirectoryTestCases.class,
+        GetMetaDataTestCases.class
 })
 public class SmokeTestSuite {
 }

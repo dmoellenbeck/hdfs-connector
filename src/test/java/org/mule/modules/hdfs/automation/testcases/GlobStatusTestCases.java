@@ -33,9 +33,9 @@ public class GlobStatusTestCases extends HDFSTestParent {
     @Test
     public void testGlobStatus() {
         try {
-            FileStatus[] fileStatuses = runFlowAndGetPayload("glob-status");
+            List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
             assertNotNull(fileStatuses);
-            assertTrue((fileStatuses[0].getPath().toString()).contains(getTestRunMessageValue("result").toString()));
+            assertTrue((fileStatuses.get(0).getPath().toString()).contains(getTestRunMessageValue("result").toString()));
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }

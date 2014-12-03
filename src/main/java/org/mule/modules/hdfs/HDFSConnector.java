@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -464,10 +465,10 @@ public class HDFSConnector {
      * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public FileStatus[] listStatus(final String path, @Optional final String filter) throws HDFSConnectorException {
+    public List<FileStatus> listStatus(final String path, @Optional final String filter) throws HDFSConnectorException {
         try {
-            return runHdfsPathAction(path, new HdfsPathAction<FileStatus[]>() {
-                public FileStatus[] run(final Path hdfsPath) throws Exception { //NOSONAR
+            return runHdfsPathAction(path, new HdfsPathAction<List<FileStatus>>() {
+                public List<FileStatus> run(final Path hdfsPath) throws Exception { //NOSONAR
                     if (StringUtils.isNotEmpty(filter)) {
                         final Pattern pattern = Pattern.compile(filter);
                         PathFilter pathFilter = new PathFilter() {
@@ -476,9 +477,9 @@ public class HDFSConnector {
                                 return isDirectory(path, pattern);
                             }
                         };
-                        return fileSystem.listStatus(hdfsPath, pathFilter);
+                        return Arrays.asList(fileSystem.listStatus(hdfsPath, pathFilter));
                     }
-                    return fileSystem.listStatus(hdfsPath);
+                    return Arrays.asList(fileSystem.listStatus(hdfsPath));
                 }
             });
         } catch (Exception e) {
@@ -510,19 +511,19 @@ public class HDFSConnector {
      * @throws HDFSConnectorException if any issue occurs during the execution.
      */
     @Processor
-    public FileStatus[] globStatus(final String pathPattern, @Optional final PathFilter filter) throws HDFSConnectorException {
+    public List<FileStatus> globStatus(final String pathPattern, @Optional final PathFilter filter) throws HDFSConnectorException {
         try {
-            return runHdfsPathAction(pathPattern, new HdfsPathAction<FileStatus[]>() {
-                public FileStatus[] run(final Path hdfsPath) throws Exception { //NOSONAR
+            return runHdfsPathAction(pathPattern, new HdfsPathAction<List<FileStatus>>() {
+                public List<FileStatus> run(final Path hdfsPath) throws Exception { //NOSONAR
                     if (filter == null) {
-                        return fileSystem.globStatus(hdfsPath, new PathFilter() {
+                        return Arrays.asList(fileSystem.globStatus(hdfsPath, new PathFilter() {
                             @Override
                             public boolean accept(Path path) {
                                 return true;
                             }
-                        });
+                        }));
                     }
-                    return fileSystem.globStatus(hdfsPath, filter);
+                    return Arrays.asList(fileSystem.globStatus(hdfsPath, filter));
                 }
             });
         } catch (Exception e) {

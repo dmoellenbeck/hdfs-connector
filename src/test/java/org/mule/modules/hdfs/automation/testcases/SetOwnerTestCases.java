@@ -14,6 +14,8 @@ import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @Category({RegressionTests.class})
@@ -32,15 +34,15 @@ public class SetOwnerTestCases extends HDFSTestParent {
     public void testSetOwner() {
         try {
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
-            FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            String oldOwner = fileStatuses[0].getOwner();
+            List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
+            String oldOwner = fileStatuses.get(0).getOwner();
 
             upsertOnTestRunMessage("path", filePath);
             runFlowAndGetPayload("set-owner");
 
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
             fileStatuses = runFlowAndGetPayload("list-status");
-            String newOwner = fileStatuses[0].getOwner();
+            String newOwner = fileStatuses.get(0).getOwner();
 
             assertNotSame(oldOwner, newOwner);
             assertEquals(getTestRunMessageValue("ownername"), newOwner);

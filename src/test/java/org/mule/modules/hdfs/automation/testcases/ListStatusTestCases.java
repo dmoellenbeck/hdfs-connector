@@ -15,10 +15,10 @@ import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
+import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @Ignore
 public class ListStatusTestCases extends HDFSTestParent {
@@ -28,7 +28,7 @@ public class ListStatusTestCases extends HDFSTestParent {
         initializeTestRunMessage("listStatusTestData");
         int itr = Integer.parseInt(getTestRunMessageValue("size").toString());
         String root = getTestRunMessageValue("path");
-        for (int i = 0; i <= itr; i++) {
+        for (int i = 0; i < itr; i++) {
             upsertOnTestRunMessage("path", root + "/" + UUID.randomUUID().toString() + ".txt");
             runFlowAndGetPayload("write-default-values");
         }
@@ -41,8 +41,9 @@ public class ListStatusTestCases extends HDFSTestParent {
     public void testListStatus() {
         try {
 
-            FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
+            List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
             assertNotNull(fileStatuses);
+            assertEquals((Integer.parseInt((String) getTestRunMessageValue("size"))), fileStatuses.size());
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
