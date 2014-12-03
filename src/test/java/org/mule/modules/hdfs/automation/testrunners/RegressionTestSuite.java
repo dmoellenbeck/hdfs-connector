@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.hdfs.automation.testcases.*;
+import org.mule.modules.hdfs.automation.testmetadata.GetMetaDataTestCases;
 
 @RunWith(Categories.class)
 @IncludeCategory(RegressionTests.class)
@@ -29,7 +30,8 @@ import org.mule.modules.hdfs.automation.testcases.*;
         SetOwnerTestCases.class,
         SetPermissionTestCases.class,
         WriteTestCases.class,
-        DeleteDirectoryTestCases.class
+        DeleteDirectoryTestCases.class,
+        GetMetaDataTestCases.class
 })
 public class RegressionTestSuite {
 

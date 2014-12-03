@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Ignore
-@Category({RegressionTests.class})
 public class CopyToLocalFileTestCases extends HDFSTestParent {
     String target;
 
@@ -35,6 +34,7 @@ public class CopyToLocalFileTestCases extends HDFSTestParent {
     }
 
     @Test
+    @Category({RegressionTests.class})
     public void testCopyToLocalFile() {
         try {
             runFlowAndGetPayload("copy-to-local-file");

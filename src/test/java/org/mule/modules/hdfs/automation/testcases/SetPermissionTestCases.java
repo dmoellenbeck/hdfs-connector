@@ -15,6 +15,8 @@ import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -34,8 +36,8 @@ public class SetPermissionTestCases extends HDFSTestParent {
             runFlowAndGetPayload("set-permission");
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
 
-            FileStatus[] fileStatuses = runFlowAndGetPayload("list-status");
-            FsPermission newPermission = fileStatuses[0].getPermission();
+            List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
+            FsPermission newPermission = fileStatuses.get(0).getPermission();
             assertEquals(newPermission, oldPermission);
 
         } catch (Exception e) {
