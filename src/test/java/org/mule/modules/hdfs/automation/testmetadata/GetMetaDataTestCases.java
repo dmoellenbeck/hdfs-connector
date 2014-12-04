@@ -11,7 +11,7 @@ import org.mule.common.metadata.datatype.DataType;
 import org.mule.construct.Flow;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.hdfs.automation.SmokeTests;
-import org.mule.modules.hdfs.automation.testcases.HDFSTestParent;
+import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.*;

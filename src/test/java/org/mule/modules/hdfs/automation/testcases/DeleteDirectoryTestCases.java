@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.HDFSConnector;
+import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.tests.ConnectorTestUtils;

@@ -7,30 +7,30 @@
 package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
-
 import java.io.File;
-
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Ignore
+@Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")
 public class CopyToLocalFileTestCases extends HDFSTestParent {
-    String target;
+
+    String source, target;
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("copyToLocalFileTestData");
+        initializeTestRunMessage("copyFromLocalFileTestData");
+        upsertOnTestRunMessage("source", "src/test/resources/data-sets/");
         runFlowAndGetPayload("copy-from-local-file");
-        String source = getTestRunMessageValue("target");
-        target = getTestRunMessageValue("source");
-        upsertOnTestRunMessage("source", source);
-        upsertOnTestRunMessage("target", target);
+        source = getTestRunMessageValue("source");
+        target = getTestRunMessageValue("target");
+        initializeTestRunMessage("copyToLocalFileTestData");
     }
 
     @Test
@@ -38,11 +38,16 @@ public class CopyToLocalFileTestCases extends HDFSTestParent {
     public void testCopyToLocalFile() {
         try {
             runFlowAndGetPayload("copy-to-local-file");
-
-            assertTrue(FileUtils.sizeOfDirectory(new File(target)) > 0);
-
+            File sourceFile = new File(source+"/timeZones.txt");
+            File targetFile = new File((String) getTestRunMessageValue("targetFile"));
+            FileUtils.contentEquals(sourceFile, targetFile);
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        FileUtils.cleanDirectory(new File((String) getTestRunMessageValue("target")));
     }
 }

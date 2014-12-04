@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mule.api.ConnectionException;
 import org.mule.modules.hdfs.HDFSConnector;
+import org.mule.modules.hdfs.exception.HDFSConnectorException;
+import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -57,7 +59,7 @@ public class HDFSConnectorTestIT {
         messagepart2 = prop.getProperty("hadoop.it.messagepart2");
 
         if (StringUtils.isEmpty(filesystemname) && StringUtils.isEmpty(username))
-            fail();
+            fail("filesystemname and username are blank");
 
         conn = new HDFSConnector();
         conn.setUsername(username);
@@ -67,15 +69,15 @@ public class HDFSConnectorTestIT {
         try {
             logger.debug(String.format("BEFORE - Delete if exists file /%s/%s", dir, filename));
             conn.deleteFile(String.format("/%s/%s", dir, filename));
-        } catch (Throwable e) {
-            fail();
+        } catch (HDFSConnectorException e) {
+            fail(ConnectorTestUtils.getStackTrace(e));
         }
 
         try {
             logger.debug(String.format("BEFORE - Delete if exists directory /%s", dir));
             conn.deleteDirectory(String.format("/%s", dir));
-        } catch (Throwable e) {
-            fail();
+        } catch (HDFSConnectorException e) {
+            fail(ConnectorTestUtils.getStackTrace(e));
         }
     }
 

@@ -68,6 +68,12 @@
               value-type="java.lang.Object" scope="prototype">
         <entry key="fromPath" value="hadoop-data"/>
         <entry key="toPath" value="hadoop"/>
+        <entry key="payloadRef" value-ref="randomInputStream"/>
+        <entry key="permission" value="777"/>
+        <entry key="overwrite" value="true"/>
+        <entry key="bufferSize" value="#{8192}"/>
+        <entry key="blockSize" value="#{8192}"/>
+        <entry key="replication" value="#{1}"/>
     </util:map>
 
     <util:map id="listStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
@@ -82,7 +88,7 @@
               value-type="java.lang.Object" scope="prototype">
         <entry key="deleteSrc" value="false"/>
         <entry key="overwrite" value="true"/>
-        <entry key="source" value="src/test/resources/data-sets/"/>
+        <entry key="source" value="src/test/resources/data-sets/timeZones.txt"/>
         <entry key="target" value-ref="rootDirectory"/>
     </util:map>
 
@@ -91,8 +97,9 @@
         <entry key="deleteSrc" value="true"/>
         <entry key="overwrite" value="true"/>
         <entry key="useRawLocalFileSystem" value="false"/>
-        <entry key="source" value="src/test/resources/data-sets/"/>
-        <entry key="target" value-ref="rootDirectory"/>
+        <entry key="source" value-ref="rootDirectory"/>
+        <entry key="target" value="src/test/resources/targetDir/"/>
+        <entry key="targetFile" value="src/test/resources/targetDir/timeZones.txt"/>
     </util:map>
 
     <util:map id="setPermissionTestData" map-class="java.util.HashMap" key-type="java.lang.String"
