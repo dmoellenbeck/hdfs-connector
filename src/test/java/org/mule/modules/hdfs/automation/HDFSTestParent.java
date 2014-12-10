@@ -4,7 +4,7 @@
  * has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.hdfs.automation.testcases;
+package org.mule.modules.hdfs.automation;
 
 import org.junit.Rule;
 import org.junit.rules.Timeout;

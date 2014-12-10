@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-@Ignore
+@Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")
 public class ListStatusTestCases extends HDFSTestParent {
 
     @Before

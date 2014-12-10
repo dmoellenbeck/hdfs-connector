@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.HDFSConnector;
+import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
 
@@ -22,15 +23,31 @@ public class RenameTestCases extends HDFSTestParent {
     @Before
     public void setUp() throws Exception {
         initializeTestRunMessage("renameTestData");
-
-        upsertOnTestRunMessage("path", getTestRunMessageValue("fromPath"));
-        runFlowAndGetPayload("make-directories");
     }
 
     @Category({RegressionTests.class})
     @Test
-    public void testRename() {
+    public void testRenameDir() {
         try {
+            upsertOnTestRunMessage("path", getTestRunMessageValue("fromPath"));
+            runFlowAndGetPayload("make-directories");
+
+            assertTrue((Boolean) runFlowAndGetPayload("rename"));
+            upsertOnTestRunMessage("path", getTestRunMessageValue("toPath"));
+            assertTrue((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
+
+        } catch (Exception e) {
+            fail(ConnectorTestUtils.getStackTrace(e));
+        }
+    }
+
+    @Category({RegressionTests.class})
+    @Test
+    public void testRenameFile() {
+        try {
+            upsertOnTestRunMessage("path", getTestRunMessageValue("fromPath"));
+            runFlowAndGetPayload("write");
+
             assertTrue((Boolean) runFlowAndGetPayload("rename"));
             upsertOnTestRunMessage("path", getTestRunMessageValue("toPath"));
             assertTrue((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
