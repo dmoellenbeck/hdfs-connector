@@ -25,20 +25,20 @@ public class CopyToLocalFileTestCases extends HDFSTestParent {
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("copyFromLocalFileTestData");
-        upsertOnTestRunMessage("source", "src/test/resources/data-sets/");
-        runFlowAndGetPayload("copy-from-local-file");
-        source = getTestRunMessageValue("source");
-        target = getTestRunMessageValue("target");
         initializeTestRunMessage("copyToLocalFileTestData");
+        runFlowAndGetPayload("copy-from-local-file");
+        upsertOnTestRunMessage("source", getTestRunMessageValue("sourceConfig"));
+        upsertOnTestRunMessage("target", getTestRunMessageValue("targetConfig"));
+        upsertOnTestRunMessage("deleteSrc", "true");
     }
 
     @Test
     @Category({RegressionTests.class})
     public void testCopyToLocalFile() {
         try {
+
             runFlowAndGetPayload("copy-to-local-file");
-            File sourceFile = new File(source+"/timeZones.txt");
+            File sourceFile = new File((String) getTestRunMessageValue("sourceFile"));
             File targetFile = new File((String) getTestRunMessageValue("targetFile"));
             FileUtils.contentEquals(sourceFile, targetFile);
         } catch (Exception e) {

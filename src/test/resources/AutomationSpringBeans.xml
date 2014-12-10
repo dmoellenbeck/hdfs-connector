@@ -94,11 +94,14 @@
 
     <util:map id="copyToLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"
               value-type="java.lang.Object" scope="prototype">
-        <entry key="deleteSrc" value="true"/>
+        <entry key="deleteSrc" value="false"/>
         <entry key="overwrite" value="true"/>
         <entry key="useRawLocalFileSystem" value="false"/>
-        <entry key="source" value-ref="rootDirectory"/>
-        <entry key="target" value="src/test/resources/targetDir/"/>
+        <entry key="source" value="src/test/resources/data-sets/"/>
+        <entry key="target" value-ref="rootDirectory"/>
+        <entry key="sourceConfig" value-ref="rootDirectory"/>
+        <entry key="targetConfig" value="src/test/resources/targetDir/"/>
+        <entry key="sourceFile" value="src/test/resources/data-sets/timeZones.txt"/>
         <entry key="targetFile" value="src/test/resources/targetDir/timeZones.txt"/>
     </util:map>
 
