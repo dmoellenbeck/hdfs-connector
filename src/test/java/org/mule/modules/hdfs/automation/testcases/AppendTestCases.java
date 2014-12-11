@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mule.construct.Flow;
 import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
 import org.mule.modules.tests.ConnectorTestUtils;
@@ -21,9 +22,10 @@ import java.io.SequenceInputStream;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Ignore
+@Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")
 public class AppendTestCases extends HDFSTestParent {
 
     @Before
@@ -43,16 +45,18 @@ public class AppendTestCases extends HDFSTestParent {
         inputStreams.add(inputStreamToAppend);
         upsertOnTestRunMessage("payloadRef", inputStreamToAppend);
 
-        SequenceInputStream inputStreamsSequence = new SequenceInputStream((Enumeration<InputStream>) inputStreams.elements());
+        SequenceInputStream inputStreamsSequence = new SequenceInputStream(inputStreams.elements());
 
         try {
+            //String contentString = IOUtils.toString(inputStreamsSequence);
             runFlowAndGetPayload("append");
-            IOUtils.contentEquals(inputStreamsSequence, (InputStream) runFlowAndGetPayload("read"));
-
+            Flow flow = muleContext.getRegistry().get("read");
+            flow.start();
+            String payload = (String) muleContext.getClient().request("vm://receive", 5000).getPayload();
+            IOUtils.contentEquals(inputStreamsSequence, IOUtils.toInputStream(payload));
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
-
     }
 
     @After
