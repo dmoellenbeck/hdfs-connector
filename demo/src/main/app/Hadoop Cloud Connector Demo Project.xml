@@ -39,7 +39,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
         <set-payload value="#[message.inboundProperties['msg']]" doc:name="Set the message input as payload"/>
         <hdfs:append config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="Append to path"/>
     </flow>
-    <flow name="Retrieve_File_Flow" doc:name="Retrieve_File_Flow">
+    <flow name="Retrieve_File_Flow" initialState="stopped" doc:name="Retrieve_File_Flow">
         <hdfs:read config-ref="hdfs-conf" path="#[payload]" doc:name="Read From Path"/>
         <object-to-string-transformer doc:name="Convert payload to String"/>
         <logger message="#[payload]" level="INFO" doc:name="Read from Path Log"/>

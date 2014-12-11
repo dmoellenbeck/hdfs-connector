@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<connector name="HDFS">
+    <properties>
+        <connectivity-support>true</connectivity-support>
+        <OAuth-authentication>false</OAuth-authentication>
+        <metadata>static</metadata>
+        <datasense-enabled>false</datasense-enabled>
+        <transformer>false</transformer>
+    </properties>
+    <global-config>
+        <config name="config">
+            <attributes>
+                <attribute javaType="java.lang.String" type="name" group="Basic Settings" caption="Name" use="optional" name="name"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="Authentication" caption="Username" use="required" name="username"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="Connection" caption="NameNode URI" use="optional" name="nameNodeUri"></attribute>
+                <attribute javaType="java.util.List&lt;java.lang.String&gt;" type="element-controller-list" group="Advanced" caption="Configuration Resources" use="optional" name="configuration-resources"></attribute>
+                <attribute javaType="java.util.Map&lt;java.lang.String,java.lang.String&gt;" type="element-controller-map" group="Advanced" caption="Configuration Entries" use="optional" name="configuration-entries"></attribute>
+            </attributes>
+        </config>
+    </global-config>
+    <message-processors>
+        <processor caption="Get metadata" xmlName="get-metadata" name="getMetadata">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Write" xmlName="write" name="write">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute default="700" javaType="java.lang.String" type="string" group="General" caption="Permission" use="optional" name="permission"></attribute>
+                <attribute default="true" javaType="boolean" type="boolean" group="General" caption="Overwrite" use="optional" name="overwrite"></attribute>
+                <attribute default="4096" javaType="int" type="integer" group="General" caption="Buffer Size" use="optional" name="bufferSize"></attribute>
+                <attribute default="1" javaType="int" type="integer" group="General" caption="Replication" use="optional" name="replication"></attribute>
+                <attribute default="1048576" javaType="long" type="integer" group="General" caption="Block Size" use="optional" name="blockSize"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Owner User Name" use="optional" name="ownerUserName"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Owner Group Name" use="optional" name="ownerGroupName"></attribute>
+                <attribute default="#[payload]" javaType="java.io.InputStream" type="string" group="General" caption="Payload Reference" use="optional" name="payload-ref"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Append" xmlName="append" name="append">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute default="4096" javaType="int" type="integer" group="General" caption="Buffer Size" use="optional" name="bufferSize"></attribute>
+                <attribute default="#[payload]" javaType="java.io.InputStream" type="string" group="General" caption="Payload Reference" use="optional" name="payload-ref"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Delete file" xmlName="delete-file" name="deleteFile">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Delete directory" xmlName="delete-directory" name="deleteDirectory">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Make directories" xmlName="make-directories" name="makeDirectories">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Permission" use="optional" name="permission"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Rename" xmlName="rename" name="rename">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Source" use="required" name="source"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Target" use="required" name="target"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="List status" xmlName="list-status" name="listStatus">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Filter" use="optional" name="filter"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Glob status" xmlName="glob-status" name="globStatus">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path Pattern" use="required" name="pathPattern"></attribute>
+                <attribute javaType="org.apache.hadoop.fs.PathFilter" type="string" group="General" caption="Filter Reference" use="optional" name="filter-ref"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Copy from local file" xmlName="copy-from-local-file" name="copyFromLocalFile">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute default="false" javaType="boolean" type="boolean" group="General" caption="Delete Source" use="optional" name="deleteSource"></attribute>
+                <attribute default="true" javaType="boolean" type="boolean" group="General" caption="Overwrite" use="optional" name="overwrite"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Source" use="required" name="source"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Target" use="required" name="target"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Copy to local file" xmlName="copy-to-local-file" name="copyToLocalFile">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute default="false" javaType="boolean" type="boolean" group="General" caption="Delete Source" use="optional" name="deleteSource"></attribute>
+                <attribute default="false" javaType="boolean" type="boolean" group="General" caption="Use Raw Local File System" use="optional" name="useRawLocalFileSystem"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Source" use="required" name="source"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Target" use="required" name="target"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Set permission" xmlName="set-permission" name="setPermission">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Permission" use="required" name="permission"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+        <processor caption="Set owner" xmlName="set-owner" name="setOwner">
+            <properties>
+                <datamapper output="" input=""/>
+                <auto-paging>false</auto-paging>
+                <query-support>false</query-support>
+            </properties>
+            <attributes>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Path" use="required" name="path"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Ownername" use="optional" name="ownername"></attribute>
+                <attribute javaType="java.lang.String" type="string" group="General" caption="Groupname" use="optional" name="groupname"></attribute>
+            </attributes>
+            <childElements/>
+        </processor>
+    </message-processors>
+    <inbound-endpoints>
+        <endpoint caption="Read" xmlName="read" name="read">
+            <attributes>
+                <attribute javaType="" type="" use="required" name="path"></attribute>
+                <attribute default="4096" javaType="" type="" use="optional" name="bufferSize"></attribute>
+                <attribute default="5000" javaType="" type="" use="optional" name="pollingPeriod"></attribute>
+            </attributes>
+            <childElements/>
+        </endpoint>
+    </inbound-endpoints>
+</connector>
