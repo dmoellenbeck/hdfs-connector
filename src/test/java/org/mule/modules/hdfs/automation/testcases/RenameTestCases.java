@@ -8,6 +8,7 @@ package org.mule.modules.hdfs.automation.testcases;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mule.modules.hdfs.HDFSConnector;
@@ -41,6 +42,7 @@ public class RenameTestCases extends HDFSTestParent {
         }
     }
 
+    @Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")
     @Category({RegressionTests.class})
     @Test
     public void testRenameFile() {
