@@ -48,7 +48,6 @@ public class AppendTestCases extends HDFSTestParent {
         SequenceInputStream inputStreamsSequence = new SequenceInputStream(inputStreams.elements());
 
         try {
-            //String contentString = IOUtils.toString(inputStreamsSequence);
             runFlowAndGetPayload("append");
             Flow flow = muleContext.getRegistry().get("read");
             flow.start();
