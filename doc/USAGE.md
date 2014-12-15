@@ -18,7 +18,7 @@ This document provides detailed instructions on how to install MuleSoft's HDFS c
 
 In order to build and run this project you'll need,
 
-*   A working [HDFS Server](http://hadoop.apache.org/). Configured a Single-Node Cluster based on configuration from [this](http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/) tutorial of Michael G. Noll.
+*   A working [Apache Hadoop Server](http://hadoop.apache.org/).
 *   Downloaded and installed [Anypoint Studio Community edition](http://www.mulesoft.org/download-mule-esb-community-edition).
 
 ###Getting Anypoint Studio Ready
