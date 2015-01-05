@@ -4,7 +4,7 @@
  * has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.hdfs.integration;
+package org.mule.modules.hdfs.utils;
 
 import org.mule.MessageExchangePattern;
 import org.mule.api.*;
