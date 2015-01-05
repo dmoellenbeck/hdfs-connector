@@ -16,8 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mule.api.MuleEvent;
 import org.mule.api.MuleException;
 import org.mule.api.callback.SourceCallback;
-import org.mule.modules.hdfs.exception.HDFSConnectorException;
-import org.mule.modules.hdfs.integration.MyMuleEvent;
+import org.mule.modules.hdfs.utils.MyMuleEvent;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.io.IOException;
