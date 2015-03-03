@@ -1,15 +1,15 @@
 HDFS Connector Release Notes
 =====================================
 
-Date: 31-Oct-2014
+Date: 07-Mar-2015
 
-Version: 4.0.1
+Version: 4.0.0
 
-Supported Mule Runtime Versions: 3.5.x
+Supported Mule Runtime Versions: 3.6.0 or higher.
 
 Supported API versions
 ----------------------
-[Hadoop Client ver 2.5.0](http://hadoop.apache.org/docs/r2.5.0/api/)
+[Hadoop Client ver 2.6.0](http://hadoop.apache.org/docs/r2.6.0/api/)
 
 
 New Features and Functionality
@@ -31,15 +31,15 @@ Supported Operations:
 * Write to Path
 * Read from Path
 
-Read from path operation is now an inbound endpoint that can stream data. New operations added are Copy from Local File, Copy to Local File, Glob Status, List Status, Rename, Set Owner
-& Set Permission.
+Read from path operation is an inbound endpoint that can stream data.
 
 Closed Issues in this release
 -----------------------------
 
-* Updated the Hadoop Java Client to support 2.5.x hosts.
+* Updated Hadoop Java Client to support 2.6.x hosts.
 * Appending to paths has been fixed.
 * Reading from paths has been fixed.
+* Added new operations - Copy from Local File, Copy to Local File, Glob Status, List Status, Rename, Set Owner & Set Permission.
 
 Known Issues in this release
 ----------------------------

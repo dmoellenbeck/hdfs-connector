@@ -57,32 +57,30 @@ The XML for the global element should look like this:
 
 It's time to build the flows which create a directory, retrieve metadata about the directory, and delete the directory on HDFS.
 
-![](images/hdfsFlows1.png)
-
-![](images/hdfsFlows2.png)
+![](images/Create_Directory_Flow.png)
 
 **Create Directory flow:** This is the flow which creates a directory on the HDFS server. Start by dragging an HTTP endpoint from the palette onto the flow. Configure the Host, Port, and Path to "localhost", "8081", and "dircreate", respectively. This is the URL you will call to start the flow.
-Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Make directories", and set the Path field to "#[message.inboundProperties['path']]". Click okay.
-
-![](images/hdfsConfig1.png)
+Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Make directories", and set the Path field to "#[message.inboundProperties['http.query.params'].path]". Click okay.
 
 This completes the Create Directory flow.
 
-**Directory Metadata flow:** This is the flow which retrieves the metadata information about a particular directory. Start by dragging an HTTP endpoint from the palette onto the workspace (not onto a flow), creating a new flow. Configure the Host, Port, and Path to "localhost", "8081", and "metadata", respectively. This is the URL you will call to start the flow.
-Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Get path meta data", and set the Path field to "#[message.inboundProperties['path']]". Click okay.
+![](images/Meta_Data_Flow.png)
 
-![](images/hdfsConfig2.png)
+**Directory Metadata flow:** This is the flow which retrieves the metadata information about a particular directory. Start by dragging an HTTP endpoint from the palette onto the workspace (not onto a flow), creating a new flow. Configure the Host, Port, and Path to "localhost", "8081", and "metadata", respectively. This is the URL you will call to start the flow.
+Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Get path meta data", and set the Path field to "#[message.inboundProperties['http.query.params'].path]". Click okay.
 
 Now drag a Set Payload Transformer onto the flow after the HDFS Connector. In the configuration window for the Set Payload Transformer, set the Value field to
 
-    #[['1.path':message.inboundProperties['path'],'2.exists':flowVars['hdfs.path.exists']
+    #[['1.path':message.inboundProperties['http.query.params'].path,'2.exists':flowVars['hdfs.path.exists']
 
-and click okay. Then drag an Object to String transformer onto the flow after the Set Payload Transformer. This completes the Directory Metadata flow.
+and click okay. Then drag an Object to String transformer onto the flow after the Set Payload Transformer. 
+
+This completes the Directory Metadata flow.
+
+![](images/Delete_Directory_Flow.png)
 
 **Delete Directory flow:** This is the flow which deletes a directory on the HDFS server. Start by dragging an HTTP endpoint from the palette onto the flow. Configure the Host, Port, and Path to "localhost", "8081", and "dirdelete", respectively. This is the URL you will call to start the flow.
-Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Delete directory", and set the Path field to "#[message.inboundProperties['path']]". Click okay.
-
-![](images/hdfsConfig3.png)
+Then drag an HDFS Connector onto the flow after the HTTP endpoint. In the configuration window for the HDFS connector, select the previously created HDFS config from the Config Reference dropdown. Set the Operation to "Delete directory", and set the Path field to "#[message.inboundProperties['http.query.params'].path]". Click okay.
 
 **Flow XML**
 
@@ -97,17 +95,17 @@ The final flow XML should look like this.
     	<hdfs:config name="hdfs-conf" nameNodeUri="hdfs://localhost:9000" username="hduser" doc:name="HDFS"/>
     	<flow name="hadoop-demoFlow1" doc:name="hadoop-demoFlow1">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="dircreate" doc:name="HTTP"/>
-    		<hdfs:make-directories config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="Make directories"/>
+    		<hdfs:make-directories config-ref="hdfs-conf" path="#[message.inboundProperties['http.query.params'].path]" doc:name="Make directories"/>
     	</flow>
     	<flow name="hadoop-demoFlow2" doc:name="hadoop-demoFlow2">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="metadata" doc:name="HTTP"/>
     		<hdfs:get-metadata config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="Get path metadata"/>
-    		<set-payload value="#[['1.path':message.inboundProperties['path'],'2.exists':flowVars['hdfs.path.exists']" doc:name="Set Payload"/>
+    		<set-payload value="#[['1.path':message.inboundProperties['http.query.params'].path,'2.exists':flowVars['hdfs.path.exists']" doc:name="Set Payload"/>
     		<object-to-string-transformer doc:name="Object to String"/>
     	</flow>
     	<flow name="hadoop-demoFlow3" doc:name="hadoop-demoFlow3">
     		<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="dirdelete" doc:name="HTTP"/>
-    		<hdfs:delete-directory config-ref="hdfs-conf" path="#[message.inboundProperties['path']]" doc:name="HDFS"/>
+    		<hdfs:delete-directory config-ref="hdfs-conf" path="#[message.inboundProperties['http.query.params'].path]" doc:name="HDFS"/>
     	</flow>
     </mule>
 
