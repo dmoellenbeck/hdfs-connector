@@ -1,5 +1,5 @@
 /**
- * (c) 2003-2014 MuleSoft, Inc. The software in this package is
+ * (c) 2003-2015 MuleSoft, Inc. The software in this package is
  * published under the terms of the CPAL v1.0 license, a copy of which
  * has been included with this distribution in the LICENSE.md file.
  */
@@ -19,10 +19,8 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.io.InputStream;
 import java.io.SequenceInputStream;
-import java.util.Enumeration;
 import java.util.Vector;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")

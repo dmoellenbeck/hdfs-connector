@@ -1,5 +1,5 @@
 /**
- * (c) 2003-2014 MuleSoft, Inc. The software in this package is
+ * (c) 2003-2015 MuleSoft, Inc. The software in this package is
  * published under the terms of the CPAL v1.0 license, a copy of which
  * has been included with this distribution in the LICENSE.md file.
  */
@@ -7,27 +7,20 @@
 package org.mule.modules.hdfs;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.mule.api.ConnectionException;
-import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.MuleEvent;
 import org.mule.api.MuleRuntimeException;
 import org.mule.api.annotations.*;
-import org.mule.api.annotations.display.FriendlyName;
-import org.mule.api.annotations.display.Placement;
-import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.callback.SourceCallback;
+import org.mule.modules.hdfs.connection.strategy.HDFSConnectionManagement;
 import org.mule.modules.hdfs.exception.HDFSConnectorException;
-import org.mule.util.CollectionUtils;
 import org.mule.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +31,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import static org.apache.commons.collections.MapUtils.isNotEmpty;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -52,7 +44,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author MuleSoft Inc.
  */
-@Connector(name = HDFSConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", description = "HDFS Connector")
+@Connector(name = HDFSConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", description = "HDFS Connector", minMuleVersion = "3.6.0")
 @ReconnectOn(exceptions = IOException.class)
 public class HDFSConnector {
 
@@ -61,122 +53,11 @@ public class HDFSConnector {
     public static final String HDFS_FILE_STATUS = HDFS + ".file.status";
     public static final String HDFS_FILE_CHECKSUM = HDFS + ".file.checksum";
     public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
-    private static final Logger LOGGER = LoggerFactory.getLogger(HDFSConnector.class);
-    /**
-     * A simple user identity of a client process.
-     */
-    @Configurable
-    @Placement(group = "Authentication")
-    private String username;
 
-    /**
-     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS
-     * client.
-     */
-    @Configurable
-    @Optional
-    @Placement(group = "Advanced")
-    private List<String> configurationResources;
-    /**
-     * A {@link java.util.Map} of configuration entries to be used by the HDFS client.
-     */
-    @Configurable
-    @Optional
-    @Placement(group = "Advanced")
-    private Map<String, String> configurationEntries;
+    @ConnectionStrategy
+    private HDFSConnectionManagement connection;
 
     private FileSystem fileSystem;
-
-    /**
-     * Establish the connection to the Hadoop Distributed File System.
-     *
-     * @param nameNodeUri The name of the file system to connect to. It is passed to HDFS client
-     *                    as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
-     *                    overriden by values in configurationResources and configurationEntries.
-     * @throws ConnectionException Holding one of the possible values in
-     *                             {@link ConnectionExceptionCode}.
-     */
-    @Connect
-    public void connect(@ConnectionKey @FriendlyName("NameNode URI") final String nameNodeUri)
-            throws ConnectionException {
-        final Configuration configuration = new Configuration();
-        if (isNotBlank(nameNodeUri)) {
-            configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, nameNodeUri);
-        }
-
-        if (isNotBlank(username)) {
-            System.setProperty("HADOOP_USER_NAME", username);
-            configuration.set("hadoop.job.ugi", username);
-        }
-
-        final boolean hasConfigurationResources = CollectionUtils.isNotEmpty(configurationResources);
-        if (hasConfigurationResources) {
-            for (final String configurationResource : configurationResources) {
-                configuration.addResource(new Path(configurationResource));
-            }
-        }
-
-        if (isNotEmpty(configurationEntries)) {
-            for (final Entry<String, String> configurationEntry : configurationEntries.entrySet()) {
-                configuration.set(configurationEntry.getKey(), configurationEntry.getValue());
-            }
-        }
-
-        try {
-            fileSystem = FileSystem.get(configuration);
-
-            // Tests whether the fileSystem is valid.
-            fileSystem.getStatus();
-
-        } catch (final IOException ioe) {
-            throw new ConnectionException(ConnectionExceptionCode.UNKNOWN_HOST, null, ioe.getMessage(), ioe);
-        }
-        LOGGER.info("Connected to: " + getFileSystemUri());
-    }
-
-    @ConnectionIdentifier
-    /**
-     * Returns a prefix used in generating unique identifies for connector instances in the connection pool
-     */
-    public String getFileSystemUri() {
-        return fileSystem == null ? "hdfs-" : fileSystem.getUri().toString();
-    }
-
-    /**
-     * Are we connected?
-     *
-     * @return boolean <i>true</i> if the connection is still valid or <i>false</i>
-     * otherwise.
-     */
-    @ValidateConnection
-    public boolean isConnected() {
-        try {
-            if (fileSystem != null) {
-                // ignore the result: an exception will be thrown in case of issue
-                fileSystem.listStatus(new Path("/"));
-                return true;
-            }
-        } catch (final IOException ioe) {
-            LOGGER.error("Failed to connect to HDFS", ioe);
-        }
-        return false;
-    }
-
-    /**
-     * Disconnect from the Hadoop Distributed File System.
-     *
-     * @throws IOException if there is an issue connecting with the file system.
-     */
-    @Disconnect
-    public void disconnect() throws IOException {
-        if (fileSystem != null) {
-            try {
-                fileSystem.close();
-            } finally {
-                fileSystem = null;
-            }
-        }
-    }
 
     /**
      * Read the content of a file designated by its path and streams it to the rest
@@ -654,36 +535,17 @@ public class HDFSConnector {
         return isBlank(permission) ? FsPermission.getDefault() : new FsPermission(permission);
     }
 
-    public String getUsername() {
-        return username;
+    public HDFSConnectionManagement getConnection() {
+        return connection;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public FileSystem getFileSystem() {
-        return fileSystem;
+    public void setConnection(@NotNull HDFSConnectionManagement connection) {
+        this.connection = connection;
+        this.setFileSystem(connection.getFileSystem());
     }
 
     public void setFileSystem(final FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-    }
-
-    public List<String> getConfigurationResources() {
-        return configurationResources;
-    }
-
-    public void setConfigurationResources(final List<String> configurationResources) {
-        this.configurationResources = configurationResources;
-    }
-
-    public Map<String, String> getConfigurationEntries() {
-        return configurationEntries;
-    }
-
-    public void setConfigurationEntries(final Map<String, String> configurationEntries) {
-        this.configurationEntries = configurationEntries;
     }
 
     private interface HdfsPathAction<T> {
