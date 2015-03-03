@@ -18,8 +18,6 @@
         <licensePath>LICENSE.md</licensePath>
         <hadoop.version>2.6.0</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
-        <strictChecking>true</strictChecking>
-        <jdk.version>1.6</jdk.version>
     </properties>
 
     <dependencies>
