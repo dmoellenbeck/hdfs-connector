@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.tooling.server.3.5.0.ee"
-              schemaVersion="3.5.0.0">
-    <name>Hadoop Cloud Connector Demo Project</name>
-    <description>This is the demo project for the Hadoop Cloud Connector</description>
-    <muleExtension name="HDFS" qualifier="org.mule.tooling.ui.contribution.hdfs.3.5.0"/>
+<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.tooling.server.3.6.0.ee" schemaVersion="3.5.0.0">
+    <name>demo</name>
+    <description>This is the demo project for the Apache HDFS Connector</description>
+    <muleExtension name="HDFS" qualifier="org.mule.tooling.ui.contribution.hdfs.3.6.0"/>
 </mule-project>

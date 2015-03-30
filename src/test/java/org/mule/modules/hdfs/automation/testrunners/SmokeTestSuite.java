@@ -1,9 +1,7 @@
 /**
- * Copyright (c) MuleSoft, Inc. All rights reserved. http://www.mulesoft.com
- *
- * The software in this package is published under the terms of the CPAL v1.0
- * license, a copy of which has been included with this distribution in the
- * LICENSE.md file.
+ * (c) 2003-2015 MuleSoft, Inc. The software in this package is
+ * published under the terms of the CPAL v1.0 license, a copy of which
+ * has been included with this distribution in the LICENSE.md file.
  */
 
 package org.mule.modules.hdfs.automation.testrunners;
@@ -14,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 import org.mule.modules.hdfs.automation.SmokeTests;
 import org.mule.modules.hdfs.automation.testcases.*;
+import org.mule.modules.hdfs.automation.testmetadata.GetMetaDataTestCases;
 
 @RunWith(Categories.class)
 @IncludeCategory(SmokeTests.class)
@@ -24,7 +23,8 @@ import org.mule.modules.hdfs.automation.testcases.*;
         MakeDirectoriesTestCases.class,
         ReadTestCases.class,
         WriteTestCases.class,
-        DeleteDirectoryTestCases.class
+        DeleteDirectoryTestCases.class,
+        GetMetaDataTestCases.class
 })
 public class SmokeTestSuite {
 }

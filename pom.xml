@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.mule.tools.devkit</groupId>
         <artifactId>mule-devkit-parent</artifactId>
-        <version>3.5.2-SNAPSHOT</version>
+        <version>3.6.1</version>
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.0.0</version>
     <packaging>mule-module</packaging>
     <name>Mule HDFS Connector</name>
 
     <properties>
         <category>Community</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.5.0</hadoop.version>
+        <hadoop.version>2.6.0</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
-        <connector.test.version>2.0.6</connector.test.version>
     </properties>
-
-    <scm>
-        <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
-        <developerConnection>scm:git:git@github.com:mulesoft/hdfs-connector.git</developerConnection>
-        <url>https://github.com/mulesoft/hdfs-connector</url>
-    </scm>
 
     <dependencies>
         <dependency>
@@ -55,8 +47,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <!-- Integration Tests. To run the integration test use > mvn integration-test -->
@@ -88,4 +80,25 @@
             <layout>default</layout>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Repository</name>
+            <url>http://repository-master.mulesoft.org/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>mulesoft-snapshots</id>
+            <name>MuleSoft Snapshot Repository</name>
+            <url>http://repository-master.mulesoft.org/snapshots/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
+        <developerConnection>scm:git:git@github.com:mulesoft/hdfs-connector.git</developerConnection>
+        <url>https://github.com/mulesoft/hdfs-connector</url>
+    </scm>
+
 </project>

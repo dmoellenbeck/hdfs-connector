@@ -4,10 +4,11 @@
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:context="http://www.springframework.org/schema/context"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns="http://www.mulesoft.org/schema/mule/core"
-      version="EE-3.5.0"
+      xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      version="EE-3.6.0"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
     <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
 
@@ -37,10 +38,11 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:get-metadata config-ref="HDFS" path="#[flowVars.path]" doc:name="HDFS"/>
     </flow>
 
-    <!-- <flow name="read" doc:name="read">
-         <hdfs:read config-ref="HDFS" path="#[payload.path]"/>
-         <set-payload value="#[payload]"/>
-     </flow>-->
+    <flow name="read" doc:name="read" initialState="stopped">
+        <hdfs:read config-ref="HDFS" path="myfile.txt"/>
+        <object-to-string-transformer />
+        <vm:outbound-endpoint path="receive"/>
+    </flow>
 
     <flow name="append" doc:name="append">
         <hdfs:append config-ref="HDFS" path="#[flowVars.path]" bufferSize="#[flowVars.bufferSize]"
@@ -89,4 +91,20 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
                           doc:name="HDFS"/>
     </flow>
+
+    <!-- GET-META-DATA : BEGIN -->
+    <flow name="get-meta-data-rename" doc:name="get-meta-data-rename">
+        <hdfs:rename config-ref="HDFS" source="#[flowVars.fromPath]" target="#[flowVars.toPath]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="get-meta-data-list-status" doc:name="get-meta-data-list-status">
+        <hdfs:list-status config-ref="HDFS" path="#[flowVars.path]" filter="#[flowVars.filter]" doc:name="HDFS"/>
+    </flow>
+
+    <flow name="get-meta-data-glob-status" doc:name="get-meta-data-glob-status">
+        <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
+                          doc:name="HDFS"/>
+    </flow>
+    <!-- GET-META-DATA : END -->
+
 </mule>
