@@ -1,0 +1,13 @@
+org.mule.modules.hdfs
+org.mule.modules.hdfs.adapter
+org.mule.modules.hdfs.adapters
+org.mule.modules.hdfs.agents
+org.mule.modules.hdfs.config
+org.mule.modules.hdfs.connection.strategy
+org.mule.modules.hdfs.connectivity
+org.mule.modules.hdfs.devkit
+org.mule.modules.hdfs.exception
+org.mule.modules.hdfs.pooling
+org.mule.modules.hdfs.processors
+org.mule.modules.hdfs.sources
+

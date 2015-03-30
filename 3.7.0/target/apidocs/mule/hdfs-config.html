@@ -1,0 +1,2174 @@
+
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Documentation for Mule HDFS Connector." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+<title>
+
+  HDFSConnector
+
+
+| Mule HDFS Connector
+
+</title>
+<link href="../assets/mule-developer-docs.css" rel="stylesheet" type="text/css" />
+<link href="../assets/mule-developer-prettify.css" rel="stylesheet" type="text/css" />
+<link href="../assets/customizations.css" rel="stylesheet" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Ubuntu:300' rel='stylesheet' type='text/css'>
+<script src="../assets/search_autocomplete.js" type="text/javascript"></script>
+<script src="../assets/jquery-resizable.min.js" type="text/javascript"></script>
+<script src="../assets/jquery-toc.js" type="text/javascript"></script>
+<script src="../assets/mule-developer-docs.js" type="text/javascript"></script>
+<script src="../assets/prettify.js" type="text/javascript"></script>
+<script type="text/javascript">
+  setToRoot("../", "../assets/");
+</script>
+<script src="../assets/customizations.js" type="text/javascript"></script>
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+<script type="text/javascript" charset="utf-8">
+  var is_ssl = ("https:" == document.location.protocol);
+  var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
+  document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  var feedback_widget_options = {};
+
+  feedback_widget_options.display = "overlay";
+  feedback_widget_options.company = "mulesoft";
+  feedback_widget_options.placement = "right";
+  feedback_widget_options.color = "#2F74AE";
+  feedback_widget_options.style = "question";
+
+  feedback_widget_options.tag = "Mule HDFS Connector";
+
+  feedback_widget_options.limit = "3";
+
+  var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
+</script>
+</head>
+
+<body class="">
+
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">Mule HDFS Connector</span>
+    
+    <ul id="header-tabs" class="mule">
+    
+    	<li id="guide"><a href="../guide/install.html">
+	    	<span class="en">Install Guide</span>
+    	</a></li>
+    
+    	<li id="java"><a href="../java/packages.html">
+	    	<span class="en">Java API Reference</span>
+    	</a></li>
+    
+    	<li id="mule"><a href="../mule/modules.html">
+	    	<span class="en">Mule API Reference</span>
+    	</a></li>
+    
+    </ul>
+    </div>
+    <div id="headerRight">
+      <a href="http://www.mulesoft.com" tabindex="-1">
+      <img src="../assets//images/mulesoft-logo-final.gif" alt="MuleSoft" border="0" id="mulesoftlogo"></a><br/>
+      
+  <div id="searchContainer" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, '../')"
+                      onkeyup="return search_changed(event, false, '../')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
+                      </table>
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
+
+<div class="g-unit" id="all-content">
+
+<div id="api-info-block">
+
+<div class="sum-details-links">
+
+Summary:
+<a href="#lconfig">Configuration</a>
+
+
+
+</div><!-- end sum-details-links -->
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF MODULE DATA ======== -->
+
+<div id="jd-header">
+    org.mule.modules
+<h1>mule-module-hdfs</h1>
+    config
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+<br/>
+
+<div class="jd-tagdata">
+      <table class="jd-tagtable">
+        <tbody><tr>
+          <th>Namespace</th><td>http://www.mulesoft.org/schema/mule/hdfs</td>
+        </tr><tr>
+          <th>Schema Location</th><td>http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd&nbsp;&nbsp;(<a href="hdfs-schema.html">View Schema</a>)</td>
+        </tr>
+<tr>
+          <th>Schema Version</th><td>3.4</td>
+        </tr>
+<tr>
+          <th>Minimum Mule Version</th><td>3.6.0</td>
+        </tr>
+    </tbody></table>
+  </div>
+
+<div class="jd-descr">
+
+
+<h2>Module Overview</h2>
+<p><p>
+ Hadoop Distributed File System (HDFS) Connector.
+ </p>
+ 
+ 
+ </p>
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+<!-- Config -->
+
+<!-- =========== CONFIG SUMMARY =========== -->
+<table id="lconfig" class="jd-sumtable"><tr><th colspan="12">Configuration</th></tr>
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#config">&lt;hdfs:config&gt;</a></nobr>
+        <div class="jd-descrdiv">Configure an instance of this module</div>
+  </td></tr>
+</table>
+
+
+
+<table id="promethods" class="jd-sumtable">
+<tr><th colspan="12">Message Sources<br/><span style="font-weight: 200;"></span></th></tr>
+    
+    
+    
+    <!-- ========== MESSAGE SOURCE SUMMARY =========== -->
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#read">&lt;hdfs:read&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Read the content of a file designated by its path and streams it to the rest
+ of the flow, while adding the path metadata in the following inbound
+ properties:
+ <ul>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_PATH_EXISTS">HDFS_PATH_EXISTS</a></code>: a boolean set to true if the path
+ exists</li>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_CONTENT_SUMMARY">HDFS_CONTENT_SUMMARY</a></code>: an instance of
+ ContentSummary if the path exists.</div>
+        
+  </td></tr>
+
+
+
+    
+    
+</table>
+
+<table id="promethods" class="jd-sumtable">
+<tr><th colspan="12">Message Processors<br/><span style="font-weight: 200;"></span></th></tr>
+    
+    
+    <!-- ========== MESSAGE PROCESSOR SUMMARY =========== -->
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#append">&lt;hdfs:append&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Append the current payload to a file located at the designated path.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#copy-from-local-file">&lt;hdfs:copy-from-local-file&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Copy the source file on the local disk to the FileSystem at the given target
+ path, set deleteSource if the source should be removed.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#copy-to-local-file">&lt;hdfs:copy-to-local-file&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Copy the source file on the FileSystem to local disk at the given target
+ path, set deleteSource if the source should be removed.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#delete-directory">&lt;hdfs:delete-directory&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Delete the file or directory located at the designated path.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#delete-file">&lt;hdfs:delete-file&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Delete the file or directory located at the designated path.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#get-metadata">&lt;hdfs:get-metadata&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Get the metadata of a path, as described in
+ <code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#read(java.lang.String, int, org.mule.api.callback.SourceCallback)">read(String, int, SourceCallback)</a></code>, and store it
+ in flow variables.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#glob-status">&lt;hdfs:glob-status&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Return all the files that match file pattern and are not checksum files.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#list-status">&lt;hdfs:list-status&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">List the statuses of the files/directories in the given path if the path
+ is a directory
+ <p/>
+ </div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#make-directories">&lt;hdfs:make-directories&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Make the given file and all non-existent parents into directories.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#rename">&lt;hdfs:rename&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Renames path target to path destination.</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#set-owner">&lt;hdfs:set-owner&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Set owner of a path (i.e., a file or a directory).</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#set-permission">&lt;hdfs:set-permission&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Set permission of a path (i.e., a file or a directory).</div>
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../mule/hdfs-config.html#write">&lt;hdfs:write&gt;</a></nobr>
+        
+        <div class="jd-descrdiv">Write the current payload to the designated path, either creating a new file
+ or appending to an existing one.</div>
+        
+  </td></tr>
+
+
+
+    
+    
+    
+</table>
+
+
+
+
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+
+<!-- ========= CONFIGURATION DETAIL ======== -->
+<A NAME="config"></A>
+<h2>Configuration</h2>
+<p>To use the this module within a flow the namespace to the module must be included. The resulting flow will look
+similar to the following:</p>
+<pre>
+&lt;mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+      xsi:schemaLocation="
+               http://www.mulesoft.org/schema/mule/core
+               http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.mulesoft.org/schema/mule/hdfs
+               http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd"&gt;
+
+      &lt;!-- here goes your flows and configuration elements --&gt;
+
+&lt;/mule&gt;
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========= MESSAGE PROCESSOR DETAIL ======== -->
+<!-- Message Processors -->
+<h2>Message Processors</h2>
+
+
+    
+
+    
+    
+
+
+<A NAME="append"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:append&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Append the current payload to a file located at the designated path.
+ <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any data to an existing file
+ refer to dfs.support.append configuration parameter
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using the default buffer size --&gt;
+&lt;hdfs:append path="/tmp/test.dat" config-ref="hdfs-conf"/&gt;</pre></div>
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Appending to a file using a specific buffer size --&gt;
+&lt;hdfs:append path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to write to.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol">The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>payload</nobr></td>
+                            <td class="jd-descrcol">#[payload]</td>
+                            <td class="jd-descrcol">The payload to append to the file.</td>
+                            <td class="jd-descrcol">InputStream</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="copy-from-local-file"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:copy-from-local-file&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Copy the source file on the local disk to the FileSystem at the given target
+ path, set deleteSource if the source should be removed.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Copy from source local disk to the target FileSystem --&gt;
+&lt;hdfs:copy-from-local-file deleteSource="true" overwrite="false" source="/tmp/mulesoft/" target="/user/mulesoft/" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>deleteSource</nobr></td>
+                            <td class="jd-descrcol">false</td>
+                            <td class="jd-descrcol">Whether to delete the source.</td>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>overwrite</nobr></td>
+                            <td class="jd-descrcol">true</td>
+                            <td class="jd-descrcol">Whether to overwrite a existing file.</td>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>source</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The source path on the local disk.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>target</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The target path on the File System.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="copy-to-local-file"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:copy-to-local-file&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Copy the source file on the FileSystem to local disk at the given target
+ path, set deleteSource if the source should be removed. useRawLocalFileSystem
+ indicates whether to use RawLocalFileSystem as it is a non CRC File System.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Copy to source local disk from the target FileSystem --&gt;
+&lt;hdfs:copy-to-local-file deleteSource="false" useRawLocalFileSystem="false" source="/tmp/mulesoft/" target="/user/mulesoft/" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>deleteSource</nobr></td>
+                            <td class="jd-descrcol">false</td>
+                            <td class="jd-descrcol">Whether to delete the source.</td>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>useRawLocalFileSystem</nobr></td>
+                            <td class="jd-descrcol">false</td>
+                            <td class="jd-descrcol">Whether to use RawLocalFileSystem as local file system or not.</td>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>source</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The source path on the File System.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>target</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The target path on the local disk.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="delete-directory"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:delete-directory&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Delete the file or directory located at the designated path.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a directory --&gt;
+&lt;hdfs:delete-directory path="/tmp/my-dir" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the directory to delete.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="delete-file"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:delete-file&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Delete the file or directory located at the designated path.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Delete a file --&gt;
+&lt;hdfs:delete-file path="/tmp/test.dat" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to delete.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get-metadata"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:get-metadata&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Get the metadata of a path, as described in
+ <code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#read(java.lang.String, int, org.mule.api.callback.SourceCallback)">read(String, int, SourceCallback)</a></code>, and store it
+ in flow variables.
+ <p/>
+ This flow variables are:
+ <ul>
+ <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+ <li>hdfs.content.summary - A resume of the path info</li>
+ <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+ <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+ </ul>
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Store the meta-information of a path in flow variables --&gt;
+&lt;hdfs:get-metadata path="/tmp/test.dat" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path whose existence must be checked.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>muleEvent</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The MuleEvent currently being processed.</td>
+                            <td class="jd-descrcol">MuleEvent</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+      <div class="jd-tagdata">
+         <h5 class="jd-tagtitle">Returns</h5>
+         <table id="lconfig" class="jd-sumtable">
+             <tr>
+                <th>Return Type</th>
+                <th>Description</th>
+             </tr>
+             <tr>
+                
+                    <td class="jd-descrcol">void</td>
+                    <td class="jd-descrcol">the result of executing the next message processors if the path
+ exists, otherwise null.</td>
+                
+
+             </tr>
+         </table>
+  </div>
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="glob-status"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:glob-status&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Return all the files that match file pattern and are not checksum files. Results
+ are sorted by their names.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Return all the files that match file pattern, sorted by their names --&gt;
+&lt;hdfs:glob-status pathPattern="/tmp/*/*" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>pathPattern</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">A regular expression specifying the path pattern.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>filter</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The user supplied path filter</td>
+                            <td class="jd-descrcol">PathFilter</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+      <div class="jd-tagdata">
+         <h5 class="jd-tagtitle">Returns</h5>
+         <table id="lconfig" class="jd-sumtable">
+             <tr>
+                <th>Return Type</th>
+                <th>Description</th>
+             </tr>
+             <tr>
+                
+                    <td class="jd-descrcol">List&lt;FileStatus&gt;</td>
+                    <td class="jd-descrcol">FileStatus an array of paths that match the path pattern.</td>
+                
+
+             </tr>
+         </table>
+  </div>
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="list-status"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:list-status&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        List the statuses of the files/directories in the given path if the path
+ is a directory
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- List the statuses of the given path --&gt;
+&lt;hdfs:list-status path="/tmp/my-dir" filter="^.*/2014/02/$" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The given path</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>filter</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The user supplied path filter</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+      <div class="jd-tagdata">
+         <h5 class="jd-tagtitle">Returns</h5>
+         <table id="lconfig" class="jd-sumtable">
+             <tr>
+                <th>Return Type</th>
+                <th>Description</th>
+             </tr>
+             <tr>
+                
+                    <td class="jd-descrcol">List&lt;FileStatus&gt;</td>
+                    <td class="jd-descrcol">FileStatus   the statuses of the files/directories in the given path</td>
+                
+
+             </tr>
+         </table>
+  </div>
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="make-directories"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:make-directories&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Make the given file and all non-existent parents into directories. Has the
+ semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an
+ error.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Make any missing directories for the specified path, using the default file system permission --&gt;
+&lt;hdfs:make-directories path="/tmp/my-dir" config-ref="hdfs-conf"/&gt;</pre></div>
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Make any missing directories for the specified path, using the provided file system permission --&gt;
+&lt;hdfs:make-directories path="/tmp/my-dir" permission="511" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path to create directories for.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>permission</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The file system permission to use when creating the
+                   directories, either in octal or symbolic format (umask).</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="rename"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:rename&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Renames path target to path destination.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Rename any source directory or file to the provided target path --&gt;
+&lt;hdfs:rename source="/tmp/my-dir" target="/tmp/new-dir" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>source</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The source path to be renamed.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>target</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The target new path after rename.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+      <div class="jd-tagdata">
+         <h5 class="jd-tagtitle">Returns</h5>
+         <table id="lconfig" class="jd-sumtable">
+             <tr>
+                <th>Return Type</th>
+                <th>Description</th>
+             </tr>
+             <tr>
+                
+                    <td class="jd-descrcol">Boolean</td>
+                    <td class="jd-descrcol">Boolean  true if rename is successful.</td>
+                
+
+             </tr>
+         </table>
+  </div>
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="set-owner"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:set-owner&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Set owner of a path (i.e., a file or a directory). The parameters username and groupname
+ cannot both be null.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Set owner of a path to change. --&gt;
+&lt;hdfs:set-owner path="/tmp/my-dir" ownername="mulesoft" groupname="supergroup" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file or directory to set owner.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>ownername</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>If it is null, the original username remains unchanged.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>groupname</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>If it is null, the original groupname remains unchanged.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="set-permission"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:set-permission&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Set permission of a path (i.e., a file or a directory).
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Set permission of a path to change. --&gt;
+&lt;hdfs:set-permission path="/tmp/my-dir" permission="511" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file or directory to set permission.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>permission</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The file system permission to be set.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:write&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Write the current payload to the designated path, either creating a new file
+ or appending to an existing one.
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using the configuration --&gt;
+&lt;hdfs:write path="/tmp/test.dat" config-ref="hdfs-conf"/&gt;</pre></div>
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Writing to a file using all the configurable parameters --&gt;
+&lt;hdfs:write path="/tmp/test.dat" permission="511" overwrite="true" bufferSize="8192" replication="1" blockSize="8192" ownerUserName="" ownerGroupName="" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to write to.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>permission</nobr></td>
+                            <td class="jd-descrcol">700</td>
+                            <td class="jd-descrcol">The file system permission to use if a new file is created,
+                       either in octal or symbolic format (umask).</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>overwrite</nobr></td>
+                            <td class="jd-descrcol">true</td>
+                            <td class="jd-descrcol">If a pre-existing file should be overwritten with the new
+                       content.</td>
+                            <td class="jd-descrcol">boolean</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol">The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>replication</nobr></td>
+                            <td class="jd-descrcol">1</td>
+                            <td class="jd-descrcol">Block replication for the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>blockSize</nobr></td>
+                            <td class="jd-descrcol">1048576</td>
+                            <td class="jd-descrcol">The buffer size to use when appending to the file.</td>
+                            <td class="jd-descrcol">long</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>ownerUserName</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The username owner of the file.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>ownerGroupName</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol"><i>Optional.&nbsp;</i>The group owner of the file.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>payload</nobr></td>
+                            <td class="jd-descrcol">#[payload]</td>
+                            <td class="jd-descrcol">The payload to write to the file.</td>
+                            <td class="jd-descrcol">InputStream</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+    
+
+
+
+
+
+<!-- ========= MESSAGE SOURCES DETAIL ======== -->
+<!-- Message Sources -->
+<h2>Message Sources</h2>
+
+
+    
+    
+
+
+<A NAME="read"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="sympad">&lt;hdfs:read&gt;</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>
+      
+        Read the content of a file designated by its path and streams it to the rest
+ of the flow, while adding the path metadata in the following inbound
+ properties:
+ <ul>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_PATH_EXISTS">HDFS_PATH_EXISTS</a></code>: a boolean set to true if the path
+ exists</li>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_CONTENT_SUMMARY">HDFS_CONTENT_SUMMARY</a></code>: an instance of
+ ContentSummary if the path exists.</li>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_FILE_STATUS">HDFS_FILE_STATUS</a></code>: an instance of FileStatus
+ if the path exists.</li>
+ <li><code><a href="../java/org/mule/modules/hdfs/HDFSConnector.html#HDFS_FILE_CHECKSUM">HDFS_FILE_CHECKSUM</a></code>: an instance of
+ FileChecksum if the path exists, is a file and has a checksum.</li>
+ </ul>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Reading a file using the default buffer size --&gt;
+&lt;hdfs:read path="/tmp/test.dat" config-ref="hdfs-conf"/&gt;</pre></div>
+ <p/>
+ <div class="jd-tagdata"><h5 class="jd-tagtitle">XML Sample</h5><pre>&lt;!-- Reading a file using a specific buffer size --&gt;
+&lt;hdfs:read path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/&gt;</pre></div>
+      
+  </p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Attributes</h5>
+
+        <table id="lconfig" class="jd-sumtable">
+        <tr><th>Name</th><th>Default Value</th><th>Description</th><th>Java Type</th><th>MIME Type</th><th>Encoding</th></tr>
+        <tr>
+          <td class="jd-linkcol"><nobr>config-ref</nobr></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol" width="100%"><i>Optional.&nbsp;</i>Specify which configuration to use.</td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+          <td class="jd-descrcol"></td>
+        </tr>
+          
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>path</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The path of the file to read.</td>
+                            <td class="jd-descrcol">String</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol">UTF-8</td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class="alt-color api apilevel-" >
+                            <td class="jd-linkcol"><nobr>bufferSize</nobr></td>
+                            <td class="jd-descrcol">4096</td>
+                            <td class="jd-descrcol">The buffer size to use when reading the file.</td>
+                            <td class="jd-descrcol">int</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+                
+                    
+                        <tr class=" api apilevel-" >
+                            <td class="jd-linkcol"><nobr>sourceCallback</nobr></td>
+                            <td class="jd-descrcol"></td>
+                            <td class="jd-descrcol">The SourceCallback used to propagate the event
+                       to the rest of the flow.</td>
+                            <td class="jd-descrcol">SourceCallback</td>
+                            <td class="jd-descrcol">*/*</td>
+                            <td class="jd-descrcol"></td>
+                        </tr>
+                    
+                
+                
+          
+          
+          
+        </table>
+  </div>
+  
+  
+      <div class="jd-tagdata">
+         <h5 class="jd-tagtitle">Returns</h5>
+         <table id="lconfig" class="jd-sumtable">
+             <tr>
+                <th>Return Type</th>
+                <th>Description</th>
+             </tr>
+             <tr>
+                
+                    <td class="jd-descrcol">Object</td>
+                    <td class="jd-descrcol">the result from executing the rest of the flow.</td>
+                
+
+             </tr>
+         </table>
+  </div>
+    
+  
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Exception Payloads</h5>
+      <table class="jd-sumtable">
+        <tr><th>Payload Class</th><th>Description</th></tr>
+        
+        <tr>
+            <td><a href="../java/org/mule/modules/hdfs/exception/HDFSConnectorException.html">HDFSConnectorException</a></td>
+            <td>if any issue occurs during the execution.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+    
+
+    
+
+
+
+
+
+<!-- ========= MESSAGE SOURCES DETAIL ======== -->
+<!-- Transformers -->
+<h2>Transformers</h2>
+
+
+    
+
+    
+
+
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<A NAME="navbar_top"></A>
+
+<div id="footer">
+Generated by <a href="http://www.mulesoft.com/devkit">Mule DevKit</a>. Document generation technology based on <a href="http://code.google.com/p/doclava/">Google's Doclava</a>.
+</div> <!-- end footer -->
+
+</div> <!-- jd-content -->
+
+</div><!-- end doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize mule-developer-docs.js */
+</script>
+
+</body>
+</html>
