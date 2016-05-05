@@ -1,5 +1,6 @@
 = HDFS Connector
 :keywords: anypoint studio, esb, connectors, hdfs
+:imagesdir: ./images
 
 Community
 
