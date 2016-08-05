@@ -15,7 +15,7 @@
     <properties>
         <category>Select</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.7.1</hadoop.version>
+        <hadoop.version>2.7.2</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
         <connector.test.version>2.0.7</connector.test.version>
     </properties>
