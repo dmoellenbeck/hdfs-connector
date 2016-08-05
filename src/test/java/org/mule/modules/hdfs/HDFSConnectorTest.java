@@ -1,4 +1,11 @@
 /**
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+
+ */
+/**
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+/**
  * (c) 2003-2015 MuleSoft, Inc. The software in this package is
  * published under the terms of the CPAL v1.0 license, a copy of which
  * has been included with this distribution in the LICENSE.md file.
@@ -30,7 +37,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.*;
-
 
 public class HDFSConnectorTest {
 
@@ -79,7 +85,8 @@ public class HDFSConnectorTest {
     public void testDeleteFile() {
         try {
             fileSystem = spy(new LocalFileSystem());
-            doCallRealMethod().when(fileSystem).delete(any(Path.class), eq(false));
+            doCallRealMethod().when(fileSystem)
+                    .delete(any(Path.class), eq(false));
             connector.deleteFile("zoo");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -90,7 +97,8 @@ public class HDFSConnectorTest {
     public void testDeleteDirectory() {
         try {
             fileSystem = spy(new LocalFileSystem());
-            doCallRealMethod().when(fileSystem).delete(any(Path.class), eq(true));
+            doCallRealMethod().when(fileSystem)
+                    .delete(any(Path.class), eq(true));
             connector.deleteDirectory("zoo");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -101,7 +109,8 @@ public class HDFSConnectorTest {
     public void testMakeDirectories() {
         try {
             fileSystem = spy(new LocalFileSystem());
-            doCallRealMethod().when(fileSystem).mkdirs(any(Path.class), any(FsPermission.class));
+            doCallRealMethod().when(fileSystem)
+                    .mkdirs(any(Path.class), any(FsPermission.class));
             connector.makeDirectories("foo", "755");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -133,6 +142,7 @@ public class HDFSConnectorTest {
         try {
             when(fileSystem.globStatus(any(Path.class), any(PathFilter.class))).thenReturn(new FileStatus[0]);
             connector.globStatus("foo", new PathFilter() {
+
                 @Override
                 public boolean accept(Path path) {
                     return false;
@@ -146,7 +156,8 @@ public class HDFSConnectorTest {
     @Test
     public void testCopyFromLocalFile() {
         try {
-            doNothing().when(fileSystem).copyFromLocalFile(anyBoolean(), anyBoolean(), any(Path.class), any(Path.class));
+            doNothing().when(fileSystem)
+                    .copyFromLocalFile(anyBoolean(), anyBoolean(), any(Path.class), any(Path.class));
             connector.copyFromLocalFile(false, false, "foo", "zoo");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -156,18 +167,19 @@ public class HDFSConnectorTest {
     @Test
     public void testCopyToLocalFile() {
         try {
-            doNothing().when(fileSystem).copyToLocalFile(anyBoolean(), any(Path.class), any(Path.class), anyBoolean());
+            doNothing().when(fileSystem)
+                    .copyToLocalFile(anyBoolean(), any(Path.class), any(Path.class), anyBoolean());
             connector.copyToLocalFile(false, true, "foo", "zoo");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
     }
 
-
     @Test
     public void testSetPermission() {
         try {
-            doNothing().when(fileSystem).setPermission(any(Path.class), any(FsPermission.class));
+            doNothing().when(fileSystem)
+                    .setPermission(any(Path.class), any(FsPermission.class));
             connector.setPermission("foo", "755");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -177,7 +189,8 @@ public class HDFSConnectorTest {
     @Test
     public void testSetOwner() {
         try {
-            doNothing().when(fileSystem).setOwner(any(Path.class), anyString(), anyString());
+            doNothing().when(fileSystem)
+                    .setOwner(any(Path.class), anyString(), anyString());
             connector.setOwner("foo/oof", "foo", "zoo");
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
@@ -186,6 +199,7 @@ public class HDFSConnectorTest {
 
     private SourceCallback mockSourceCallBack() {
         return new SourceCallback() {
+
             @Override
             public Object process() throws Exception {
                 return null;
@@ -225,4 +239,3 @@ public class HDFSConnectorTest {
         return metaData;
     }
 }
-

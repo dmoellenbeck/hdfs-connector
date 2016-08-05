@@ -1,7 +1,9 @@
 /**
- * (c) 2003-2015 MuleSoft, Inc. The software in this package is
- * published under the terms of the CPAL v1.0 license, a copy of which
- * has been included with this distribution in the LICENSE.md file.
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+
+ */
+/**
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
 package org.mule.modules.hdfs.automation.testcases;
@@ -19,7 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@Category({RegressionTests.class})
+@Category({ RegressionTests.class
+})
 public class SetOwnerTestCases extends HDFSTestParent {
 
     String filePath;
@@ -36,14 +39,16 @@ public class SetOwnerTestCases extends HDFSTestParent {
         try {
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
             List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
-            String oldOwner = fileStatuses.get(0).getOwner();
+            String oldOwner = fileStatuses.get(0)
+                    .getOwner();
 
             upsertOnTestRunMessage("path", filePath);
             runFlowAndGetPayload("set-owner");
 
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
             fileStatuses = runFlowAndGetPayload("list-status");
-            String newOwner = fileStatuses.get(0).getOwner();
+            String newOwner = fileStatuses.get(0)
+                    .getOwner();
 
             assertNotSame(oldOwner, newOwner);
             assertEquals(getTestRunMessageValue("ownername"), newOwner);

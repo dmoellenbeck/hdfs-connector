@@ -1,7 +1,9 @@
 /**
- * (c) 2003-2015 MuleSoft, Inc. The software in this package is
- * published under the terms of the CPAL v1.0 license, a copy of which
- * has been included with this distribution in the LICENSE.md file.
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+
+ */
+/**
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
 package org.mule.modules.hdfs.connection.strategy;
@@ -33,7 +35,6 @@ public class HDFSConnectionManagement {
 
     private static final Logger logger = LoggerFactory.getLogger(HDFSConnectionManagement.class);
 
-
     /**
      * A simple user identity of a client process.
      */
@@ -42,8 +43,7 @@ public class HDFSConnectionManagement {
     private String username;
 
     /**
-     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS
-     * client.
+     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS client.
      */
     @Configurable
     @Optional
@@ -62,11 +62,11 @@ public class HDFSConnectionManagement {
     /**
      * Establish the connection to the Hadoop Distributed File System.
      *
-     * @param nameNodeUri The name of the file system to connect to. It is passed to HDFS client
-     *                    as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be
-     *                    overriden by values in configurationResources and configurationEntries.
-     * @throws org.mule.api.ConnectionException Holding one of the possible values in
-     *                                          {@link org.mule.api.ConnectionExceptionCode}.
+     * @param nameNodeUri
+     *            The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values
+     *            in configurationResources and configurationEntries.
+     * @throws org.mule.api.ConnectionException
+     *             Holding one of the possible values in {@link org.mule.api.ConnectionExceptionCode}.
      */
     @Connect
     @TestConnectivity
@@ -112,14 +112,14 @@ public class HDFSConnectionManagement {
      */
     @ConnectionIdentifier
     public String getFileSystemUri() {
-        return fileSystem == null ? "hdfs-" : fileSystem.getUri().toString();
+        return fileSystem == null ? "hdfs-" : fileSystem.getUri()
+                .toString();
     }
 
     /**
      * Are we connected?
      *
-     * @return boolean <i>true</i> if the connection is still valid or <i>false</i>
-     * otherwise.
+     * @return boolean <i>true</i> if the connection is still valid or <i>false</i> otherwise.
      */
     @ValidateConnection
     public boolean isConnected() {
@@ -138,7 +138,8 @@ public class HDFSConnectionManagement {
     /**
      * Disconnect from the Hadoop Distributed File System.
      *
-     * @throws IOException if there is an issue connecting with the file system.
+     * @throws IOException
+     *             if there is an issue connecting with the file system.
      */
     @Disconnect
     public void disconnect() {
