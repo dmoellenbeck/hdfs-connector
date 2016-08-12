@@ -1,9 +1,6 @@
 /**
- * (c) 2003-2015 MuleSoft, Inc. The software in this package is
- * published under the terms of the CPAL v1.0 license, a copy of which
- * has been included with this distribution in the LICENSE.md file.
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
-
 package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.hadoop.fs.FileStatus;
@@ -21,7 +18,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Category({RegressionTests.class})
+@Category({ RegressionTests.class
+})
 public class SetPermissionTestCases extends HDFSTestParent {
 
     @Before
@@ -38,7 +36,8 @@ public class SetPermissionTestCases extends HDFSTestParent {
             upsertOnTestRunMessage("path", getTestRunMessageValue("rootPath"));
 
             List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
-            FsPermission newPermission = fileStatuses.get(0).getPermission();
+            FsPermission newPermission = fileStatuses.get(0)
+                    .getPermission();
             assertEquals(newPermission, oldPermission);
 
         } catch (Exception e) {

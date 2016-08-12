@@ -1,9 +1,6 @@
 /**
- * (c) 2003-2015 MuleSoft, Inc. The software in this package is
- * published under the terms of the CPAL v1.0 license, a copy of which
- * has been included with this distribution in the LICENSE.md file.
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
-
 package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.hadoop.fs.FileStatus;
@@ -30,14 +27,16 @@ public class ListStatusTestCases extends HDFSTestParent {
         int itr = Integer.parseInt(getTestRunMessageValue("size").toString());
         String root = getTestRunMessageValue("path");
         for (int i = 0; i < itr; i++) {
-            upsertOnTestRunMessage("path", root + "/" + UUID.randomUUID().toString() + ".txt");
+            upsertOnTestRunMessage("path", root + "/" + UUID.randomUUID()
+                    .toString() + ".txt");
             runFlowAndGetPayload("write-default-values");
         }
         root = (((String) getTestRunMessageValue("path")).split("/"))[0];
         upsertOnTestRunMessage("path", root);
     }
 
-    @Category({RegressionTests.class})
+    @Category({ RegressionTests.class
+    })
     @Test
     public void testListStatus() {
         try {

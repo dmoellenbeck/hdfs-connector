@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.mule.tools.devkit</groupId>
         <artifactId>mule-devkit-parent</artifactId>
-        <version>3.6.1</version>
+        <version>3.9.0</version>
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
@@ -13,13 +13,22 @@
     <name>Mule HDFS Connector</name>
 
     <properties>
-        <category>Community</category>
+        <category>Select</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.6.0</hadoop.version>
+        <hadoop.version>2.7.2</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
+        <connector.test.version>2.0.7</connector.test.version>
     </properties>
 
     <dependencies>
+        <!-- Mule Connector Test Framework -->
+        <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-connector-test</artifactId>
+            <version>${connector.test.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
