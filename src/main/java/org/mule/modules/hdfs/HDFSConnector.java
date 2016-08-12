@@ -95,6 +95,34 @@ public class HDFSConnector {
         }
     }
 
+    /**
+     * Read the content of a file designated by its path and streams it to the rest of the flow:
+     *
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-operation}
+     *
+     * @param path
+     *            the path of the file to read.
+     * @param bufferSize
+     *            the buffer size to use when reading the file.
+     * @return the result from executing the rest of the flow.
+     * @throws HDFSConnectorException
+     *             if any issue occurs during the execution.
+     */
+    @Processor(friendlyName = "Read from path")
+    public InputStream readOperation(final String path,
+            @Default("4096") final int bufferSize) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(path, new HdfsPathAction<InputStream>() {
+
+                public InputStream run(final Path hdfsPath) throws Exception { // NOSONAR
+                    return fileSystem.open(hdfsPath, bufferSize);
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
+    }
+
     private Map<String, Object> getPathMetaData(final Path hdfsPath) throws IOException {
         final Map<String, Object> metaData = new HashMap<String, Object>();
 

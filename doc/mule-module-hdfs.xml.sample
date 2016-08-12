@@ -34,6 +34,11 @@
 <hdfs:read path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/>
 <!-- END_INCLUDE(hdfs:read-2) -->
 
+<!-- BEGIN_INCLUDE(hdfs:read-operation) -->
+<!-- Reading a file using with an operation rather than pooling with an endpoint -->
+<hdfs:read-operation path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/>
+<!-- END_INCLUDE(hdfs:read-operation) -->
+
 <!-- BEGIN_INCLUDE(hdfs:get-metadata) -->
 <!-- Store the meta-information of a path in flow variables -->
 <hdfs:get-metadata path="/tmp/test.dat" config-ref="hdfs-conf"/>

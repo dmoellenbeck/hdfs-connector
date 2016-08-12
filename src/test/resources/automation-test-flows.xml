@@ -44,6 +44,16 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <vm:outbound-endpoint path="receive"/>
     </flow>
 
+    <flow name="readOperation" doc:name="Read Operation">
+        <hdfs:read-operation config-ref="HDFS" path="myfile.txt"/>
+        <object-to-string-transformer />
+        <vm:outbound-endpoint path="receive"/>
+    </flow>
+
+    <flow name="readOperationWhenFileDoesNotExist" doc:name="Read Operation">
+        <hdfs:read-operation config-ref="HDFS" path="fileThatDoesNotExist.txt"/>
+    </flow>
+
     <flow name="append" doc:name="append">
         <hdfs:append config-ref="HDFS" path="#[flowVars.path]" bufferSize="#[flowVars.bufferSize]"
                      payload-ref="#[flowVars.payloadRef]" doc:name="HDFS"/>
