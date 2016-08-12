@@ -4,14 +4,19 @@
 package org.mule.modules.hdfs.automation.testcases;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Description;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.internal.matchers.TypeSafeMatcher;
+import org.junit.rules.ExpectedException;
 import org.mule.construct.Flow;
 import org.mule.modules.hdfs.automation.HDFSTestParent;
 import org.mule.modules.hdfs.automation.RegressionTests;
+import org.mule.modules.hdfs.exception.HDFSConnectorException;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.io.InputStream;
@@ -19,10 +24,12 @@ import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Ignore("Fails on Amazon EC2, run this test on local Hadoop instance")
 public class ReadTestCases extends HDFSTestParent {
 
     String fileContentString;
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -31,6 +38,11 @@ public class ReadTestCases extends HDFSTestParent {
         fileContentString = IOUtils.toString(fileContent);
         upsertOnTestRunMessage("payloadRef", IOUtils.toInputStream(fileContentString));
         runFlowAndGetPayload("write-default-values");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        runFlowAndGetPayload("delete-file");
     }
 
     @Category({ RegressionTests.class
@@ -51,8 +63,51 @@ public class ReadTestCases extends HDFSTestParent {
         }
     }
 
-    @After
-    public void tearDown() throws Exception {
-        runFlowAndGetPayload("delete-file");
+    @Category({ RegressionTests.class
+    })
+    @Test
+    public void testReadOperation() throws Exception {
+        String payload = runFlowAndGetPayload("readOperation");
+        assertEquals(fileContentString, payload);
     }
+
+    @Category({ RegressionTests.class
+    })
+    @Test
+    public void testReadOperationWhenFileDoesNotExist() throws Exception {
+        expectedException.expect(new IsCausedByMatcher(HDFSConnectorException.class, ""));
+        runFlowAndGetPayload("readOperationWhenFileDoesNotExist");
+    }
+
+    private static class IsCausedByMatcher extends TypeSafeMatcher<Throwable> {
+
+        private final Class<? extends Throwable> type;
+        private final String expectedMessage;
+
+        public IsCausedByMatcher(Class<? extends Throwable> type, String expectedMessage) {
+            this.type = type;
+            this.expectedMessage = expectedMessage;
+        }
+
+        @Override
+        public boolean matchesSafely(Throwable item) {
+            return item.getCause()
+                    .getClass()
+                    .isAssignableFrom(type)
+                    && item.getCause()
+                            .getMessage()
+                            .contains(expectedMessage);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("expects cause by type ")
+                    .appendValue(type);
+            if (StringUtils.isNotEmpty(expectedMessage)) {
+                description.appendText(" and a cause by message ")
+                        .appendValue(expectedMessage);
+            }
+        }
+    }
+
 }

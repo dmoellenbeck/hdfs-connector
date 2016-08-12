@@ -95,6 +95,41 @@ public class HDFSConnector {
         }
     }
 
+    /**
+     * Read the content of a file designated by its path and streams it to the rest of the flow, while adding the path metadata in the following inbound properties:
+     * <ul>
+     * <li>{@link HDFSConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path exists</li>
+     * <li>{@link HDFSConnector#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.</li>
+     * <li>{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.</li>
+     * <li>{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
+     * </ul>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-1}
+     * <p/>
+     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-2}
+     *
+     * @param path
+     *            the path of the file to read.
+     * @param bufferSize
+     *            the buffer size to use when reading the file.
+     * @return the result from executing the rest of the flow.
+     * @throws HDFSConnectorException
+     *             if any issue occurs during the execution.
+     */
+    @Processor(friendlyName = "Read from path")
+    public InputStream readOperation(final String path,
+            @Default("4096") final int bufferSize) throws HDFSConnectorException {
+        try {
+            return runHdfsPathAction(path, new HdfsPathAction<InputStream>() {
+
+                public InputStream run(final Path hdfsPath) throws Exception { // NOSONAR
+                    return fileSystem.open(hdfsPath, bufferSize);
+                }
+            });
+        } catch (Exception e) {
+            throw new HDFSConnectorException(e);
+        }
+    }
+
     private Map<String, Object> getPathMetaData(final Path hdfsPath) throws IOException {
         final Map<String, Object> metaData = new HashMap<String, Object>();
 
