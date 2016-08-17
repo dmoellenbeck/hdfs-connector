@@ -454,7 +454,7 @@ public class HDFSConnector {
                         }
                     };
                     FileStatus[] fileStatusesAsArray = fileSystem.globStatus(hdfsPath, nonNullPathFilter);
-                    return (fileStatusesAsArray != null) ? Arrays.asList(fileSystem.globStatus(hdfsPath, filter)) : new ArrayList<FileStatus>();
+                    return (fileStatusesAsArray != null) ? Arrays.asList(fileStatusesAsArray) : new ArrayList<FileStatus>();
                 }
             });
         } catch (Exception e) {

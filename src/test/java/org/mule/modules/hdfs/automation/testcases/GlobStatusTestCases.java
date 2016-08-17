@@ -76,6 +76,18 @@ public class GlobStatusTestCases extends HDFSTestParent {
     @Category({ RegressionTests.class
     })
     @Test
+    public void testGlobStatusWhenFilterSetToNull() throws Exception {
+        prefixPathPattern();
+        upsertOnTestRunMessage("filter", null);
+        List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
+        assertNotNull(fileStatuses);
+        assertTrue((fileStatuses.get(0)
+                .getPath().toString()).contains(getTestRunMessageValue("result").toString()));
+    }
+
+    @Category({ RegressionTests.class
+    })
+    @Test
     public void testGlobStatusWhenNoFile() throws Exception {
         upsertOnTestRunMessage(PATH_PATTERN, INVALID_PATH_PATTERN);
         List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
