@@ -1,10 +1,33 @@
 = HDFS Connector Release Notes
 :keywords: release notes, connectors, hdfs
 
-_Community_
+The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as a bi-directional gateway between applications. Its source is stored at the link:http://mulesoft.github.io/hdfs-connector/[HDFS Connector GitHub site].
 
-Guide: link:/mule-user-guide/v/3.7/hdfs-connector[HDFS Connector]
+link:/hdfs-connector[HDFS Connector User Guide]
 
+== Version 5.0.0 - <Release_date>
+
+=== Version 5.0.0 Compatibility
+
+[width="100%", cols=",", options="header"]
+|===
+|Software |Version
+|Mule Runtime | 3.6 and higher
+|Hadoop Distribute File System | 2.7.1 or higher
+|===
+
+=== Version 5.0.0 Features
+
+. Changed connector's category from *Community* to *Select*.
+. Read from path - added operation to read from a file laying into HDFS. This is different from existintg one that polls data and can be used as an endpoint.
+
+=== Version 5.0.0 Fixed in this Release
+
+Only features.
+
+=== Version 5.0.0 Known Issues
+
+No known issue.
 
 == Version 4.0 - March 5, 2015
 
