@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>mule-module</packaging>
     <name>Mule HDFS Connector</name>
 
@@ -18,6 +18,7 @@
         <hadoop.version>2.7.2</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
         <connector.test.version>2.0.7</connector.test.version>
+        <harmcrest.version>1.3</harmcrest.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,12 @@
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-connector-test</artifactId>
             <version>${connector.test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>${harmcrest.version}</version>
             <scope>test</scope>
         </dependency>
 

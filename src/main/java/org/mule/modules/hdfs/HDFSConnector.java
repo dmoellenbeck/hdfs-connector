@@ -21,10 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -449,16 +446,15 @@ public class HDFSConnector {
             return runHdfsPathAction(pathPattern, new HdfsPathAction<List<FileStatus>>() {
 
                 public List<FileStatus> run(final Path hdfsPath) throws Exception { // NOSONAR
-                    if (filter == null) {
-                        return Arrays.asList(fileSystem.globStatus(hdfsPath, new PathFilter() {
+                    PathFilter nonNullPathFilter = (filter != null) ? filter : new PathFilter() {
 
-                            @Override
-                            public boolean accept(Path path) {
-                                return true;
-                            }
-                        }));
-                    }
-                    return Arrays.asList(fileSystem.globStatus(hdfsPath, filter));
+                        @Override
+                        public boolean accept(Path path) {
+                            return true;
+                        }
+                    };
+                    FileStatus[] fileStatusesAsArray = fileSystem.globStatus(hdfsPath, nonNullPathFilter);
+                    return (fileStatusesAsArray != null) ? Arrays.asList(fileStatusesAsArray) : new ArrayList<FileStatus>();
                 }
             });
         } catch (Exception e) {
