@@ -62,11 +62,7 @@ Additionally, we recommend that you keep Studio up to date with its latest versi
 
 == Configure the Connector Global Element
 
-You can install a connector in Anypoint Studio using the instructions in  link:/mule-fundamentals/v/3.7/anypoint-exchange#installing-a-connector-from-anypoint-exchange[Installing a Connector from Anypoint Exchange]. 
-
-=== Configuring a Global Element
-
-To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the HDFS connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration(s), requiring the following credentials:
+To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the HDFS connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration, requiring the following credentials:
 
 [width="100a",cols="50a,50a",options="header",]
 |===
@@ -136,12 +132,48 @@ Inside the `<version>` tags, put the desired version number, the word `RELEASE` 
 
 == Demo Mule Applications Using Connector
 
-link:/common-operations
-link:/poll-from-file
+Exsting demos demontrate how to use connector for link:/common-operations[basic file system operations] and how to link:/poll-from-file[poll data from a file] at specific interval.
 
 === Example Use Case
 
+The following example shows how to create a text file into HDFS through connector:
 
+. In Anypoint Studio, click *File* > *New* > *Mule Project*, name the project, and click *OK*.
+. In the search field, type "http" and drag the *HTTP* connector to the canvas, click the green plus sign to the right of *Connector Configuration*, and in the next screen, click *OK* to accept the default settings. Name the endpoint */createFile*.
+. In the Search bar type "HDFS" and drag the *HDFS* connector onto the canvas. Configure as explained <<Configure the Connector Global Element>>
+. Choose *Write to path* as an operation. Set *Path* to "/test.txt" (this is the path of the file that is going to be created into HDFS) and leave other options with default values.
+. The flow should look like this:
++
+image:create-file-flow.png[Create file flow]
++
+. Run the application and from your favorite http client make a POST request having "Content-type:plain/text" to locahost:8081/createFile with content that you want to write as payload. (e.g. curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile)
+. Check that */test.txt* has been created and has your content by using Hadoop explorer.
+
+This and other basic file systen operations are demonstrated within link:/common-operations[this] demo.
+
+=== Example Use Case - XML
+
+Paste this into Anypoint Studio to interact with the example use case application discussed in this guide.
+
+[source,xml,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <hdfs:config name="HDFS__Configuration" nameNodeUri="hdfs://localhost:9000" doc:name="HDFS: Configuration"/>
+    <flow name="hdfs-example-use-caseFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/createFile" doc:name="HTTP"/>
+        <hdfs:write config-ref="HDFS__Configuration" path="/test.txt" doc:name="HDFS"/>
+    </flow>
+</mule>
+----
 
 == Connector Performance
 
