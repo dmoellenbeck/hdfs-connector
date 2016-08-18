@@ -48,7 +48,7 @@ public class HDFSConnector {
     public static final String HDFS_FILE_CHECKSUM = HDFS + ".file.checksum";
     public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
 
-    @ConnectionStrategy
+    @Config
     private HDFSConnectionManagement connection;
 
     private FileSystem fileSystem;
