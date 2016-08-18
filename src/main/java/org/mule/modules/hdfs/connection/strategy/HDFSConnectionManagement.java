@@ -34,6 +34,7 @@ public class HDFSConnectionManagement {
      * A simple user identity of a client process.
      */
     @Configurable
+    @Optional
     @Placement(group = "Authentication")
     private String username;
 
