@@ -3,10 +3,14 @@
  */
 package org.mule.modules.hdfs.automation.runner;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.mule.modules.hdfs.HDFSConnector;
 import org.mule.modules.hdfs.automation.functional.*;
+import org.mule.tools.devkit.ctf.mockup.ConnectorTestContext;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -14,17 +18,19 @@ import org.mule.modules.hdfs.automation.functional.*;
         CopyFromLocalFileTestCases.class,
         CopyToLocalFileTestCases.class,
         DeleteFileTestCases.class,
-        GetMetadataTestCases.class,
         ListStatusTestCases.class,
         GlobStatusTestCases.class,
-        MakeDirectoriesTestCases.class,
-        ReadTestCases.class,
-        RenameTestCases.class,
-        SetOwnerTestCases.class,
-        SetPermissionTestCases.class,
-        WriteTestCases.class,
-        DeleteDirectoryTestCases.class
+        MakeDirectoriesTestCases.class
 })
 public class FunctionalTestSuite {
 
+    @BeforeClass
+    public static void initialiseSuite() {
+        ConnectorTestContext.initialize(HDFSConnector.class);
+    }
+
+    @AfterClass
+    public static void shutdownSuite() throws Exception {
+        ConnectorTestContext.shutDown();
+    }
 }

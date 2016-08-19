@@ -3,44 +3,47 @@
  */
 package org.mule.modules.hdfs.automation.functional;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.tests.ConnectorTestUtils;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.is;
 
 public class CopyToLocalFileTestCases extends AbstractTestCases {
 
-    String source, target;
+    private static final String MYFILE_PATH = "myfile.txt";
+    private static final String LOCAL_TAGET_PATH = "src/test/resources/data-sets/myfile.txt";
+    private byte[] initialWrittenData;
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("copyToLocalFileTestData");
-        runFlowAndGetPayload("copy-from-local-file");
-        upsertOnTestRunMessage("source", getTestRunMessageValue("sourceConfig"));
-        upsertOnTestRunMessage("target", getTestRunMessageValue("targetConfig"));
-        upsertOnTestRunMessage("deleteSrc", "true");
+        initialWrittenData = TestDataBuilder.payloadForCopyToLocal();
+        getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(initialWrittenData));
     }
 
     @Test
-    public void testCopyToLocalFile() {
-        try {
-
-            runFlowAndGetPayload("copy-to-local-file");
-            File sourceFile = new File((String) getTestRunMessageValue("sourceFile"));
-            File targetFile = new File((String) getTestRunMessageValue("targetFile"));
-            FileUtils.contentEquals(sourceFile, targetFile);
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
+    public void testCopyToLocalFile() throws Exception {
+        getConnector().copyToLocalFile(false, false, MYFILE_PATH, LOCAL_TAGET_PATH);
+        Path localTarget = Paths.get(LOCAL_TAGET_PATH);
+        InputStream targetDataStream = Files.newInputStream(localTarget);
+        InputStream sourceDataStream = new ByteArrayInputStream(initialWrittenData);
+        Assert.assertThat(IOUtils.contentEquals(targetDataStream, sourceDataStream), is(true));
     }
 
     @After
     public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(new File((String) getTestRunMessageValue("target")));
+        getConnector().deleteFile(MYFILE_PATH);
+        Files.delete(Paths.get(LOCAL_TAGET_PATH));
+        Path localTarget = Paths.get(LOCAL_TAGET_PATH);
+        Files.delete(localTarget.resolveSibling("." + localTarget.getFileName()
+                .toString() + ".crc"));
     }
 }

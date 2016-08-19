@@ -3,43 +3,36 @@
  */
 package org.mule.modules.hdfs.automation.functional;
 
-import org.apache.hadoop.fs.FileStatus;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.mule.modules.tests.ConnectorTestUtils;
 
-import java.io.File;
-import java.util.List;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
 
 public class CopyFromLocalFileTestCases extends AbstractTestCases {
 
-    @Before
-    public void setUp() throws Exception {
-        initializeTestRunMessage("copyFromLocalFileTestData");
-        upsertOnTestRunMessage("path", getTestRunMessageValue("target"));
-    }
+    public static final String TARGET_DIRECTORY = "rootDirectory";
+    public static final String LOCAL_SOURCE_PATH = "src/test/resources/data-sets/timeZones.txt";
 
     @Test
-    public void testCopyFromLocalFile() {
-        try {
-            runFlowAndGetPayload("copy-from-local-file");
-
-            List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
-            long initialLength = (new File((String) getTestRunMessageValue("source"))).length();
-            assertTrue(fileStatuses.size() > 0);
-            assertEquals(fileStatuses.get(0)
-                    .getLen(), initialLength);
-
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
+    public void testCopyFromLocalFile() throws Exception {
+        Path localSource = Paths.get(LOCAL_SOURCE_PATH);
+        Path remoteTarget = Paths.get(TARGET_DIRECTORY)
+                .resolve(localSource.getFileName());
+        getConnector().copyFromLocalFile(false, true, LOCAL_SOURCE_PATH, remoteTarget.toString());
+        InputStream targetDataStream = getConnector().readOperation(remoteTarget.toString(), 4096);
+        InputStream sourceDataStream = Files.newInputStream(localSource);
+        Assert.assertThat(IOUtils.contentEquals(targetDataStream, sourceDataStream), is(true));
     }
 
     @After
     public void tearDown() throws Exception {
-        runFlowAndGetPayload("delete-directory");
+        getConnector().deleteDirectory(TARGET_DIRECTORY);
     }
 }

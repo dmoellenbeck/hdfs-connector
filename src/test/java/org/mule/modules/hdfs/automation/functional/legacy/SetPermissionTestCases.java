@@ -1,13 +1,14 @@
 /**
  * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
-package org.mule.modules.hdfs.automation.functional;
+package org.mule.modules.hdfs.automation.functional.legacy;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mule.modules.tests.ConnectorTestCase;
 import org.mule.modules.tests.ConnectorTestUtils;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class SetPermissionTestCases extends AbstractTestCases {
+public class SetPermissionTestCases extends ConnectorTestCase {
 
     @Before
     public void setUp() throws Exception {

@@ -6,87 +6,68 @@ package org.mule.modules.hdfs.automation.functional;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
-import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.tests.ConnectorTestUtils;
+import org.mule.modules.hdfs.utils.RegexExcludePathFilter;
 
 import java.util.List;
-import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 public class GlobStatusTestCases extends AbstractTestCases {
 
-    public static final String PATH_PREFIX = "/" + UUID.randomUUID()
-            .toString() + "/";
-    public static final String PATH_PATTERN = "pathPattern";
+    public static final String PARENT_DIRECTORY = "/rootDirectory";
     public static final String INVALID_PATH_PATTERN = "invalidPathPattern";
 
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("globStatusTestData");
-        for (String path : (List<String>) getTestRunMessageValue("pathList")) {
-            upsertOnTestRunMessage("path", PATH_PREFIX + path);
-            runFlowAndGetPayload("make-directories");
+        for (String childFile : TestDataBuilder.fileNamesForGlobStatus()) {
+            getConnector().makeDirectories(PARENT_DIRECTORY + childFile, "700");
         }
     }
 
     @Test
-    public void testGlobStatus() {
-        try {
-            prefixPathPattern();
-            List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
-            assertNotNull(fileStatuses);
-            assertTrue((fileStatuses.get(0)
-                    .getPath().toString()).contains(getTestRunMessageValue("result").toString()));
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
-    }
-
-    private void prefixPathPattern() {
-        String prefixedPathPattern = PATH_PREFIX + getTestRunMessageValue(PATH_PATTERN);
-        upsertOnTestRunMessage(PATH_PATTERN, prefixedPathPattern);
+    public void testGlobStatus() throws Exception {
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", new RegexExcludePathFilter("^.*2013/12/31$"));
+        Assert.assertThat(fileStatuses, notNullValue());
+        Assert.assertThat(fileStatuses.get(0)
+                .getPath()
+                .toString(), containsString("2013/12/30"));
     }
 
     @Test
     public void testGlobStatusWhenNoFileMatches() throws Exception {
-        prefixPathPattern();
-        upsertOnTestRunMessage("filter", new PathFilter() {
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", new PathFilter() {
 
             @Override
             public boolean accept(Path path) {
                 return false;
             }
         });
-        List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
-        assertNotNull(fileStatuses);
-        assertThat(fileStatuses, Matchers.empty());
+        Assert.assertThat(fileStatuses, notNullValue());
+        Assert.assertThat(fileStatuses, empty());
     }
 
     @Test
     public void testGlobStatusWhenFilterSetToNull() throws Exception {
-        prefixPathPattern();
-        upsertOnTestRunMessage("filter", null);
-        List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
-        assertNotNull(fileStatuses);
-        assertTrue((fileStatuses.get(0)
-                .getPath().toString()).contains(getTestRunMessageValue("result").toString()));
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", null);
+        Assert.assertThat(fileStatuses, notNullValue());
+        Assert.assertThat(fileStatuses.get(0)
+                .getPath()
+                .toString(), containsString("2013/12/30"));
     }
 
     @Test
     public void testGlobStatusWhenNoFile() throws Exception {
-        upsertOnTestRunMessage(PATH_PATTERN, INVALID_PATH_PATTERN);
-        List<FileStatus> fileStatuses = runFlowAndGetPayload("glob-status");
-        assertNotNull(fileStatuses);
-        assertThat(fileStatuses, Matchers.empty());
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + INVALID_PATH_PATTERN, new RegexExcludePathFilter("^.*2013/12/31$"));
+        Assert.assertThat(fileStatuses, notNullValue());
+        Assert.assertThat(fileStatuses, empty());
     }
 
     @After
     public void tearDown() throws Exception {
-        upsertOnTestRunMessage("path", PATH_PREFIX);
-        runFlowAndGetPayload("delete-directory");
+        getConnector().deleteDirectory(PARENT_DIRECTORY);
     }
 }

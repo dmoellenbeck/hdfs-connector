@@ -3,38 +3,34 @@
  */
 package org.mule.modules.hdfs.automation.functional;
 
+import org.apache.hadoop.fs.FileStatus;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.mule.modules.hdfs.HDFSConnector;
-import org.mule.modules.tests.ConnectorTestUtils;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class MakeDirectoriesTestCases extends AbstractTestCases {
 
-    @Before
-    public void setUp() throws Exception {
-        initializeTestRunMessage("makeDirectoriesTestData");
-    }
+    private static final String PARENT_DIRECTORY = "rootDirectory/";
+    private static final String NEW_DIRECTORY = "newDirectory";
 
     @Test
-    public void testMakeDirectories() {
-        try {
-            runFlowAndGetPayload("make-directories");
-            assertTrue((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
-
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
+    public void testMakeDirectories() throws Exception {
+        getConnector().makeDirectories(PARENT_DIRECTORY + NEW_DIRECTORY, "700");
+        List<FileStatus> parentDirectoryStatuses = getConnector().listStatus(PARENT_DIRECTORY, null);
+        Assert.assertThat(parentDirectoryStatuses, notNullValue());
+        Assert.assertThat(parentDirectoryStatuses.get(0)
+                .getPath()
+                .getName(), is(NEW_DIRECTORY));
     }
 
     @After
     public void tearDown() throws Exception {
-        String root = (((String) getTestRunMessageValue("path")).split("/"))[0];
-        upsertOnTestRunMessage("path", root);
-        runFlowAndGetPayload("delete-directory");
+        getConnector().deleteDirectory(PARENT_DIRECTORY);
     }
 
 }

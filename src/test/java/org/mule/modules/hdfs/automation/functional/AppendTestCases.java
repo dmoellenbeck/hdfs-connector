@@ -5,53 +5,45 @@ package org.mule.modules.hdfs.automation.functional;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.construct.Flow;
-import org.mule.modules.tests.ConnectorTestUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.util.Vector;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.is;
 
 public class AppendTestCases extends AbstractTestCases {
 
+    public static final String MYFILE_PATH = "myfile.txt";
+    private byte[] initialWrittenData;
+
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("appendTestData");
-        runFlowAndGetPayload("write-default-values");
-    }
-
-    @Test
-    public void testAppend() {
-
-        Vector<InputStream> inputStreams = new Vector<InputStream>();
-        inputStreams.add((InputStream) getTestRunMessageValue("payloadRef"));
-
-        InputStream inputStreamToAppend = getBeanFromContext("randomInputStream");
-        inputStreams.add(inputStreamToAppend);
-        upsertOnTestRunMessage("payloadRef", inputStreamToAppend);
-
-        SequenceInputStream inputStreamsSequence = new SequenceInputStream(inputStreams.elements());
-
-        try {
-            runFlowAndGetPayload("append");
-            Flow flow = muleContext.getRegistry()
-                    .get("read");
-            flow.start();
-            String payload = (String) muleContext.getClient()
-                    .request("vm://receive", 5000)
-                    .getPayload();
-            IOUtils.contentEquals(inputStreamsSequence, IOUtils.toInputStream(payload));
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
+        initialWrittenData = TestDataBuilder.payloadForAppend();
+        getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(initialWrittenData));
     }
 
     @After
     public void tearDown() throws Exception {
-        runFlowAndGetPayload("delete-file");
+        getConnector().deleteFile(MYFILE_PATH);
+    }
+
+    @Test
+    public void testAppend() throws Exception {
+        Vector<InputStream> inputStreams = new Vector<InputStream>();
+        inputStreams.add(new ByteArrayInputStream(initialWrittenData));
+
+        byte[] inputStreamToAppend = TestDataBuilder.payloadForAppend();
+        inputStreams.add(new ByteArrayInputStream(inputStreamToAppend));
+
+        SequenceInputStream inputStreamsSequence = new SequenceInputStream(inputStreams.elements());
+
+        getConnector().append(MYFILE_PATH, 4096, new ByteArrayInputStream(inputStreamToAppend));
+        InputStream payload = getConnector().readOperation(MYFILE_PATH, 4096);
+        Assert.assertThat(IOUtils.contentEquals(inputStreamsSequence, payload), is(true));
     }
 }

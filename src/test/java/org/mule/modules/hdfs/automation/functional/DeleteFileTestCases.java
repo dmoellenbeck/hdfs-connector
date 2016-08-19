@@ -3,33 +3,39 @@
  */
 package org.mule.modules.hdfs.automation.functional;
 
+import org.apache.hadoop.fs.FileStatus;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.hdfs.HDFSConnector;
-import org.mule.modules.tests.ConnectorTestUtils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class DeleteFileTestCases extends AbstractTestCases {
 
+    private static final String PARENT_DIRECTORY = "rootDirecotry/";
+    private static final String MYFILE_PATH = PARENT_DIRECTORY + "myfile.txt";
+
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("deleteTestData");
-        runFlowAndGetPayload("write-default-values");
+        getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(TestDataBuilder.payloadForDelete()));
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        getConnector().deleteFile(PARENT_DIRECTORY);
     }
 
     @Test
-    public void testDeleteFile() {
-        try {
-            runFlowAndGetPayload("delete-file");
-            assertFalse((Boolean) runFlowAndGetInvocationProperty("get-metadata", HDFSConnector.HDFS_PATH_EXISTS));
-
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
-
+    public void testDeleteFile() throws Exception {
+        getConnector().deleteFile(MYFILE_PATH);
+        List<FileStatus> parentDirectoryStatuses = getConnector().listStatus(PARENT_DIRECTORY, null);
+        Assert.assertThat(parentDirectoryStatuses, notNullValue());
+        Assert.assertThat(parentDirectoryStatuses, empty());
     }
 
 }

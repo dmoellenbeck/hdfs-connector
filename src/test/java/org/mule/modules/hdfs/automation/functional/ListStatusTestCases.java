@@ -5,45 +5,36 @@ package org.mule.modules.hdfs.automation.functional;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.tests.ConnectorTestUtils;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class ListStatusTestCases extends AbstractTestCases {
 
+    private static final String PARENT_DIRECTORY = "rootDirectory/";
+
     @Before
     public void setUp() throws Exception {
-        initializeTestRunMessage("listStatusTestData");
-        int itr = Integer.parseInt(getTestRunMessageValue("size").toString());
-        String root = getTestRunMessageValue("path");
-        for (int i = 0; i < itr; i++) {
-            upsertOnTestRunMessage("path", root + "/" + UUID.randomUUID()
-                    .toString() + ".txt");
-            runFlowAndGetPayload("write-default-values");
+        for (String childFile : TestDataBuilder.fileNamesForListStatus()) {
+            getConnector().write(PARENT_DIRECTORY + childFile, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(TestDataBuilder.payloadForListStatus()));
         }
-        root = (((String) getTestRunMessageValue("path")).split("/"))[0];
-        upsertOnTestRunMessage("path", root);
     }
 
     @Test
-    public void testListStatus() {
-        try {
-
-            List<FileStatus> fileStatuses = runFlowAndGetPayload("list-status");
-            assertNotNull(fileStatuses);
-            assertEquals((Integer.parseInt((String) getTestRunMessageValue("size"))), fileStatuses.size());
-        } catch (Exception e) {
-            fail(ConnectorTestUtils.getStackTrace(e));
-        }
+    public void testListStatus() throws Exception {
+        List<FileStatus> fileStatuses = getConnector().listStatus(PARENT_DIRECTORY, ".*txt");
+        Assert.assertThat(fileStatuses, notNullValue());
+        Assert.assertThat(fileStatuses.size(), is(3));
     }
 
     @After
     public void tearDown() throws Exception {
-        runFlowAndGetPayload("delete-directory");
+        getConnector().deleteDirectory(PARENT_DIRECTORY);
     }
 }
