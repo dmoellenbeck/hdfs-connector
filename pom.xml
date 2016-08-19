@@ -35,11 +35,11 @@
             <version>${harmcrest.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>${hadoop.version}</version>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-client</artifactId>
+            <version>${mule.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mule.transports</groupId>
@@ -47,34 +47,35 @@
             <version>${mule.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-client</artifactId>
-            <version>${mule.version}</version>
-            <scope>test</scope>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <!-- Integration Tests. To run the integration test use > mvn integration-test -->
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
                 <executions>
                     <execution>
+                        <id>attach-sources</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.mule.certification</groupId>
+                <artifactId>project-structure-validation</artifactId>
+                <version>1.0.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
                         <goals>
-                            <goal>integration-test</goal>
+                            <goal>validate</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -99,14 +100,14 @@
 
     <distributionManagement>
         <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Repository</name>
-            <url>http://repository-master.mulesoft.org/releases/</url>
+            <id>mule-ee-releases</id>
+            <name>MuleEE Releases Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases-ee/</url>
         </repository>
         <snapshotRepository>
-            <id>mulesoft-snapshots</id>
-            <name>MuleSoft Snapshot Repository</name>
-            <url>http://repository-master.mulesoft.org/snapshots/</url>
+            <id>mule-ee-snapshots</id>
+            <name>MuleEE Snapshots Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
