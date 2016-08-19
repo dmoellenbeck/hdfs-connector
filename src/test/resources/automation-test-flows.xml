@@ -10,9 +10,9 @@
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
  http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
-    <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
+    <context:property-placeholder location="${automation-credentials.properties}"/>
 
-    <hdfs:config name="HDFS" nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}" doc:name="HDFS">
+    <hdfs:config name="HDFS" nameNodeUri="${config.nameNodeUri}" username="${config.username}" doc:name="HDFS">
         <hdfs:configuration-entries>
             <hdfs:configuration-entry key="dfs.client.use.legacy.blockreader">true</hdfs:configuration-entry>
         </hdfs:configuration-entries>

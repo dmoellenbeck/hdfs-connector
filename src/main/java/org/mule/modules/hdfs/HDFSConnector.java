@@ -37,7 +37,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author MuleSoft Inc.
  */
-@Connector(name = HDFSConnector.HDFS, schemaVersion = "3.4", friendlyName = "HDFS", description = "HDFS Connector", minMuleVersion = "3.6.0")
+@Connector(name = HDFSConnector.HDFS, schemaVersion = "5.0", friendlyName = "HDFS", description = "HDFS Connector", minMuleVersion = "3.6.0")
 @RequiresEnterpriseLicense(allowEval = true)
 @ReconnectOn(exceptions = IOException.class)
 public class HDFSConnector {
@@ -76,14 +76,14 @@ public class HDFSConnector {
      *             if any issue occurs during the execution.
      */
     @Source(friendlyName = "Read from path", sourceStrategy = SourceStrategy.POLLING, pollingPeriod = 5000)
-    public Object read(final String path,
+    public void read(final String path,
             @Default("4096") final int bufferSize,
             final SourceCallback sourceCallback) throws HDFSConnectorException {
         try {
-            return runHdfsPathAction(path, new HdfsPathAction<Object>() {
+            runHdfsPathAction(path, new VoidHdfsPathAction() {
 
-                public Object run(final Path hdfsPath) throws Exception { // NOSONAR
-                    return sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
+                public void run(final Path hdfsPath) throws Exception { // NOSONAR
+                    sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
                             getPathMetaData(hdfsPath));
                 }
             });

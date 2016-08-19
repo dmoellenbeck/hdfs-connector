@@ -1,18 +1,18 @@
 /**
  * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
-package org.mule.modules.hdfs;
+package org.mule.modules.hdfs.automation.unit;
 
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mule.api.MuleEvent;
-import org.mule.api.MuleException;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mule.api.callback.SourceCallback;
+import org.mule.modules.hdfs.HDFSConnector;
 import org.mule.modules.hdfs.utils.MyMuleEvent;
 import org.mule.modules.tests.ConnectorTestUtils;
 
@@ -28,16 +28,19 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class HDFSConnectorTest {
 
     @Mock
     private FileSystem fileSystem;
 
+    @Mock
+    private SourceCallback readSourceCallback;
+
     private HDFSConnector connector;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         this.connector = new HDFSConnector();
         this.connector.setFileSystem(fileSystem);
     }
@@ -48,9 +51,9 @@ public class HDFSConnectorTest {
             FSDataInputStream inputStream = Mockito.mock(FSDataInputStream.class);
             when(fileSystem.open(any(Path.class), anyInt())).thenReturn(inputStream);
 
-            Object read = connector.read("foo", 4084, mockSourceCallBack());
-            assertEquals(read instanceof Map, true);
-            assertEquals(((Map) read).size(), 4);
+            connector.read("foo", 4084, readSourceCallback);
+            Mockito.verify(readSourceCallback, times(1))
+                    .process(Mockito.any(), Mockito.anyMap());
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
@@ -185,31 +188,6 @@ public class HDFSConnectorTest {
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
-    }
-
-    private SourceCallback mockSourceCallBack() {
-        return new SourceCallback() {
-
-            @Override
-            public Object process() throws Exception {
-                return null;
-            }
-
-            @Override
-            public Object process(Object payload) throws Exception {
-                return null;
-            }
-
-            @Override
-            public Object process(Object payload, Map<String, Object> properties) throws Exception {
-                return mockGetPathMetaData(true);
-            }
-
-            @Override
-            public MuleEvent processEvent(MuleEvent event) throws MuleException {
-                return null;
-            }
-        };
     }
 
     private Map<String, Object> mockGetPathMetaData(boolean state) throws IOException {

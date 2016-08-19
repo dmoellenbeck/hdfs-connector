@@ -29,12 +29,6 @@
         <entry key="replication" value="#{1}"/>
     </util:map>
 
-    <util:map id="deleteTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="payloadRef" value-ref="randomInputStream"/>
-        <entry key="path" value="myfile.txt"/>
-    </util:map>
-
     <util:map id="getMetadataTestData" map-class="java.util.HashMap" key-type="java.lang.String"
               value-type="java.lang.Object" scope="prototype">
         <entry key="payloadRef" value-ref="randomInputStream"/>
@@ -45,18 +39,6 @@
               scope="prototype">
         <entry key="payloadRef" value-ref="randomInputStream"/>
         <entry key="path" value="myfile.txt"/>
-    </util:map>
-
-    <util:map id="appendTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="payloadRef" value-ref="randomInputStream"/>
-        <entry key="path" value="myfile.txt"/>
-        <entry key="bufferSize" value="#{8192}"/>
-    </util:map>
-
-    <util:map id="makeDirectoriesTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="path" value="hadoop/connector-qa/myfile.txt"/>
     </util:map>
 
     <util:map id="deleteDirectoryTestData" map-class="java.util.HashMap" key-type="java.lang.String"
@@ -74,35 +56,6 @@
         <entry key="bufferSize" value="#{8192}"/>
         <entry key="blockSize" value="#{8192}"/>
         <entry key="replication" value="#{1}"/>
-    </util:map>
-
-    <util:map id="listStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="payloadRef" value-ref="randomInputStream"/>
-        <entry key="path" value-ref="rootDirectory"/>
-        <entry key="size" value="5"/>
-        <entry key="filter" value=".*txt"/>
-    </util:map>
-
-    <util:map id="copyFromLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="deleteSrc" value="false"/>
-        <entry key="overwrite" value="true"/>
-        <entry key="source" value="src/test/resources/data-sets/timeZones.txt"/>
-        <entry key="target" value-ref="rootDirectory"/>
-    </util:map>
-
-    <util:map id="copyToLocalFileTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="deleteSrc" value="false"/>
-        <entry key="overwrite" value="true"/>
-        <entry key="useRawLocalFileSystem" value="false"/>
-        <entry key="source" value="src/test/resources/data-sets/"/>
-        <entry key="target" value-ref="rootDirectory"/>
-        <entry key="sourceConfig" value-ref="rootDirectory"/>
-        <entry key="targetConfig" value="src/test/resources/targetDir/"/>
-        <entry key="sourceFile" value="src/test/resources/data-sets/timeZones.txt"/>
-        <entry key="targetFile" value="src/test/resources/targetDir/timeZones.txt"/>
     </util:map>
 
     <util:map id="setPermissionTestData" map-class="java.util.HashMap" key-type="java.lang.String"
@@ -126,20 +79,5 @@
         </entry>
         <entry key="groupname" value="hadoop"/>
         <entry key="ownername" value="qauser" />
-    </util:map>
-
-    <util:map id="globStatusTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="pathList">
-            <list value-type="java.lang.String">
-                <value>2013/12/30</value>
-                <value>2013/12/31</value>
-                <value>2014/03/20</value>
-                <value>2014/04/22</value>
-            </list>
-        </entry>
-        <entry key="pathPattern" value="2013/*/*"/>
-        <entry key="filter" value-ref="filterRegex"/>
-        <entry key="result" value="2013/12/30"/>
     </util:map>
 </beans>

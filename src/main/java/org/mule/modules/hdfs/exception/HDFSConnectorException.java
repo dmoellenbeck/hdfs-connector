@@ -5,6 +5,8 @@ package org.mule.modules.hdfs.exception;
 
 public class HDFSConnectorException extends Exception {
 
+    private static final long serialVersionUID = -5697767398416151995L;
+
     public HDFSConnectorException() {
         super();
     }
