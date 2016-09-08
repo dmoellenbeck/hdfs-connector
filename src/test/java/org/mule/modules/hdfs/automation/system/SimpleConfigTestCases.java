@@ -9,8 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mule.modules.hdfs.connection.strategy.HDFSConnectionManagement;
+import org.mule.modules.hdfs.automation.runner.SystemTestsFilterByAutomationCredentialsProperties;
+import org.mule.modules.hdfs.connection.config.Simple;
 import org.mule.tools.devkit.ctf.configuration.util.ConfigurationUtils;
 
 import java.util.Properties;
@@ -18,11 +18,11 @@ import java.util.Properties;
 /**
  * @author MuleSoft, Inc.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class HDFSConnectionManagementTestCases {
+@RunWith(SystemTestsFilterByAutomationCredentialsProperties.class)
+public class SimpleConfigTestCases {
 
     public static final String FAKE_NAME_NODE_URI = "fakeNameNodeURI";
-    private HDFSConnectionManagement config;
+    private Simple config;
     private Properties configuration;
     @Rule
     public ExpectedException exceptionEvaluator = ExpectedException.none();
@@ -34,7 +34,8 @@ public class HDFSConnectionManagementTestCases {
     }
 
     private void initializeConnectorConfig() throws Exception {
-        config = new HDFSConnectionManagement();
+        config = new Simple();
+        config.setUsername(configuration.getProperty("config.username"));
     }
 
     @NotNull

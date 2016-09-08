@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 
 public class CopyFromLocalFileTestCases extends AbstractTestCases {
 
-    public static final String TARGET_DIRECTORY = "rootDirectory";
+    public static final String TARGET_DIRECTORY = "rootDirectory/";
     public static final String LOCAL_SOURCE_PATH = "src/test/resources/data-sets/timeZones.txt";
 
     @Test

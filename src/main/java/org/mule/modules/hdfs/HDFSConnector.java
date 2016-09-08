@@ -13,7 +13,7 @@ import org.mule.api.annotations.licensing.RequiresEnterpriseLicense;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.callback.SourceCallback;
-import org.mule.modules.hdfs.connection.strategy.HDFSConnectionManagement;
+import org.mule.modules.hdfs.connection.config.AbstractConfig;
 import org.mule.modules.hdfs.exception.HDFSConnectorException;
 import org.mule.util.IOUtils;
 
@@ -49,7 +49,7 @@ public class HDFSConnector {
     public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
 
     @Config
-    private HDFSConnectionManagement connection;
+    private AbstractConfig connection;
 
     private FileSystem fileSystem;
 
@@ -606,11 +606,11 @@ public class HDFSConnector {
         return isBlank(permission) ? FsPermission.getDefault() : new FsPermission(permission);
     }
 
-    public HDFSConnectionManagement getConnection() {
+    public AbstractConfig getConnection() {
         return connection;
     }
 
-    public void setConnection(@NotNull HDFSConnectionManagement connection) {
+    public void setConnection(@NotNull AbstractConfig connection) {
         this.connection = connection;
         this.setFileSystem(connection.getFileSystem());
     }
