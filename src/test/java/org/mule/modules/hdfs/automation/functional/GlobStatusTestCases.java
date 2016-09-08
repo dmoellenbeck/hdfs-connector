@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.*;
 
 public class GlobStatusTestCases extends AbstractTestCases {
 
-    public static final String PARENT_DIRECTORY = "/rootDirectory";
+    public static final String PARENT_DIRECTORY = "rootDirectory/";
     public static final String INVALID_PATH_PATTERN = "invalidPathPattern";
 
     @Before
@@ -30,7 +30,7 @@ public class GlobStatusTestCases extends AbstractTestCases {
 
     @Test
     public void testGlobStatus() throws Exception {
-        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", new RegexExcludePathFilter("^.*2013/12/31$"));
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "/2013/*/*", new RegexExcludePathFilter("^.*2013/12/31$"));
         Assert.assertThat(fileStatuses, notNullValue());
         Assert.assertThat(fileStatuses.get(0)
                 .getPath()
@@ -39,7 +39,7 @@ public class GlobStatusTestCases extends AbstractTestCases {
 
     @Test
     public void testGlobStatusWhenNoFileMatches() throws Exception {
-        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", new PathFilter() {
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "/2013/*/*", new PathFilter() {
 
             @Override
             public boolean accept(Path path) {
@@ -52,7 +52,7 @@ public class GlobStatusTestCases extends AbstractTestCases {
 
     @Test
     public void testGlobStatusWhenFilterSetToNull() throws Exception {
-        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "2013/*/*", null);
+        List<FileStatus> fileStatuses = getConnector().globStatus(PARENT_DIRECTORY + "/2013/*/*", null);
         Assert.assertThat(fileStatuses, notNullValue());
         Assert.assertThat(fileStatuses.get(0)
                 .getPath()
