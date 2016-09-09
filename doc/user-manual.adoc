@@ -8,7 +8,7 @@ toc::[]
 
 == Introduction
 
-The Anypoint Connector for the Hadoop Distributed File System (HDFS) uses as a bi-directional gateway between Mule applications.
+The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as a bi-directional gateway between Mule applications and HDFS.
 
 Read through this user guide to understand how to set up and configure a basic flow using the connector. Track feature additions, compatibility, limitations and API version updates with each release of the connector using the link:/release-notes/hdfs-connector-release-notes[Connector Release Notes]. Review the connector operations and functionality using the link:/mulesoft.github.io/hdfs-connector[Technical Reference] alongside the link:https://www.mulesoft.com/exchange#!/?filters=HDFS&sortBy=rank[demo applications].
 
@@ -62,18 +62,44 @@ Additionally, we recommend that you keep Studio up to date with its latest versi
 
 == Configure the Connector Global Element
 
-To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the HDFS connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration, requiring the following credentials:
+To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration, requiring the following credentials:
 
+. Simple authetication configuration:
++
 [width="100a",cols="50a,50a",options="header",]
 |===
 |Field |Description
-|*NameNode URI* |Enter the URI of your HDFS name node.
-|*Username* |Enter a simple user identity of a client process.
-|*Configuration Resources* |Enter configuration resource files to be loaded by HDFS client.
-|*Configuration Entries* |Enter configuration entries to be used by HDFS client.
+|*NameNode URI* |The URI of the file system to connect to.
+[NOTE]
+It is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overriden by values in configurationResources and configurationEntries.
+|*Username* |A simple user identity of a client process.
+[NOTE]
+It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+|*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
+|*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
-
-image:hdfs-global-element-props.png[hdfs-config]
++
+image:hdfs-config.png[hdfs-config]
++
+. Kerberos authentication configuration:
++
+[width="100a",cols="50a,50a",options="header",]
+|===
+|Field |Description
+|*NameNode URI* |The URI of the file system to connect to.
+[NOTE]
+It is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overriden by values in configurationResources and configurationEntries.
+|*Username* |A simple user identity of a client process.
+[NOTE]
+It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+|*KeytabPath* |Path to the link:https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html[keytab file] associated with username.
+[NOTE]
+It is used in order to obtain TGT from "Authorization server".  If not provided it will look for a TGT associated to username within your local kerberos cache.
+|*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
+|*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
+|===
++
+image:hdfs-config-with-kerberos.png[hdfs-config-with-kerberos]
 
 == Using the Connector
 
