@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Abstract configration to be implemented by specific configuration of the connector.
+ *
  * @author MuleSoft, Inc.
  */
 public abstract class AbstractConfig {
@@ -29,21 +31,22 @@ public abstract class AbstractConfig {
     private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
     /**
-     * A simple user identity of a client process.
+     * A simple user identity of a client process. It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources
+     * and configurationEntries.
      */
     @Configurable
     @Optional
-    @Placement(group = "Authentication")
+    @Placement(order = 1, group = "Authentication")
     private String username;
     /**
-     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS client.
+     * A {@link java.util.List} of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
      */
     @Configurable
     @Optional
     @Placement(group = "Advanced")
     private List<String> configurationResources;
     /**
-     * A {@link java.util.Map} of configuration entries to be used by the HDFS client.
+     * A {@link java.util.Map} of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
      */
     @Configurable
     @Optional

@@ -12,6 +12,11 @@ import org.mule.api.annotations.components.ConnectionManagement;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.param.ConnectionKey;
 
+/**
+ * Simple authentication configuration. Here you can configure properties required by "Simple Authentication" in order to establish connection with Hadoop Distributed File System.
+ *
+ * @author MuleSoft, Inc.
+ */
 @ConnectionManagement(friendlyName = "Simple Configuration")
 public class Simple extends AbstractConfig {
 
@@ -24,7 +29,7 @@ public class Simple extends AbstractConfig {
      *            The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values
      *            in configurationResources and configurationEntries.
      * @throws org.mule.api.ConnectionException
-     *             Holding one of the possible values in {@link org.mule.api.ConnectionExceptionCode}.
+     *             Holding information regarding reason of failure while trying to connect to the system.
      */
     @Connect
     @TestConnectivity
