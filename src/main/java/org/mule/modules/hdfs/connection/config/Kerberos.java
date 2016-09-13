@@ -22,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
+ * Kerberos authentication configuration. Here you can configure properties required by "Kerberos Authentication" in order to establish connection with Hadoop Distributed File
+ * System.
+ *
  * @author MuleSoft, Inc.
  */
 @ConnectionManagement(configElementName = "config-with-kerberos", friendlyName = "Kerberos Configuration")
@@ -30,11 +33,12 @@ public class Kerberos extends AbstractConfig {
     private static final Logger logger = LoggerFactory.getLogger(Kerberos.class);
 
     /**
-     * Path of the keytab file associated with username.
+     * Path to the <a href="https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html">keytab file</a> associated with username. It is used in order to obtain TGT from
+     * "Authorization server". If not provided it will look for a TGT associated to username within your local kerberos cache.
      */
     @Configurable
     @Optional
-    @Placement(group = "Authentication")
+    @Placement(order = 2, group = "Authentication")
     @FriendlyName("Keytab File")
     private String keytabPath;
     private HadoopClientConfigurationProvider hadoopClientConfigurationProvider;
@@ -54,7 +58,7 @@ public class Kerberos extends AbstractConfig {
      *            The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values
      *            in configurationResources and configurationEntries.
      * @throws org.mule.api.ConnectionException
-     *             Holding one of the possible values in {@link org.mule.api.ConnectionExceptionCode}.
+     *             Holding information regarding reason of failure while trying to connect to the system.
      */
     @Connect
     @TestConnectivity
