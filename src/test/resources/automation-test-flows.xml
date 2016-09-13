@@ -10,9 +10,9 @@
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
  http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
-    <context:property-placeholder location="${HDFS_CREDENTIALS}"/>
+    <context:property-placeholder location="${automation-credentials.properties}"/>
 
-    <hdfs:config name="HDFS" nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}" doc:name="HDFS">
+    <hdfs:config name="HDFS" nameNodeUri="${config.nameNodeUri}" username="${config.username}" doc:name="HDFS">
         <hdfs:configuration-entries>
             <hdfs:configuration-entry key="dfs.client.use.legacy.blockreader">true</hdfs:configuration-entry>
         </hdfs:configuration-entries>
@@ -42,6 +42,16 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:read config-ref="HDFS" path="myfile.txt"/>
         <object-to-string-transformer />
         <vm:outbound-endpoint path="receive"/>
+    </flow>
+
+    <flow name="readOperation" doc:name="Read Operation">
+        <hdfs:read-operation config-ref="HDFS" path="myfile.txt"/>
+        <object-to-string-transformer />
+        <vm:outbound-endpoint path="receive"/>
+    </flow>
+
+    <flow name="readOperationWhenFileDoesNotExist" doc:name="Read Operation">
+        <hdfs:read-operation config-ref="HDFS" path="fileThatDoesNotExist.txt"/>
     </flow>
 
     <flow name="append" doc:name="append">

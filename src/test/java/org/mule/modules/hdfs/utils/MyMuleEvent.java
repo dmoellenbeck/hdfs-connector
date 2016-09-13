@@ -1,14 +1,13 @@
 /**
- * (c) 2003-2015 MuleSoft, Inc. The software in this package is
- * published under the terms of the CPAL v1.0 license, a copy of which
- * has been included with this distribution in the LICENSE.md file.
+ * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
  */
-
 package org.mule.modules.hdfs.utils;
 
 import org.mule.MessageExchangePattern;
 import org.mule.api.*;
 import org.mule.api.construct.FlowConstruct;
+import org.mule.api.context.notification.FlowCallStack;
+import org.mule.api.context.notification.ProcessorsTrace;
 import org.mule.api.security.Credentials;
 import org.mule.api.transformer.DataType;
 import org.mule.api.transformer.TransformerException;
@@ -16,6 +15,7 @@ import org.mule.api.transport.ReplyToHandler;
 import org.mule.management.stats.ProcessingTime;
 
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +51,27 @@ public class MyMuleEvent implements MuleEvent {
 
     @Override
     public boolean isNotificationsEnabled() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false; // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void setEnableNotifications(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isAllowNonBlocking() {
+        return false;
+    }
+
+    @Override
+    public FlowCallStack getFlowCallStack() {
+        return null;
+    }
+
+    @Override
+    public ProcessorsTrace getProcessorsTrace() {
+        return null;
     }
 
     @Override
@@ -87,6 +102,11 @@ public class MyMuleEvent implements MuleEvent {
     @Override
     public <T> T getFlowVariable(String arg0) {
         return (T) flowVars.get(arg0);
+    }
+
+    @Override
+    public DataType<?> getFlowVariableDataType(String key) {
+        return null;
     }
 
     @Override
@@ -199,6 +219,11 @@ public class MyMuleEvent implements MuleEvent {
     }
 
     @Override
+    public DataType<?> getSessionVariableDataType(String key) {
+        return null;
+    }
+
+    @Override
     public Set<String> getSessionVariableNames() {
         return sessionVars.keySet();
     }
@@ -255,8 +280,18 @@ public class MyMuleEvent implements MuleEvent {
     }
 
     @Override
+    public void setFlowVariable(String key, Object value, DataType dataType) {
+
+    }
+
+    @Override
     public void setSessionVariable(String arg0, Object arg1) {
         sessionVars.put(arg0, arg1);
+    }
+
+    @Override
+    public void setSessionVariable(String key, Serializable value, DataType dataType) {
+
     }
 
     @Override

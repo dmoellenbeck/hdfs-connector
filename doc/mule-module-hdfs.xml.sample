@@ -3,6 +3,21 @@
 <hdfs:config nameNodeUri="hdfs://localhost:8020/" username="hadoopusr" />
 <!-- END_INCLUDE(hdfs:config-1) -->
 
+<!-- BEGIN_INCLUDE(hdfs:config-with-kerberos) -->
+<!-- Simple configuration -->
+<hdfs:config-with-kerberos nameNodeUri="hdfs://localhost:8020/" username="hadoopusr" keytabPath="hdfs.keytab">
+    <hdfs:configuration-entries>
+        <hdfs:configuration-entry key="fs.default.name">hdfs://localhost:8020/</hdfs:configuration-entry>
+        <hdfs:configuration-entry key="dfs.data.dir">/home/username/hdfs/data</hdfs:configuration-entry>
+    </hdfs:configuration-entries>
+    <hdfs:configuration-resources>
+        <hdfs:configuration-resource>/etc/hadoop/core-site.xml</hdfs:configuration-resource>
+        <hdfs:configuration-resource>/etc/hadoop/hdfs-site.xml</hdfs:configuration-resource>
+        <hdfs:configuration-resource>/etc/hadoop/mapred-site.xml</hdfs:configuration-resource>
+    </hdfs:configuration-resources>
+</hdfs:config-with-kerberos>
+<!-- END_INCLUDE(hdfs:config-with-kerberos) -->
+
 <!-- BEGIN_INCLUDE(hdfs:config-2) -->
 <!-- Entries-based configuration -->
 <hdfs:config>
@@ -33,6 +48,11 @@
 <!-- Reading a file using a specific buffer size -->
 <hdfs:read path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/>
 <!-- END_INCLUDE(hdfs:read-2) -->
+
+<!-- BEGIN_INCLUDE(hdfs:read-operation) -->
+<!-- Reading a file using with an operation rather than pooling with an endpoint -->
+<hdfs:read-operation path="/tmp/test.dat" bufferSize="8192" config-ref="hdfs-conf"/>
+<!-- END_INCLUDE(hdfs:read-operation) -->
 
 <!-- BEGIN_INCLUDE(hdfs:get-metadata) -->
 <!-- Store the meta-information of a path in flow variables -->
