@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
     <flow name="Create_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/filecreate" doc:name="HTTP"/>
-        <logger message="Creating file: #[message.inboundProperties.'http.query.params'.path] with message: #[message.inboundProperties.'http.query.params'.msg]"
+        <logger message="Creating file: #[message.inboundProperties.'http.query.params'.path] with message: #[message.inboundProperties.'http.query.params'.content]"
                 level="INFO" doc:name="Write to Path Log"/>
         <set-payload value="#[message.inboundProperties.'http.query.params'.content]" doc:name="Set the message input as payload"/>
         <hdfs:write config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" permission="755"
@@ -46,17 +46,12 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <hdfs:append config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Append to path"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="common-operationsFlow">
+    <flow name="Retrieve_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/fileread" doc:name="HTTP"/>
         <logger message="Reading from file: #[message.inboundProperties.'http.query.params'.path]." level="INFO" doc:name="Read From Path Log"/>
-        <hdfs:read-operation config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="HDFS"/>
+        <hdfs:read-operation config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Read From Path"/>
         <object-to-string-transformer doc:name="Convert payload to String"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
-    </flow>
-    <flow name="Retrieve_File_Flow" initialState="stopped">
-        <hdfs:read config-ref="hdfs-conf" path="#[payload]" doc:name="Read From Path"/>
-        <object-to-string-transformer doc:name="Convert payload to String"/>
-        <logger message="#[payload]" level="INFO" doc:name="Read from Path Log"/>
     </flow>
     <flow name="Delete_Directory_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/dirdelete" doc:name="HTTP"/>
