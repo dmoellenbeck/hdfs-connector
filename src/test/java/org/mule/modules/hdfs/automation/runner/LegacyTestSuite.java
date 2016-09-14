@@ -23,4 +23,5 @@ import org.mule.modules.hdfs.automation.functional.legacy.*;
         DeleteDirectoryTestCases.class
 })
 public class LegacyTestSuite {
+
 }

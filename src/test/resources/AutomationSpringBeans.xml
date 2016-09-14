@@ -78,6 +78,6 @@
             </bean>
         </entry>
         <entry key="groupname" value="hadoop"/>
-        <entry key="ownername" value="qauser" />
+        <entry key="ownername" value="qauser"/>
     </util:map>
 </beans>

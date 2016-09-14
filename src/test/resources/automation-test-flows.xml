@@ -40,13 +40,13 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 
     <flow name="read" doc:name="read" initialState="stopped">
         <hdfs:read config-ref="HDFS" path="myfile.txt"/>
-        <object-to-string-transformer />
+        <object-to-string-transformer/>
         <vm:outbound-endpoint path="receive"/>
     </flow>
 
     <flow name="readOperation" doc:name="Read Operation">
         <hdfs:read-operation config-ref="HDFS" path="myfile.txt"/>
-        <object-to-string-transformer />
+        <object-to-string-transformer/>
         <vm:outbound-endpoint path="receive"/>
     </flow>
 

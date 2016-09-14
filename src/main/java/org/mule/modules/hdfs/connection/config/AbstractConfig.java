@@ -97,6 +97,8 @@ public abstract class AbstractConfig {
 
     /**
      * Returns a prefix used in generating unique identifies for connector instances in the connection pool
+     *
+     * @return uri of underlying file system
      */
     @ConnectionIdentifier
     public String getFileSystemUri() {
@@ -125,9 +127,6 @@ public abstract class AbstractConfig {
 
     /**
      * Disconnect from the Hadoop Distributed File System.
-     *
-     * @throws IOException
-     *             if there is an issue connecting with the file system.
      */
     @Disconnect
     public void disconnect() {
