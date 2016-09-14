@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0</version>
     <packaging>mule-module</packaging>
     <name>Mule HDFS Connector</name>
 
