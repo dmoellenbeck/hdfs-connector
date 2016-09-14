@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-      xmlns:spring="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.mulesoft.org/schema/mule/core"
-       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
-http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
-http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
-http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+
+
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
     <hdfs:config name="hdfs-conf" nameNodeUri="${config.nameNodeUri}" username="${config.sysUser}" doc:name="HDFS"/>
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8090" doc:name="HTTP Listener Configuration"/>
     <flow name="UI_Provider_Flow">
@@ -23,23 +22,23 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <catch-exception-strategy name="GlobalExceptionStrategy">
         <set-payload value="Unable to process request. Error message: #[exception.cause.message]" encoding="US-ASCII" mimeType="text/plain" doc:name="Set Payload"/>
     </catch-exception-strategy>
-    <flow name="Delete_File_Flow" >
+    <flow name="Delete_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/filedelete" doc:name="HTTP"/>
         <logger message="Deleting file: #[message.inboundProperties.'http.query.params'.path]" level="INFO" doc:name="Delete file log"/>
         <hdfs:delete-file config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Delete file"/>
         <set-payload value="#[message.inboundProperties.'http.query.params'.path] successfully deleted." doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Create_File_Flow" >
+    <flow name="Create_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/filecreate" doc:name="HTTP"/>
-        <logger message="Creating file: #[message.inboundProperties.'http.query.params'.path] with message: #[message.inboundProperties.'http.query.params'.msg]"
+        <logger message="Creating file: #[message.inboundProperties.'http.query.params'.path] with message: #[message.inboundProperties.'http.query.params'.content]"
                 level="INFO" doc:name="Write to Path Log"/>
         <set-payload value="#[message.inboundProperties.'http.query.params'.content]" doc:name="Set the message input as payload"/>
         <hdfs:write config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" permission="755"
                     doc:name="Write to Path"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Append_File_Flow" >
+    <flow name="Append_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/fileappend" doc:name="HTTP"/>
         <logger message="Appending file: #[message.inboundProperties.'http.query.params'.path] with message: #[message.inboundProperties.'http.query.params'.content]"
                 level="INFO" doc:name="Append to File Log"/>
@@ -47,19 +46,14 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <hdfs:append config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Append to path"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="common-operationsFlow">
+    <flow name="Retrieve_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/fileread" doc:name="HTTP"/>
         <logger message="Reading from file: #[message.inboundProperties.'http.query.params'.path]." level="INFO" doc:name="Read From Path Log"/>
-        <hdfs:read-operation config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="HDFS"/>
+        <hdfs:read-operation config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Read From Path"/>
         <object-to-string-transformer doc:name="Convert payload to String"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Retrieve_File_Flow" initialState="stopped" >
-        <hdfs:read config-ref="hdfs-conf" path="#[payload]" doc:name="Read From Path"/>
-        <object-to-string-transformer doc:name="Convert payload to String"/>
-        <logger message="#[payload]" level="INFO" doc:name="Read from Path Log"/>
-    </flow>
-    <flow name="Delete_Directory_Flow" >
+    <flow name="Delete_Directory_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/dirdelete" doc:name="HTTP"/>
         <logger message="Deleting dir: #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="Delete Directory Log"/>
@@ -68,7 +62,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-payload value="#[message.inboundProperties.'http.query.params'.path] successfully deleted." doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Create_Directory_Flow" >
+    <flow name="Create_Directory_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/dircreate" doc:name="HTTP"/>
         <logger message="Creating Directory: #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="Create Directory Log"/>
@@ -77,7 +71,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-payload value="#[message.inboundProperties.'http.query.params'.path] successfully created." doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Metadata_Flow" >
+    <flow name="Metadata_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/metadata" doc:name="HTTP"/>
         <logger message="Meta-Data from path: #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="MetaData Log"/>
@@ -96,53 +90,59 @@ hdfs.file.status - The status of the file"/>
         <object-to-string-transformer mimeType="text/plain" doc:name="Convert payload to String"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Copy_From_Local_File_Flow" >
+    <flow name="Copy_From_Local_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/copyfromlocalfile" doc:name="HTTP"/>
         <logger level="INFO" doc:name="Copy from Local Path Log"
                 message="Copying from local path : #[message.inboundProperties.'http.query.params'.source] to file system : #[message.inboundProperties.'http.query.params'.target]"/>
         <hdfs:copy-from-local-file config-ref="hdfs-conf" source="#[message.inboundProperties.'http.query.params'.source]"
                                    target="#[message.inboundProperties.'http.query.params'.target]" doc:name="Copy from Local Path"/>
-        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully copied to: #[message.inboundProperties.'http.query.params'.target]" doc:name="Set Payload"/>
+        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully copied to: #[message.inboundProperties.'http.query.params'.target]"
+                     doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Copy_To_Local_File_Flow" >
+    <flow name="Copy_To_Local_File_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/copytolocalfile" doc:name="HTTP"/>
         <logger message="Copying to local path : #[message.inboundProperties.'http.query.params'.target] from file system : #[message.inboundProperties.'http.query.params'.source]"
                 level="INFO" doc:name="Copy to Local Path Log"/>
         <hdfs:copy-to-local-file config-ref="hdfs-conf" source="#[message.inboundProperties.'http.query.params'.source]"
                                  target="#[message.inboundProperties.'http.query.params'.target]" doc:name="Copy to Local Path"/>
-        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully copied to: #[message.inboundProperties.'http.query.params'.target]" doc:name="Set Payload"/>
+        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully copied to: #[message.inboundProperties.'http.query.params'.target]"
+                     doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Rename_flow" >
+    <flow name="Rename_flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/rename" doc:name="HTTP"/>
         <logger level="INFO" doc:name="Rename path log"
                 message="Rename path : #[message.inboundProperties.'http.query.params'.source] to #[message.inboundProperties.'http.query.params'.target]"/>
         <hdfs:rename config-ref="hdfs-conf" source="#[message.inboundProperties.'http.query.params'.source]"
                      target="#[message.inboundProperties.'http.query.params'.target]" doc:name="Rename Path"/>
         <object-to-string-transformer doc:name="Convert payload to String"/>
-        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully renamed to: #[message.inboundProperties.'http.query.params'.target]" doc:name="Set Payload"/>
+        <set-payload value="#[message.inboundProperties.'http.query.params'.source] successfully renamed to: #[message.inboundProperties.'http.query.params'.target]"
+                     doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Set_Permission_Flow" >
+    <flow name="Set_Permission_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/setpermission" doc:name="HTTP"/>
         <logger message="Set Permission on path : #[message.inboundProperties.'http.query.params'.path] to #[message.inboundProperties.'http.query.params'.mode]" level="INFO"
                 doc:name="Set Permission Log"/>
         <hdfs:set-permission config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" permission="#[message.inboundProperties.'http.query.params'.mode]"
                              doc:name="Set Permission"/>
-        <set-payload value="#[message.inboundProperties.'http.query.params'.path]'s permissions successfully set to: #[message.inboundProperties.'http.query.params'.mode]" doc:name="Set Payload"/>
+        <set-payload value="#[message.inboundProperties.'http.query.params'.path]'s permissions successfully set to: #[message.inboundProperties.'http.query.params'.mode]"
+                     doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Set_Owner_Flow" >
+    <flow name="Set_Owner_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/setowner" doc:name="HTTP"/>
         <logger message="Set owner on path : #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="Set Owner Log"/>
         <hdfs:set-owner config-ref="hdfs-conf" path="#[message.inboundProperties.'http.query.params'.path]" doc:name="Set Owner"
                         groupname="#[message.inboundProperties.'http.query.params'.group]" ownername="#[message.inboundProperties.'http.query.params'.owner]"/>
-        <set-payload value="#[message.inboundProperties.'http.query.params'.path]'s owner successfully set to goup: #[message.inboundProperties.'http.query.params'.group], owner: #[message.inboundProperties.'http.query.params'.owner]" doc:name="Set Payload"/>
+        <set-payload
+                value="#[message.inboundProperties.'http.query.params'.path]'s owner successfully set to goup: #[message.inboundProperties.'http.query.params'.group], owner: #[message.inboundProperties.'http.query.params'.owner]"
+                doc:name="Set Payload"/>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="List_Status_Flow" >
+    <flow name="List_Status_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/liststatus" doc:name="HTTP"/>
         <logger message="List Status path : #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="List Status Log"/>
@@ -162,11 +162,11 @@ payload map {
         </dw:transform-message>
         <exception-strategy ref="GlobalExceptionStrategy" doc:name="Reference Exception Strategy"/>
     </flow>
-    <flow name="Glob_Status_Flow" >
+    <flow name="Glob_Status_Flow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/globstatus" doc:name="HTTP"/>
         <logger message="Glob Status path : #[message.inboundProperties.'http.query.params'.path]" level="INFO"
                 doc:name="Glob Status Log"/>
-        <hdfs:glob-status config-ref="hdfs-conf" doc:name="Glob Status" 
+        <hdfs:glob-status config-ref="hdfs-conf" doc:name="Glob Status"
                           pathPattern="#[message.inboundProperties.'http.query.params'.path]"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
