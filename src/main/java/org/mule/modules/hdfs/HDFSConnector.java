@@ -29,11 +29,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
- * <p>
  * Hadoop Distributed File System (HDFS) Connector.
- * </p>
- * {@sample.config ../../../doc/mule-module-hdfs.xml.sample hdfs:config-1} {@sample.config ../../../doc/mule-module-hdfs.xml.sample hdfs:config-2} {@sample.config
- * ../../../doc/mule-module-hdfs.xml.sample hdfs:config-3}
  *
  * @author MuleSoft Inc.
  */
@@ -61,9 +57,6 @@ public class HDFSConnector {
      * <li>{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.</li>
      * <li>{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
      * </ul>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-1}
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-2}
      *
      * @param path
      *            the path of the file to read.
@@ -71,7 +64,6 @@ public class HDFSConnector {
      *            the buffer size to use when reading the file.
      * @param sourceCallback
      *            the {@link SourceCallback} used to propagate the event to the rest of the flow.
-     * @return the result from executing the rest of the flow.
      * @throws HDFSConnectorException
      *             if any issue occurs during the execution.
      */
@@ -94,8 +86,6 @@ public class HDFSConnector {
 
     /**
      * Read the content of a file designated by its path and streams it to the rest of the flow:
-     *
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:read-operation}
      *
      * @param path
      *            the path of the file to read.
@@ -147,7 +137,7 @@ public class HDFSConnector {
 
     /**
      * Get the metadata of a path, as described in {@link HDFSConnector#read(String, int, SourceCallback)}, and store it in flow variables.
-     * <p/>
+     * <p>
      * This flow variables are:
      * <ul>
      * <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
@@ -155,14 +145,11 @@ public class HDFSConnector {
      * <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
      * <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
      * </ul>
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:get-metadata}
      *
      * @param path
      *            the path whose existence must be checked.
      * @param muleEvent
      *            the {@link MuleEvent} currently being processed.
-     * @return the result of executing the next message processors if the path exists, otherwise null.
      * @throws HDFSConnectorException
      *             if any issue occurs during the execution.
      */
@@ -185,10 +172,6 @@ public class HDFSConnector {
 
     /**
      * Write the current payload to the designated path, either creating a new file or appending to an existing one.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:write-1}
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:write-2}
      *
      * @param path
      *            the path of the file to write to.
@@ -245,10 +228,6 @@ public class HDFSConnector {
     /**
      * Append the current payload to a file located at the designated path. <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any
      * data to an existing file refer to dfs.support.append configuration parameter
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:append-1}
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:append-2}
      *
      * @param path
      *            the path of the file to write to.
@@ -279,8 +258,6 @@ public class HDFSConnector {
 
     /**
      * Delete the file or directory located at the designated path.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-file}
      *
      * @param path
      *            the path of the file to delete.
@@ -294,8 +271,6 @@ public class HDFSConnector {
 
     /**
      * Delete the file or directory located at the designated path.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:delete-directory}
      *
      * @param path
      *            the path of the directory to delete.
@@ -322,10 +297,6 @@ public class HDFSConnector {
 
     /**
      * Make the given file and all non-existent parents into directories. Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:make-directories-1}
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:make-directories-2}
      *
      * @param path
      *            the path to create directories for.
@@ -351,8 +322,6 @@ public class HDFSConnector {
 
     /**
      * Renames path target to path destination.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:rename}
      *
      * @param source
      *            the source path to be renamed.
@@ -378,8 +347,6 @@ public class HDFSConnector {
 
     /**
      * List the statuses of the files/directories in the given path if the path is a directory
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:list-status}
      *
      * @param path
      *            the given path
@@ -429,8 +396,6 @@ public class HDFSConnector {
 
     /**
      * Return all the files that match file pattern and are not checksum files. Results are sorted by their names.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:glob-status}
      *
      * @param pathPattern
      *            a regular expression specifying the path pattern.
@@ -464,8 +429,6 @@ public class HDFSConnector {
 
     /**
      * Copy the source file on the local disk to the FileSystem at the given target path, set deleteSource if the source should be removed.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-from-local-file}
      *
      * @param deleteSource
      *            whether to delete the source.
@@ -496,8 +459,6 @@ public class HDFSConnector {
     /**
      * Copy the source file on the FileSystem to local disk at the given target path, set deleteSource if the source should be removed. useRawLocalFileSystem indicates whether to
      * use RawLocalFileSystem as it is a non CRC File System.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:copy-to-local-file}
      *
      * @param deleteSource
      *            whether to delete the source.
@@ -527,8 +488,6 @@ public class HDFSConnector {
 
     /**
      * Set permission of a path (i.e., a file or a directory).
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:set-permission}
      *
      * @param path
      *            the path of the file or directory to set permission.
@@ -553,8 +512,6 @@ public class HDFSConnector {
 
     /**
      * Set owner of a path (i.e., a file or a directory). The parameters username and groupname cannot both be null.
-     * <p/>
-     * {@sample.xml ../../../doc/mule-module-hdfs.xml.sample hdfs:set-owner}
      *
      * @param path
      *            the path of the file or directory to set owner.

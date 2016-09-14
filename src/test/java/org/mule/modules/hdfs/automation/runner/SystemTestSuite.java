@@ -19,4 +19,5 @@ import org.mule.modules.hdfs.automation.system.SimpleConfigTestCases;
         KerberosConfigTestCases.class
 })
 public class SystemTestSuite {
+
 }
