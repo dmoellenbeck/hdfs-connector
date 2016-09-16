@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<namespace xmlns="http://www.mulesoft.org/schema/mule/tooling.attributes" xmlns:mule="http://www.mulesoft.org/schema/mule/core" url="http://www.mulesoft.org/schema/mule/hdfs" prefix="hdfs">
+  <global-cloud-connector versions="[3.6.0,8.0.0]" caption="HDFS" description="" icon="" localId="parentConfig" image="" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric"></global-cloud-connector>
+  <nested caption="" description="" localId="connection-pooling-profile" abstract="true">
+    <radioBoolean name="defaultPoolingProfile" caption="Use default connection pool configuration" description="Use default connection pool configuration." fillLine="true"></radioBoolean>
+    <radioBoolean name="customPoolingProfile" caption="Define connection pool configuration" description="Define connection pool configuration." fillLine="true"></radioBoolean>
+    <integer defaultValue="5" min="-1" step="0" name="maxActive" caption="Max active" description="Controls the maximum number of connections that can be borrowed from the pool at one time. When set to a negative value, there is no limit to the number of connections that may be active at one time. When maxActive is exceeded, the pool is said to be exhausted." controlled="customPoolingProfile" indented="true" fillLine="true"></integer>
+    <integer defaultValue="5" min="-1" step="0" name="maxIdle" caption="Max idle" description="Controls the maximum number of connections that can sit idle in the pool at any time. When set to a negative value, there is no limit to the number of connections that may be idle at one time." controlled="customPoolingProfile" indented="true" fillLine="true"></integer>
+    <enum defaultValue="INITIALISE_ONE" name="initialisationPolicy" caption="Initialisation policy" description="Determines how connections in a pool should be initialized. The possible values are: INITIALISE_NONE (will not load any connection into the pool on startup), INITIALISE_ONE (will load one initial connection into the pool on startup), or INITIALISE_ALL (will load all connections in the pool on startup)" alwaysFill="true" controlled="customPoolingProfile" indented="true">
+      <option value="INITIALISE_NONE"></option>
+      <option value="INITIALISE_ONE"></option>
+      <option value="INITIALISE_ALL"></option>
+    </enum>
+    <enum defaultValue="WHEN_EXHAUSTED_GROW" name="exhaustedAction" caption="Exhausted action" description="Specifies the behavior of the connection pool when the pool is exhausted. Possible values are: &quot;WHEN_EXHAUSTED_FAIL&quot;, which will throw a NoSuchElementException, &quot;WHEN_EXHAUSTED_WAIT&quot;, which will block by invoking Object.wait(long) until a new or idle object is available, or WHEN_EXHAUSTED_GROW, which will create a new connection and return it, essentially making maxActive meaningless. If a positive maxWait value is supplied, it will block for at most that many milliseconds, after which a NoSuchElementException will be thrown. If maxThreadWait is a negative value, it will block indefinitely." alwaysFill="true" controlled="customPoolingProfile" indented="true">
+      <option value="WHEN_EXHAUSTED_WAIT"></option>
+      <option value="WHEN_EXHAUSTED_FAIL"></option>
+      <option value="WHEN_EXHAUSTED_GROW"></option>
+    </enum>
+    <integer defaultValue="5" min="-1" step="0" name="maxWait" caption="Max wait" description="When exhausted action is Wait (or block) this is the amount of time in milliseconds that the pool will wait before failing. Setting a negative value will block indefinitely until an idle instance becomes available." controlled="customPoolingProfile" indented="true" fillLine="true"></integer>
+    <integer defaultValue="1800000" min="-1" step="0" name="minEvictionMillis" caption="Min eviction (ms)" description="Determines the minimum amount of time a connection may sit idle in the pool before it is eligible for eviction. When non-positive, no connections will be evicted from the pool due to idle time alone." controlled="customPoolingProfile" indented="true" fillLine="true"></integer>
+    <integer defaultValue="-1" min="-1" step="0" name="evictionCheckIntervalMillis" caption="Eviction check interval (ms)" description="Specifies the number of milliseconds between runs of the connection evictor. When non-positive, no connection evictor is executed." controlled="customPoolingProfile" indented="true" fillLine="true"></integer>
+  </nested>
+  <nested caption="" description="" localId="reconnectionStrategyElement" abstract="true">
+    <label name="connectionLabel" caption="Define how mule should attempt to handle a connection failure" description=""></label>
+    <radioBoolean name="noReconnection" caption="Do not use a Reconnection strategy" description="Disable reconection strategy" fillLine="true"></radioBoolean>
+    <radioBoolean name="standardReconnection" caption="Standard Reconnection" description="A reconnection strategy that allows the user to configure how many times a reconnection should be attempted and how long to wait between attempts." fillLine="true"></radioBoolean>
+    <integer defaultValue="2000" min="1" max="2147483647" step="1" name="reconnectionFrequency" caption="Frequency (ms)" description="How often (in ms) to reconnect" controlled="standardReconnection" indented="true"></integer>
+    <integer defaultValue="2" min="1" max="2147483647" step="1" name="reconnectionAttemps" caption="Reconnection Attempts" description="How many reconnection attempts to make" controlled="standardReconnection,!reconnectForever" indented="true"></integer>
+    <boolean name="reconnectForever" caption="Reconnect Forever" description="A reconnection strategy that retries an infinite number of times at the specified frequency." supportsExpressions="false" controlled="standardReconnection" indented="true"></boolean>
+    <radioBoolean name="customReconnection" caption="Custom Reconnection" description="A user-defined reconnection strategy." fillLine="true"></radioBoolean>
+    <classname name="class" caption="Class" description="A class that implements the RetryPolicyTemplate interface." controlled="customReconnection" indented="true"></classname>
+    <childElement allowMultiple="true" name="http://www.springframework.org/schema/beans/property" caption="Properties" description="Property elements." controlled="customReconnection"></childElement>
+  </nested>
+  <cloud-connector-message-source supportsInbound="true" supportsOutbound="false" versions="[3.6.0,8.0.0]" caption="HDFS (Streaming)" description="HDFS Connector" icon="icons/theme.classic/hdfs-endpoint-small.png" localId="endpoint" image="icons/theme.classic/hdfs-endpoint-large.png" abstract="false" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric">
+    <attribute-category caption="General" description="General.">
+      <group id="hdfsConnectorGeneric" caption="Basic Settings">
+        <modeSwitch alwaysCombo="true" name="Hdfs operations to execute" caption="Operation" description="Operation.">
+          <no-operation abstractElement="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" versions="[3.6.0,8.0.0]" connector-name="source"></no-operation>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/read" modeLabel="Read from path"></mode>
+        </modeSwitch>
+      </group>
+    </attribute-category>
+  </cloud-connector-message-source>
+  <cloud-connector-message-source supportsInbound="true" supportsOutbound="false" inboundLocalName="read" caption="Read From Path" description="Read the content of a file designated by its path and streams it to the rest of the flow, while adding the path metadata in the following inbound properties:
+
+{@link HDFSConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path exists
+{@link HDFSConnector#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.
+{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.
+{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.
+." icon="icons/theme.classic/hdfs-endpoint-small.png" localId="read" image="icons/theme.classic/hdfs-endpoint-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file to read." required="true" javaType="java.lang.String"></string>
+        <integer defaultValue="4096" min="0" step="1" name="bufferSize" caption="Buffer Size" description="The buffer size to use when reading the file." required="false" javaType="int"></integer>
+      </group>
+      <group id="polling" caption="Polling">
+        <string defaultValue="5000" name="pollingPeriod" caption="Polling Period" description="Polling Period for Message Sources with Polling Strategy in ms." required="false" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector-message-source>
+  <global-cloud-connector versions="[3.6.0,8.0.0]" caption="HDFS: Kerberos Configuration" description="Global Kerberos Configuration configuration information. Kerberos authentication configuration. Here you can configure properties required by &quot;Kerberos Authentication&quot; in order to establish connection with Hadoop Distributed File
+System." icon="icons/theme.classic/hdfs-connector-small.png" localId="config-with-kerberos" image="icons/theme.classic/hdfs-connector-large.png" abstract="false" extends="http://www.mulesoft.org/schema/mule/hdfs/parentConfig" connectivityTesting="on" connectivityTestingLabel="Test Connection..." metaData="static" metaDataKeyDisplay="DISPLAY_NAME" supportsUserDefinedMetaData="false">
+    <attribute-category caption="General" description="Hdfs configuration properties.">
+      <group id="hdfsGenericProperties" caption="Basic Settings">
+        <name name="name" caption="Name" description="Give a name to this configuration so it can be later referenced by config-ref." required="true"></name>
+      </group>
+      <group id="connection" caption="Connection">
+        <string name="nameNodeUri" caption="NameNode URI" description="The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values in configurationResources and configurationEntries." required="true" javaType="java.lang.String"></string>
+      </group>
+      <group id="authentication" caption="Authentication">
+        <string name="username" caption="Username" description="A simple user identity of a client process. It is passed to HDFS client as the &quot;hadoop.job.ugi&quot; configuration entry. It can be overriden by values in configurationResources
+and configurationEntries." supportsExpressions="false" required="false" javaType="java.lang.String"></string>
+        <string name="keytabPath" caption="Keytab File" description="Path to the keytab file associated with username. It is used in order to obtain TGT from
+&quot;Authorization server&quot;. If not provided it will look for a TGT associated to username within your local kerberos cache." supportsExpressions="false" required="false" javaType="java.lang.String"></string>
+      </group>
+      <group id="advanced" caption="Advanced">
+        <element-controller-list-no-expression listName="configuration-resources" localName="configurable-configuration-resources" itemName="configuration-resource" caption="Configuration Resources" description="A {@link java.util.List} of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)." supportsExpressions="false" required="false" javaType="java.util.List&lt;java.lang.String&gt;"></element-controller-list-no-expression>
+        <element-controller-map-no-expression mapName="configuration-entries" localName="configurable-configuration-entries" itemName="configuration-entry" caption="Configuration Entries" description="A {@link java.util.Map} of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs." supportsExpressions="false" required="false" javaType="java.util.Map&lt;java.lang.String,java.lang.String&gt;"></element-controller-map-no-expression>
+      </group>
+    </attribute-category>
+    <attribute-category caption="Pooling Profile" description="Pooling profile options.">
+      <group id="poolingProfile" caption="Pooling Profile">
+        <childElement inplace="true" name="http://www.mulesoft.org/schema/mule/hdfs/connection-pooling-profile" caption="" description="" valuePersistence="org.mule.tooling.ui.modules.core.widgets.meta.PoolingProfileValuePersistence"></childElement>
+      </group>
+    </attribute-category>
+    <attribute-category caption="Reconnection" description="Reconnection options.">
+      <group id="reconnectionStrategies" caption="Strategies">
+        <childElement inplace="true" name="http://www.mulesoft.org/schema/mule/core/reconnectionStrategyElement" caption="" description="" valuePersistence="org.mule.tooling.ui.modules.core.widgets.meta.HTTPTransactionValuePersistence"></childElement>
+        <childElement allowSubTypes="true" allowedSubTypes="http://www.mulesoft.org/schema/mule/core/reconnect,http://www.mulesoft.org/schema/mule/core/reconnect-custom-strategy,http://www.mulesoft.org/schema/mule/core/reconnect-forever" name="http://www.mulesoft.org/schema/mule/core/abstractReconnectionStrategy" caption="" description="" visibleInDialog="false"></childElement>
+      </group>
+    </attribute-category>
+  </global-cloud-connector>
+  <global-cloud-connector versions="[3.6.0,8.0.0]" caption="HDFS: Simple Configuration" description="Global Simple Configuration configuration information. Simple authentication configuration. Here you can configure properties required by &quot;Simple Authentication&quot; in order to establish connection with Hadoop Distributed File System." icon="icons/theme.classic/hdfs-connector-small.png" localId="config" image="icons/theme.classic/hdfs-connector-large.png" abstract="false" extends="http://www.mulesoft.org/schema/mule/hdfs/parentConfig" connectivityTesting="on" connectivityTestingLabel="Test Connection..." metaData="static" metaDataKeyDisplay="DISPLAY_NAME" supportsUserDefinedMetaData="false">
+    <attribute-category caption="General" description="Hdfs configuration properties.">
+      <group id="hdfsGenericProperties" caption="Basic Settings">
+        <name name="name" caption="Name" description="Give a name to this configuration so it can be later referenced by config-ref." required="true"></name>
+      </group>
+      <group id="connection" caption="Connection">
+        <string name="nameNodeUri" caption="NameNode URI" description="The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values in configurationResources and configurationEntries." required="true" javaType="java.lang.String"></string>
+      </group>
+      <group id="authentication" caption="Authentication">
+        <string name="username" caption="Username" description="A simple user identity of a client process. It is passed to HDFS client as the &quot;hadoop.job.ugi&quot; configuration entry. It can be overriden by values in configurationResources
+and configurationEntries." supportsExpressions="false" required="false" javaType="java.lang.String"></string>
+      </group>
+      <group id="advanced" caption="Advanced">
+        <element-controller-list-no-expression listName="configuration-resources" localName="configurable-configuration-resources" itemName="configuration-resource" caption="Configuration Resources" description="A {@link java.util.List} of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)." supportsExpressions="false" required="false" javaType="java.util.List&lt;java.lang.String&gt;"></element-controller-list-no-expression>
+        <element-controller-map-no-expression mapName="configuration-entries" localName="configurable-configuration-entries" itemName="configuration-entry" caption="Configuration Entries" description="A {@link java.util.Map} of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs." supportsExpressions="false" required="false" javaType="java.util.Map&lt;java.lang.String,java.lang.String&gt;"></element-controller-map-no-expression>
+      </group>
+    </attribute-category>
+    <attribute-category caption="Pooling Profile" description="Pooling profile options.">
+      <group id="poolingProfile" caption="Pooling Profile">
+        <childElement inplace="true" name="http://www.mulesoft.org/schema/mule/hdfs/connection-pooling-profile" caption="" description="" valuePersistence="org.mule.tooling.ui.modules.core.widgets.meta.PoolingProfileValuePersistence"></childElement>
+      </group>
+    </attribute-category>
+    <attribute-category caption="Reconnection" description="Reconnection options.">
+      <group id="reconnectionStrategies" caption="Strategies">
+        <childElement inplace="true" name="http://www.mulesoft.org/schema/mule/core/reconnectionStrategyElement" caption="" description="" valuePersistence="org.mule.tooling.ui.modules.core.widgets.meta.HTTPTransactionValuePersistence"></childElement>
+        <childElement allowSubTypes="true" allowedSubTypes="http://www.mulesoft.org/schema/mule/core/reconnect,http://www.mulesoft.org/schema/mule/core/reconnect-custom-strategy,http://www.mulesoft.org/schema/mule/core/reconnect-forever" name="http://www.mulesoft.org/schema/mule/core/abstractReconnectionStrategy" caption="" description="" visibleInDialog="false"></childElement>
+      </group>
+    </attribute-category>
+  </global-cloud-connector>
+  <cloud-connector caption="Abstracthdfsconnectorgeneric" description="Interact with Hdfs." icon="icons/theme.classic/hdfs-connector-small.png" localId="abstractHdfsConnectorGeneric" image="icons/theme.classic/hdfs-connector-large.png" abstract="true">
+    <attribute-category caption="General" description="General.">
+      <group id="abstractHdfsConnectorGeneric" caption="Basic Settings">
+        <globalRef requiredType="$http://www.mulesoft.org/schema/mule/hdfs/config,http://www.mulesoft.org/schema/mule/hdfs/config-with-kerberos" name="config-ref" caption="Connector Configuration" description="Specify which configuration to use for this invocation." required="true"></globalRef>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector versions="[3.6.0,8.0.0]" aliasId="org.mule.tooling.ui.modules.core.pattern.hdfs" caption="HDFS" description="HDFS Connector" icon="icons/theme.classic/hdfs-connector-small.png" localId="hdfs-connector" image="icons/theme.classic/hdfs-connector-large.png" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric">
+    <attribute-category caption="General" description="General.">
+      <group id="hdfsConnectorGeneric" caption="Basic Settings">
+        <modeSwitch alwaysCombo="true" name="Hdfs operations to execute" caption="Operation" description="Operation.">
+          <no-operation abstractElement="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" versions="[3.6.0,8.0.0]" connector-name="processor"></no-operation>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/append" modeLabel="Append to file"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/copy-from-local-file" modeLabel="Copy from local file"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/copy-to-local-file" modeLabel="Copy to local file"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/delete-directory" modeLabel="Delete directory"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/delete-file" modeLabel="Delete file"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/get-metadata" modeLabel="Get path meta data"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/glob-status" modeLabel="Glob status"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/list-status" modeLabel="List status"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/make-directories" modeLabel="Make directories"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/read-operation" modeLabel="Read from path"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/rename" modeLabel="Rename"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/set-owner" modeLabel="Set owner"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/set-permission" modeLabel="Set permission"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/hdfs/write" modeLabel="Write to path"></mode>
+        </modeSwitch>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Append To File" icon="icons/theme.classic/hdfs-connector-small.png" localId="append" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file to write to." required="true" javaType="java.lang.String"></string>
+        <integer defaultValue="4096" min="0" step="1" name="bufferSize" caption="Buffer Size" description="The buffer size to use when appending to the file." required="false" javaType="int"></integer>
+        <string defaultValue="#[payload]" name="payload-ref" caption="Payload Reference" description="The payload to append to the file." required="false" javaType="java.io.InputStream"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Copy From Local File" icon="icons/theme.classic/hdfs-connector-small.png" localId="copy-from-local-file" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="source" caption="Source" description="The source path on the local disk." required="true" javaType="java.lang.String"></string>
+        <string name="target" caption="Target" description="The target path on the File System." required="true" javaType="java.lang.String"></string>
+        <boolean defaultValue="false" name="deleteSource" caption="Delete Source" description="Whether to delete the source." supportsExpressions="true" required="false" javaType="boolean"></boolean>
+        <boolean defaultValue="true" name="overwrite" caption="Overwrite" description="Whether to overwrite a existing file." supportsExpressions="true" required="false" javaType="boolean"></boolean>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Copy To Local File" icon="icons/theme.classic/hdfs-connector-small.png" localId="copy-to-local-file" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="source" caption="Source" description="The source path on the File System." required="true" javaType="java.lang.String"></string>
+        <string name="target" caption="Target" description="The target path on the local disk." required="true" javaType="java.lang.String"></string>
+        <boolean defaultValue="false" name="deleteSource" caption="Delete Source" description="Whether to delete the source." supportsExpressions="true" required="false" javaType="boolean"></boolean>
+        <boolean defaultValue="false" name="useRawLocalFileSystem" caption="Use Raw Local File System" description="Whether to use RawLocalFileSystem as local file system or not." supportsExpressions="true" required="false" javaType="boolean"></boolean>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Delete Directory" icon="icons/theme.classic/hdfs-connector-small.png" localId="delete-directory" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the directory to delete." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Delete File" icon="icons/theme.classic/hdfs-connector-small.png" localId="delete-file" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file to delete." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Get Path Meta Data" icon="icons/theme.classic/hdfs-connector-small.png" localId="get-metadata" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path whose existence must be checked." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="java.util.List&lt;org.apache.hadoop.fs.FileStatus&gt;" caption="Glob Status" icon="icons/theme.classic/hdfs-connector-small.png" localId="glob-status" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="pathPattern" caption="Path Pattern" description="A regular expression specifying the path pattern." required="true" javaType="java.lang.String"></string>
+        <string name="filter-ref" caption="Filter Reference" description="The user supplied path filter." required="false" javaType="org.apache.hadoop.fs.PathFilter"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="java.util.List&lt;org.apache.hadoop.fs.FileStatus&gt;" caption="List Status" icon="icons/theme.classic/hdfs-connector-small.png" localId="list-status" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="filter" caption="Filter" description="The user supplied path filter." required="false" javaType="java.lang.String"></string>
+        <string name="path" caption="Path" description="The given path." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Make Directories" icon="icons/theme.classic/hdfs-connector-small.png" localId="make-directories" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path to create directories for." required="true" javaType="java.lang.String"></string>
+        <string name="permission" caption="Permission" description="The file system permission to use when creating the directories, either in octal or symbolic format (umask)." required="false" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="java.io.InputStream" caption="Read From Path" icon="icons/theme.classic/hdfs-connector-small.png" localId="read-operation" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file to read." required="true" javaType="java.lang.String"></string>
+        <integer defaultValue="4096" min="0" step="1" name="bufferSize" caption="Buffer Size" description="The buffer size to use when reading the file." required="false" javaType="int"></integer>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="java.lang.Boolean" caption="Rename" icon="icons/theme.classic/hdfs-connector-small.png" localId="rename" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="source" caption="Source" description="The source path to be renamed." required="true" javaType="java.lang.String"></string>
+        <string name="target" caption="Target" description="The target new path after rename." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Set Owner" icon="icons/theme.classic/hdfs-connector-small.png" localId="set-owner" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="groupname" caption="Groupname" description="If it is null, the original groupname remains unchanged." required="false" javaType="java.lang.String"></string>
+        <string name="ownername" caption="Ownername" description="If it is null, the original username remains unchanged." required="false" javaType="java.lang.String"></string>
+        <string name="path" caption="Path" description="The path of the file or directory to set owner." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Set Permission" icon="icons/theme.classic/hdfs-connector-small.png" localId="set-permission" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file or directory to set permission." required="true" javaType="java.lang.String"></string>
+        <string name="permission" caption="Permission" description="The file system permission to be set." required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="void" caption="Write To Path" icon="icons/theme.classic/hdfs-connector-small.png" localId="write" image="icons/theme.classic/hdfs-connector-large.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/hdfs/abstractHdfsConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="path" caption="Path" description="The path of the file to write to." required="true" javaType="java.lang.String"></string>
+        <string defaultValue="700" name="permission" caption="Permission" description="The file system permission to use if a new file is created, either in octal or symbolic format (umask)." required="false" javaType="java.lang.String"></string>
+        <integer defaultValue="4096" min="0" step="1" name="bufferSize" caption="Buffer Size" description="The buffer size to use when appending to the file." required="false" javaType="int"></integer>
+        <integer defaultValue="1" min="0" step="1" name="replication" caption="Replication" description="Block replication for the file." required="false" javaType="int"></integer>
+        <integer defaultValue="1048576" min="0" step="1" name="blockSize" caption="Block Size" description="The buffer size to use when appending to the file." required="false" javaType="long"></integer>
+        <string name="ownerGroupName" caption="Owner Group Name" description="The group owner of the file." required="false" javaType="java.lang.String"></string>
+        <string name="ownerUserName" caption="Owner User Name" description="The username owner of the file." required="false" javaType="java.lang.String"></string>
+        <string defaultValue="#[payload]" name="payload-ref" caption="Payload Reference" description="The payload to write to the file." required="false" javaType="java.io.InputStream"></string>
+        <boolean defaultValue="true" name="overwrite" caption="Overwrite" description="If a pre-existing file should be overwritten with the new content." supportsExpressions="true" required="false" javaType="boolean"></boolean>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+</namespace>

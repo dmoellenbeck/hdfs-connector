@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:ns2="http://www.mulesoft.org/schema/mule/devkit" xmlns:mule="http://www.mulesoft.org/schema/mule/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.mulesoft.org/schema/mule/hdfs" attributeFormDefault="unqualified" elementFormDefault="qualified">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"></xs:import>
+  <xs:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"></xs:import>
+  <xs:import namespace="http://www.mulesoft.org/schema/mule/core" schemaLocation="http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></xs:import>
+  <xs:element xmlns:mule="http://www.mulesoft.org/schema/mule/core" substitutionGroup="mule:abstract-extension" name="config-with-kerberos">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="mule:abstractExtensionType">
+          <xs:annotation>
+            <xs:documentation>Kerberos authentication configuration. Here you can configure properties required by "Kerberos Authentication" in order to establish connection with Hadoop Distributed File
+System.</xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="configuration-resources">
+              <xs:annotation>
+                <xs:documentation></xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="configuration-resource">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                          <xs:attribute type="xs:string" use="optional" name="value-ref"></xs:attribute>
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute type="xs:string" use="optional" name="ref">
+                  <xs:annotation>
+                    <xs:documentation>The reference object for this parameter</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="configuration-entries">
+              <xs:annotation>
+                <xs:documentation></xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:choice>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="configuration-entry">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" use="optional" name="value-ref"></xs:attribute>
+                            <xs:attribute type="xs:string" name="key"></xs:attribute>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:sequence>
+                    <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"></xs:any>
+                  </xs:sequence>
+                </xs:choice>
+                <xs:attribute type="xs:string" use="optional" name="ref">
+                  <xs:annotation>
+                    <xs:documentation>The reference object for this parameter</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+            <xs:element type="mule:poolingProfileType" minOccurs="0" name="connection-pooling-profile">
+              <xs:annotation>
+                <xs:documentation>Characteristics of the connection pool.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" ref="mule:abstract-reconnection-strategy">
+              <xs:annotation>
+                <xs:documentation>Reconnection strategy that defines how Mule should handle a connection failure.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute type="xs:string" use="required" name="name">
+            <xs:annotation>
+              <xs:documentation>Give a name to this configuration so it can be later referenced by config-ref.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute type="xs:string" use="optional" name="keytabPath">
+            <xs:annotation>
+              <xs:documentation>Path to the &lt;a href="https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html"&gt;keytab file&lt;/a&gt; associated with username. It is used in order to obtain TGT from
+"Authorization server". If not provided it will look for a TGT associated to username within your local kerberos cache.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute type="xs:string" use="optional" name="username">
+            <xs:annotation>
+              <xs:documentation>A simple user identity of a client process. It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources
+and configurationEntries.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute type="xs:string" use="required" name="nameNodeUri">
+            <xs:annotation>
+              <xs:documentation>The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values in configurationResources and configurationEntries.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element xmlns:mule="http://www.mulesoft.org/schema/mule/core" substitutionGroup="mule:abstract-extension" name="config">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="mule:abstractExtensionType">
+          <xs:annotation>
+            <xs:documentation>Simple authentication configuration. Here you can configure properties required by "Simple Authentication" in order to establish connection with Hadoop Distributed File System.</xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="configuration-resources">
+              <xs:annotation>
+                <xs:documentation></xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="configuration-resource">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                          <xs:attribute type="xs:string" use="optional" name="value-ref"></xs:attribute>
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute type="xs:string" use="optional" name="ref">
+                  <xs:annotation>
+                    <xs:documentation>The reference object for this parameter</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="configuration-entries">
+              <xs:annotation>
+                <xs:documentation></xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:choice>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="configuration-entry">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" use="optional" name="value-ref"></xs:attribute>
+                            <xs:attribute type="xs:string" name="key"></xs:attribute>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:sequence>
+                    <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"></xs:any>
+                  </xs:sequence>
+                </xs:choice>
+                <xs:attribute type="xs:string" use="optional" name="ref">
+                  <xs:annotation>
+                    <xs:documentation>The reference object for this parameter</xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+            <xs:element type="mule:poolingProfileType" minOccurs="0" name="connection-pooling-profile">
+              <xs:annotation>
+                <xs:documentation>Characteristics of the connection pool.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" ref="mule:abstract-reconnection-strategy">
+              <xs:annotation>
+                <xs:documentation>Reconnection strategy that defines how Mule should handle a connection failure.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute type="xs:string" use="required" name="name">
+            <xs:annotation>
+              <xs:documentation>Give a name to this configuration so it can be later referenced by config-ref.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute type="xs:string" use="optional" name="username">
+            <xs:annotation>
+              <xs:documentation>A simple user identity of a client process. It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources
+and configurationEntries.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute type="xs:string" use="required" name="nameNodeUri">
+            <xs:annotation>
+              <xs:documentation>The name of the file system to connect to. It is passed to HDFS client as the {FileSystem#FS_DEFAULT_NAME_KEY} configuration entry. It can be overriden by values in configurationResources and configurationEntries.</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Read-operationType" substitutionGroup="mule:abstract-message-processor" name="read-operation">
+    <xs:annotation>
+      <xs:documentation>Read the content of a file designated by its path and streams it to the rest of the flow:</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Read-operationType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file to read.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="integerType" use="optional" default="4096" name="bufferSize">
+          <xs:annotation>
+            <xs:documentation>the buffer size to use when reading the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Get-metadataType" substitutionGroup="mule:abstract-message-processor" name="get-metadata">
+    <xs:annotation>
+      <xs:documentation>Get the metadata of a path, as described in {@link HDFSConnector#read(String, int, SourceCallback)}, and store it in flow variables.
+&lt;p&gt;
+This flow variables are:
+&lt;ul&gt;
+&lt;li&gt;hdfs.path.exists - Indicates if the path exists (true or false)&lt;/li&gt;
+&lt;li&gt;hdfs.content.summary - A resume of the path info&lt;/li&gt;
+&lt;li&gt;hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)&lt;/li&gt;
+&lt;li&gt;hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus&lt;/li&gt;
+&lt;/ul&gt;</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Get-metadataType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path whose existence must be checked.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="WriteType" substitutionGroup="mule:abstract-message-processor" name="write">
+    <xs:annotation>
+      <xs:documentation>Write the current payload to the designated path, either creating a new file or appending to an existing one.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="WriteType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file to write to.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" default="700" name="permission">
+          <xs:annotation>
+            <xs:documentation>the file system permission to use if a new file is created, either in octal or symbolic format (umask).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="booleanType" use="optional" default="true" name="overwrite">
+          <xs:annotation>
+            <xs:documentation>if a pre-existing file should be overwritten with the new content.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="integerType" use="optional" default="4096" name="bufferSize">
+          <xs:annotation>
+            <xs:documentation>the buffer size to use when appending to the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="integerType" use="optional" default="1" name="replication">
+          <xs:annotation>
+            <xs:documentation>block replication for the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="longType" use="optional" default="1048576" name="blockSize">
+          <xs:annotation>
+            <xs:documentation>the buffer size to use when appending to the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="ownerUserName">
+          <xs:annotation>
+            <xs:documentation>the username owner of the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="ownerGroupName">
+          <xs:annotation>
+            <xs:documentation>the group owner of the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" default="#[payload]" name="payload-ref">
+          <xs:annotation>
+            <xs:documentation>the payload to write to the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="AppendType" substitutionGroup="mule:abstract-message-processor" name="append">
+    <xs:annotation>
+      <xs:documentation>Append the current payload to a file located at the designated path. &lt;b&gt;Note:&lt;/b&gt; by default the Hadoop server has the append option disabled. In order to be able append any
+data to an existing file refer to dfs.support.append configuration parameter</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="AppendType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file to write to.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="integerType" use="optional" default="4096" name="bufferSize">
+          <xs:annotation>
+            <xs:documentation>the buffer size to use when appending to the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" default="#[payload]" name="payload-ref">
+          <xs:annotation>
+            <xs:documentation>the payload to append to the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Delete-fileType" substitutionGroup="mule:abstract-message-processor" name="delete-file">
+    <xs:annotation>
+      <xs:documentation>Delete the file or directory located at the designated path.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Delete-fileType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file to delete.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Delete-directoryType" substitutionGroup="mule:abstract-message-processor" name="delete-directory">
+    <xs:annotation>
+      <xs:documentation>Delete the file or directory located at the designated path.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Delete-directoryType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the directory to delete.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Make-directoriesType" substitutionGroup="mule:abstract-message-processor" name="make-directories">
+    <xs:annotation>
+      <xs:documentation>Make the given file and all non-existent parents into directories. Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Make-directoriesType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path to create directories for.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="permission">
+          <xs:annotation>
+            <xs:documentation>the file system permission to use when creating the directories, either in octal or symbolic format (umask).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="RenameType" substitutionGroup="mule:abstract-message-processor" name="rename">
+    <xs:annotation>
+      <xs:documentation>Renames path target to path destination.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="RenameType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="source">
+          <xs:annotation>
+            <xs:documentation>the source path to be renamed.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="target">
+          <xs:annotation>
+            <xs:documentation>the target new path after rename.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="List-statusType" substitutionGroup="mule:abstract-message-processor" name="list-status">
+    <xs:annotation>
+      <xs:documentation>List the statuses of the files/directories in the given path if the path is a directory</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="List-statusType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the given path</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="filter">
+          <xs:annotation>
+            <xs:documentation>the user supplied path filter</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Glob-statusType" substitutionGroup="mule:abstract-message-processor" name="glob-status">
+    <xs:annotation>
+      <xs:documentation>Return all the files that match file pattern and are not checksum files. Results are sorted by their names.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Glob-statusType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="pathPattern">
+          <xs:annotation>
+            <xs:documentation>a regular expression specifying the path pattern.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="filter-ref">
+          <xs:annotation>
+            <xs:documentation>the user supplied path filter</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Copy-from-local-fileType" substitutionGroup="mule:abstract-message-processor" name="copy-from-local-file">
+    <xs:annotation>
+      <xs:documentation>Copy the source file on the local disk to the FileSystem at the given target path, set deleteSource if the source should be removed.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Copy-from-local-fileType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="booleanType" use="optional" default="false" name="deleteSource">
+          <xs:annotation>
+            <xs:documentation>whether to delete the source.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="booleanType" use="optional" default="true" name="overwrite">
+          <xs:annotation>
+            <xs:documentation>whether to overwrite a existing file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="source">
+          <xs:annotation>
+            <xs:documentation>the source path on the local disk.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="target">
+          <xs:annotation>
+            <xs:documentation>the target path on the File System.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Copy-to-local-fileType" substitutionGroup="mule:abstract-message-processor" name="copy-to-local-file">
+    <xs:annotation>
+      <xs:documentation>Copy the source file on the FileSystem to local disk at the given target path, set deleteSource if the source should be removed. useRawLocalFileSystem indicates whether to
+use RawLocalFileSystem as it is a non CRC File System.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Copy-to-local-fileType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="booleanType" use="optional" default="false" name="deleteSource">
+          <xs:annotation>
+            <xs:documentation>whether to delete the source.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="booleanType" use="optional" default="false" name="useRawLocalFileSystem">
+          <xs:annotation>
+            <xs:documentation>whether to use RawLocalFileSystem as local file system or not.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="source">
+          <xs:annotation>
+            <xs:documentation>the source path on the File System.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="target">
+          <xs:annotation>
+            <xs:documentation>the target path on the local disk.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Set-permissionType" substitutionGroup="mule:abstract-message-processor" name="set-permission">
+    <xs:annotation>
+      <xs:documentation>Set permission of a path (i.e., a file or a directory).</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Set-permissionType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file or directory to set permission.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="permission">
+          <xs:annotation>
+            <xs:documentation>the file system permission to be set.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="Set-ownerType" substitutionGroup="mule:abstract-message-processor" name="set-owner">
+    <xs:annotation>
+      <xs:documentation>Set owner of a path (i.e., a file or a directory). The parameters username and groupname cannot both be null.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Set-ownerType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file or directory to set owner.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="ownername">
+          <xs:annotation>
+            <xs:documentation>If it is null, the original username remains unchanged.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="optional" name="groupname">
+          <xs:annotation>
+            <xs:documentation>If it is null, the original groupname remains unchanged.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/hdfs" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="ReadType" substitutionGroup="mule:abstract-inbound-endpoint" name="read">
+    <xs:annotation>
+      <xs:documentation>Read the content of a file designated by its path and streams it to the rest of the flow, while adding the path metadata in the following inbound properties:
+&lt;ul&gt;
+&lt;li&gt;{@link HDFSConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path exists&lt;/li&gt;
+&lt;li&gt;{@link HDFSConnector#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.&lt;/li&gt;
+&lt;li&gt;{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.&lt;/li&gt;
+&lt;li&gt;{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.&lt;/li&gt;
+&lt;/ul&gt;</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="ReadType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractInboundEndpointType">
+        <xs:attribute type="xs:string" use="required" name="config-ref">
+          <xs:annotation>
+            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" use="required" name="path">
+          <xs:annotation>
+            <xs:documentation>the path of the file to read.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="integerType" use="optional" default="4096" name="bufferSize">
+          <xs:annotation>
+            <xs:documentation>the buffer size to use when reading the file.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute xmlns="http://www.mulesoft.org/schema/mule/hdfs" type="longType" use="optional" default="5000" name="pollingPeriod">
+          <xs:annotation>
+            <xs:documentation>Polling Period for MessageSource in ms</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="OnNoTokenPolicyEnumType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="EXCEPTION"></xs:enumeration>
+          <xs:enumeration value="STOP_FLOW"></xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="integerType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:integer"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="decimalType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:decimal"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="floatType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:float"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="doubleType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:double"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="dateTimeType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:dateTime"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="longType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:long"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="byteType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:byte"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="booleanType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:boolean"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="anyUriType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:anyURI"></xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="charType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"></xs:minLength>
+          <xs:maxLength value="1"></xs:maxLength>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:propertyPlaceholderType"></xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+</xs:schema>
