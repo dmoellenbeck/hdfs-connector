@@ -12,7 +12,7 @@ The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as 
 
 Read through this user guide to understand how to set up and configure a basic flow using the connector. Track feature additions, compatibility, limitations and API version updates with each release of the connector using the link:/release-notes/hdfs-connector-release-notes[Connector Release Notes]. Review the connector operations and functionality using the link:/mulesoft.github.io/hdfs-connector[Technical Reference] alongside the link:https://www.mulesoft.com/exchange#!/?filters=HDFS&sortBy=rank[demo applications].
 
-MuleSoft maintains this connector under the link:/mule-user-guide/v/3.8/anypoint-connectors#connector-categories[_Select_] support policy.
+Since version 5.0.0, MuleSoft maintains this connector under the link:/mule-user-guide/v/3.8/anypoint-connectors#connector-categories[_Select_] support policy.
 
 == Prerequisites
 
@@ -34,7 +34,7 @@ For hardware and software requirements, please visit the link:/mule-user-guide/v
 
 HDFS Hadoop connector is compatible with the following:
 
-[width="100%",cols="50%,50%",options="header"]
+[%header,width="100%",cols="50%,50%"]
 |===
 |Application/Service|Version
 |Mule Runtime |3.6 or newer
@@ -62,11 +62,11 @@ Additionally, we recommend that you keep Studio up to date with its latest versi
 
 == Configure the Connector Global Element
 
-To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration, requiring the following credentials:
+To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration options, requiring the following credentials:
 
-. Simple authentication configuration:
-+
-[width="100a",cols="50a,50a",options="header",]
+=== Simple Authentication Configuration
+
+[%header,width="100a",cols="50a,50a"]
 |===
 |Field |Description
 |*NameNode URI* |The URI of the file system to connect to.
@@ -74,16 +74,17 @@ To use the HDFS connector in your Mule application, you must configure a global 
 This is passed to the HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overridden by values in configurationResources and configurationEntries.
 |*Username* |A simple user identity of a client process.
 [NOTE]
-This is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+This is passed to the HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
 |*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
 |*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
-+
+
 image:hdfs-config.png[hdfs-config]
-+
-. Kerberos authentication configuration:
-+
-[width="100a",cols="50a,50a",options="header",]
+
+
+=== Kerberos Authentication Configuration
+
+[%header,width="100a",cols="50a,50a"]
 |===
 |Field |Description
 |*NameNode URI* |The URI of the file system to connect to.
@@ -98,12 +99,13 @@ KeytabPath is used in order to obtain TGT from "Authorization server".  If not p
 |*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
 |*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
-+
+
 image:hdfs-config-with-kerberos.png[hdfs-config-with-kerberos]
 
 == Using the Connector
 
 You can use this connector as an inbound endpoint for polling content of a file at a configurable rate (interval) or as an outbound connector for manipulating data into the HDFS server.
+
 [NOTE]
 See a full list of operations for any version of the connector link:/mulesoft.github.io/hdfs-connector[here].
 
@@ -140,9 +142,9 @@ If you are coding a Mavenized Mule application, this XML snippet must be include
 [source,xml,linenums]
 ----
 <dependency>
-  <groupId></groupId>
-  <artifactId></artifactId>
-  <version></version>
+  <groupId>org.mule.modules</groupId>
+      <artifactId>mule-module-hdfs</artifactId>
+      <version>5.0.0</version>
 </dependency>
 ----
 
@@ -158,26 +160,25 @@ Inside the `<version>` tags, put the desired version number, the word `RELEASE` 
 
 == Demo Mule Application Using Connector
 
-Existing demos demonstrate how to use connector for link:/common-operations[basic file system operations] and how to link:/poll-from-file[poll data from a file] at specific interval.
+Existing demos demonstrate how to use the connector for link:http://mulesoft.github.io/hdfs-connector/[basic file system operations] and how to link:http://mulesoft.github.io/hdfs-connector/[poll data from a file] at a specific interval.
 
 === Example Use Case
 
-The following example shows how to create a text file into HDFS through connector:
+The following example shows how to create a text file into HDFS using the connector:
 
 . In Anypoint Studio, click *File* > *New* > *Mule Project*, name the project, and click *OK*.
 . In the search field, type "http" and drag the *HTTP* connector to the canvas, click the green plus sign to the right of *Connector Configuration*, and in the next screen, click *OK* to accept the default settings. Name the endpoint */createFile*.
 . In the Search bar type "HDFS" and drag the *HDFS* connector onto the canvas. Configure as explained <<Configure the Connector Global Element>>
-. Choose *Write to path* as an operation. Set *Path* to "/test.txt" (this is the path of the file that is going to be created into HDFS) and leave other options with default values.
+. Choose *Write to path* as an operation. Set *Path* to `/test.txt` (this is the path of the file that is going to be created into HDFS) and leave other options with default values.
 . The flow should look like this:
 +
 image:create-file-flow.png[Create file flow]
 +
-. Run the application and from your favorite http client make a POST request having "Content-type:plain/text" to locahost:8081/createFile with content that you want to write as payload. (e.g. curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile)
+. Run the application. From your favorite HTTP client make a POST request with "Content-type:plain/text" to `locahost:8081/createFile` with content that you want to write as payload. (e.g. `curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile`)
 . Check that */test.txt* has been created and has your content by using Hadoop explorer.
 
-This and other basic file system operations are demonstrated within link:/common-operations[this] demo.
 
-=== Example Use Case - XML
+=== Create a File into HDFS - XML
 
 Paste this into Anypoint Studio to interact with the example use case application discussed in this guide.
 

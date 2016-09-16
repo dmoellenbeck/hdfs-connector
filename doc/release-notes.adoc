@@ -9,7 +9,7 @@ link:/hdfs-connector[HDFS Connector User Guide]
 
 === Version 5.0.0 Compatibility
 
-[width="100%", cols=",", options="header"]
+[%header,width="100%", cols=","]
 |===
 |Software |Version
 |Mule Runtime | 3.6 and higher
@@ -18,16 +18,16 @@ link:/hdfs-connector[HDFS Connector User Guide]
 
 === Version 5.0.0 Features
 
-. Changed connector's category from *Community* to *Select*.
-. Read from path - added operation to read from a file laying into HDFS. This is different from existintg one that polls data and can be used as an endpoint.
+* Upgraded the connector category from *Community* to *Select*.
+* *Read from path* - added operation to read from a file into HDFS. This is different from the existing one that polls data and can be used as an endpoint.
 
 === Version 5.0.0 Fixed in this Release
 
-Only features.
+None; only new features.
 
 === Version 5.0.0 Known Issues
 
-No known issue.
+No known issues.
 
 == Version 4.0 - March 5, 2015
 
