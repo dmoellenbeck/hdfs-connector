@@ -64,17 +64,17 @@ Additionally, we recommend that you keep Studio up to date with its latest versi
 
 To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration, requiring the following credentials:
 
-. Simple authetication configuration:
+. Simple authentication configuration:
 +
 [width="100a",cols="50a,50a",options="header",]
 |===
 |Field |Description
 |*NameNode URI* |The URI of the file system to connect to.
 [NOTE]
-It is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overriden by values in configurationResources and configurationEntries.
+This is passed to the HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overridden by values in configurationResources and configurationEntries.
 |*Username* |A simple user identity of a client process.
 [NOTE]
-It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+This is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
 |*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
 |*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
@@ -88,13 +88,13 @@ image:hdfs-config.png[hdfs-config]
 |Field |Description
 |*NameNode URI* |The URI of the file system to connect to.
 [NOTE]
-It is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overriden by values in configurationResources and configurationEntries.
+This is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overridden by values in configurationResources and configurationEntries.
 |*Username* |A simple user identity of a client process.
 [NOTE]
-It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+This is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
 |*KeytabPath* |Path to the link:https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html[keytab file] associated with username.
 [NOTE]
-It is used in order to obtain TGT from "Authorization server".  If not provided it will look for a TGT associated to username within your local kerberos cache.
+KeytabPath is used in order to obtain TGT from "Authorization server".  If not provided it will look for a TGT associated to username within your local kerberos cache.
 |*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
 |*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
@@ -156,9 +156,9 @@ Inside the `<version>` tags, put the desired version number, the word `RELEASE` 
 * *3.6.0*
 ====
 
-== Demo Mule Applications Using Connector
+== Demo Mule Application Using Connector
 
-Exsting demos demontrate how to use connector for link:/common-operations[basic file system operations] and how to link:/poll-from-file[poll data from a file] at specific interval.
+Existing demos demonstrate how to use connector for link:/common-operations[basic file system operations] and how to link:/poll-from-file[poll data from a file] at specific interval.
 
 === Example Use Case
 
@@ -175,7 +175,7 @@ image:create-file-flow.png[Create file flow]
 . Run the application and from your favorite http client make a POST request having "Content-type:plain/text" to locahost:8081/createFile with content that you want to write as payload. (e.g. curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile)
 . Check that */test.txt* has been created and has your content by using Hadoop explorer.
 
-This and other basic file systen operations are demonstrated within link:/common-operations[this] demo.
+This and other basic file system operations are demonstrated within link:/common-operations[this] demo.
 
 === Example Use Case - XML
 
