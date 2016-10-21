@@ -40,4 +40,19 @@ public class TestDataBuilder {
         return ConnectorTestUtils.generateRandomShortString()
                 .getBytes();
     }
+
+    public static byte[] payloadForWrite() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForGetMetadata() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForRead() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
 }
