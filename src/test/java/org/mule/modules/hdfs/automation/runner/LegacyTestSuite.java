@@ -15,9 +15,6 @@ import org.mule.modules.hdfs.automation.functional.legacy.*;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         GetMetadataTestCases.class, // we can not migrate to CTF yet as it has to make assertions on inbound properties and this is not supported by CTF
-        RenameTestCases.class,
-        SetOwnerTestCases.class,
-        SetPermissionTestCases.class
 })
 public class LegacyTestSuite {
 

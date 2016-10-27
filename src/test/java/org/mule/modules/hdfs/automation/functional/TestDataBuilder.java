@@ -55,4 +55,24 @@ public class TestDataBuilder {
         return ConnectorTestUtils.generateRandomShortString()
                 .getBytes();
     }
+
+    public static byte[] payloadForReadOperation() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForRename() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForSetPermissions() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForSetOwner() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
 }

@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mule.modules.hdfs.exception.HDFSConnectorException;
+import org.mule.modules.hdfs.exception.Exception;
 
 public class DeleteDirectoryTestCases extends AbstractTestCases {
 
@@ -17,18 +17,18 @@ public class DeleteDirectoryTestCases extends AbstractTestCases {
     public ExpectedException fileNotFoundExpected = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws java.lang.Exception {
         getConnector().makeDirectories(PARENT_DIRECTORY + NEW_DIRECTORY, "700");
     }
 
     @Test
-    public void testDeleteDirectory() throws Exception {
+    public void testDeleteDirectory() throws java.lang.Exception {
         getConnector().deleteDirectory(PARENT_DIRECTORY + NEW_DIRECTORY);
         verifyDeletetionOfDirectory();
     }
 
-    private void verifyDeletetionOfDirectory() throws HDFSConnectorException {
-        fileNotFoundExpected.expect(HDFSConnectorException.class);
+    private void verifyDeletetionOfDirectory() throws Exception {
+        fileNotFoundExpected.expect(Exception.class);
         getConnector().listStatus(PARENT_DIRECTORY + NEW_DIRECTORY, null);
     }
 

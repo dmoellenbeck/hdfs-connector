@@ -7,7 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.hdfs.exception.HDFSConnectorException;
+import org.mule.modules.hdfs.exception.Exception;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,17 +22,17 @@ public class WriteTestCases extends AbstractTestCases {
     private byte[] writtenData;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws java.lang.Exception {
         writtenData = TestDataBuilder.payloadForWrite();
     }
 
     @Test
-    public void testWrite() throws Exception {
+    public void testWrite() throws java.lang.Exception {
         getConnector().write(MYFILE_PATH, "755", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(writtenData));
         validateWrittenContent();
     }
 
-    private void validateWrittenContent() throws HDFSConnectorException, IOException {
+    private void validateWrittenContent() throws Exception, IOException {
         InputStream actualInputStream = getConnector().readOperation(MYFILE_PATH, 4096);
         byte[] actualContent = new byte[actualInputStream.available()];
         IOUtils.read(actualInputStream, actualContent);
@@ -40,7 +40,7 @@ public class WriteTestCases extends AbstractTestCases {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws java.lang.Exception {
         getConnector().deleteFile(MYFILE_PATH);
     }
 

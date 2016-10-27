@@ -7,7 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.hdfs.exception.HDFSConnectorException;
+import org.mule.modules.hdfs.exception.Exception;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ public class ReadTestCases extends AbstractTestCases {
         getDispatcher().initializeSource(READ_SOURCE, sourceSignature);
     }
 
-    private void createFileToMonitor() throws HDFSConnectorException {
+    private void createFileToMonitor() throws Exception {
         writtenData = TestDataBuilder.payloadForRead();
         getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(writtenData));
     }
@@ -54,7 +54,7 @@ public class ReadTestCases extends AbstractTestCases {
     }
 
     @Test
-    public void testRead() throws Exception {
+    public void testRead() throws java.lang.Exception {
         waitAWhileForSourceToCollectSomeMesages();
         List<Object> readContents = getDispatcher().getSourceMessages(READ_SOURCE);
         validateReadContents(readContents);
@@ -64,7 +64,7 @@ public class ReadTestCases extends AbstractTestCases {
         Thread.sleep(500);
     }
 
-    private void validateReadContents(List<Object> readContents) throws Exception {
+    private void validateReadContents(List<Object> readContents) throws java.lang.Exception {
         assertThat(readContents, hasSize(greaterThan(0)));
         for (Object content : readContents) {
             InputStream actualContentStream = (InputStream) content;
