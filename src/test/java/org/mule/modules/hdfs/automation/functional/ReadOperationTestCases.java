@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mule.modules.hdfs.exception.Exception;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,18 +25,18 @@ public class ReadOperationTestCases extends AbstractTestCases {
     public ExpectedException fileNotFoundException = ExpectedException.none();
 
     @Before
-    public void setUp() throws java.lang.Exception {
+    public void setUp() throws Exception {
         writtenData = TestDataBuilder.payloadForReadOperation();
         getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(writtenData));
     }
 
     @After
-    public void tearDown() throws java.lang.Exception {
+    public void tearDown() throws Exception {
         getConnector().deleteFile(MYFILE_PATH);
     }
 
     @Test
-    public void testReadOperation() throws java.lang.Exception {
+    public void testReadOperation() throws Exception {
         InputStream actualContentInpuStream = getConnector().readOperation(MYFILE_PATH, 4096);
         byte[] actualContent = new byte[actualContentInpuStream.available()];
         IOUtils.read(actualContentInpuStream, actualContent);
@@ -45,7 +44,7 @@ public class ReadOperationTestCases extends AbstractTestCases {
     }
 
     @Test
-    public void testReadOperationWhenFileDoesNotExist() throws java.lang.Exception {
+    public void testReadOperationWhenFileDoesNotExist() throws Exception {
         fileNotFoundException.expect(Exception.class);
         getConnector().readOperation(FAKE_PATH, 4096);
     }
