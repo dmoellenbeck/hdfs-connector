@@ -43,7 +43,7 @@ public class SetPermissionTestCases extends AbstractTestCases {
     }
 
     @After
-    public void tearDown() throws java.lang.Exception {
+    public void tearDown() throws Exception {
         getConnector().deleteDirectory(PARENT_DIRECTORY);
     }
 }

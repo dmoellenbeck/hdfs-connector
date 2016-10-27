@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mule.modules.hdfs.exception.Exception;
 
 import java.io.ByteArrayInputStream;
 
@@ -24,14 +23,14 @@ public class RenameTestCases extends AbstractTestCases {
     public ExpectedException fileNotFoundExpected = ExpectedException.none();
 
     @Before
-    public void setUp() throws java.lang.Exception {
+    public void setUp() throws Exception {
         writtenData = TestDataBuilder.payloadForRename();
         getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(writtenData));
         getConnector().makeDirectories(DIRECTORY, "700");
     }
 
     @Test
-    public void testRenameDir() throws java.lang.Exception {
+    public void testRenameDir() throws Exception {
         getConnector().rename(DIRECTORY, NEW_DIRECTORY_NAME);
         getConnector().listStatus(NEW_DIRECTORY_NAME, null);
         fileNotFoundExpected.expect(Exception.class);
@@ -39,7 +38,7 @@ public class RenameTestCases extends AbstractTestCases {
     }
 
     @Test
-    public void testRenameFile() throws java.lang.Exception {
+    public void testRenameFile() throws Exception {
         getConnector().rename(MYFILE_PATH, NEW_MYFILE_PATH);
         getConnector().listStatus(NEW_MYFILE_PATH, null);
         fileNotFoundExpected.expect(Exception.class);
@@ -47,7 +46,7 @@ public class RenameTestCases extends AbstractTestCases {
     }
 
     @After
-    public void tearDown() throws java.lang.Exception {
+    public void tearDown() throws Exception {
         getConnector().deleteDirectory(ROOT_DIRECTORY);
     }
 }

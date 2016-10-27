@@ -7,7 +7,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.hdfs.exception.Exception;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -54,7 +53,7 @@ public class ReadTestCases extends AbstractTestCases {
     }
 
     @Test
-    public void testRead() throws java.lang.Exception {
+    public void testRead() throws Exception {
         waitAWhileForSourceToCollectSomeMesages();
         List<Object> readContents = getDispatcher().getSourceMessages(READ_SOURCE);
         validateReadContents(readContents);
@@ -64,7 +63,7 @@ public class ReadTestCases extends AbstractTestCases {
         Thread.sleep(500);
     }
 
-    private void validateReadContents(List<Object> readContents) throws java.lang.Exception {
+    private void validateReadContents(List<Object> readContents) throws Exception {
         assertThat(readContents, hasSize(greaterThan(0)));
         for (Object content : readContents) {
             InputStream actualContentStream = (InputStream) content;
