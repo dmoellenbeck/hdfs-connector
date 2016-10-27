@@ -40,4 +40,39 @@ public class TestDataBuilder {
         return ConnectorTestUtils.generateRandomShortString()
                 .getBytes();
     }
+
+    public static byte[] payloadForWrite() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForGetMetadata() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForRead() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForReadOperation() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForRename() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForSetPermissions() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
+
+    public static byte[] payloadForSetOwner() {
+        return ConnectorTestUtils.generateRandomShortString()
+                .getBytes();
+    }
 }
