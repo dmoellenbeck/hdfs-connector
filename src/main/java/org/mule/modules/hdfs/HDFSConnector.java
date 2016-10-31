@@ -68,15 +68,12 @@ public class HDFSConnector {
      *             if any issue occurs during the execution.
      */
     @Source(friendlyName = "Read from path", sourceStrategy = SourceStrategy.POLLING, pollingPeriod = 5000)
-    public void read(final String path,
-            @Default("4096") final int bufferSize,
-            final SourceCallback sourceCallback) throws HDFSConnectorException {
+    public void read(final String path, @Default("4096") final int bufferSize, final SourceCallback sourceCallback) throws HDFSConnectorException {
         try {
             runHdfsPathAction(path, new VoidHdfsPathAction() {
 
                 public void run(final Path hdfsPath) throws Exception { // NOSONAR
-                    sourceCallback.process(fileSystem.open(hdfsPath, bufferSize),
-                            getPathMetaData(hdfsPath));
+                    sourceCallback.process(fileSystem.open(hdfsPath, bufferSize), getPathMetaData(hdfsPath));
                 }
             });
         } catch (Exception e) {
@@ -96,8 +93,7 @@ public class HDFSConnector {
      *             if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Read from path")
-    public InputStream readOperation(final String path,
-            @Default("4096") final int bufferSize) throws HDFSConnectorException {
+    public InputStream readOperation(final String path, @Default("4096") final int bufferSize) throws HDFSConnectorException {
         try {
             return runHdfsPathAction(path, new HdfsPathAction<InputStream>() {
 
@@ -195,21 +191,16 @@ public class HDFSConnector {
      *             if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Write to path")
-    public void write(final String path, // NOSONAR
-            @Default("700") final String permission,
-            @Default("true") final boolean overwrite,
-            @Default("4096") final int bufferSize,
-            @Default("1") final int replication,
-            @Default("1048576") final long blockSize,
-            @Optional final String ownerUserName,
-            @Optional final String ownerGroupName,
-            @Default("#[payload]") final InputStream payload) throws HDFSConnectorException {
+    public void write(
+            final String path, // NOSONAR
+            @Default("700") final String permission, @Default("true") final boolean overwrite, @Default("4096") final int bufferSize, @Default("1") final int replication,
+            @Default("1048576") final long blockSize, @Optional final String ownerUserName, @Optional final String ownerGroupName, @Default("#[payload]") final InputStream payload)
+            throws HDFSConnectorException {
         try {
             runHdfsPathAction(path, new VoidHdfsPathAction() {
 
                 public void run(final Path hdfsPath) throws Exception { // NOSONAR
-                    final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath,
-                            getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
+                    final FSDataOutputStream fsDataOutputStream = fileSystem.create(hdfsPath, getFileSystemPermission(permission), overwrite, bufferSize, (short) replication,
                             blockSize, null);
                     IOUtils.copyLarge(payload, fsDataOutputStream);
                     fsDataOutputStream.hsync();
@@ -239,9 +230,7 @@ public class HDFSConnector {
      *             if any issue occurs during the execution.
      */
     @Processor(friendlyName = "Append to file")
-    public void append(final String path,
-            @Default("4096") final int bufferSize,
-            @Default("#[payload]") final InputStream payload) throws HDFSConnectorException {
+    public void append(final String path, @Default("4096") final int bufferSize, @Default("#[payload]") final InputStream payload) throws HDFSConnectorException {
         try {
             runHdfsPathAction(path, new VoidHdfsPathAction() {
 
