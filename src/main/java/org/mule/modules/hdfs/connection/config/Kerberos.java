@@ -62,8 +62,7 @@ public class Kerberos extends AbstractConfig {
      */
     @Connect
     @TestConnectivity
-    public void connect(@ConnectionKey @FriendlyName("NameNode URI") final String nameNodeUri)
-            throws ConnectionException {
+    public void connect(@ConnectionKey @FriendlyName("NameNode URI") final String nameNodeUri) throws ConnectionException {
         hadoopClientConfigurationProvider = new HadoopClientConfigurationProvider();
         final Configuration configuration = hadoopClientConfigurationProvider.forKerberosAuth(nameNodeUri, getUsername(), getConfigurationResources(), getConfigurationEntries());
         UserGroupInformation.setConfiguration(configuration);
