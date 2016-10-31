@@ -19,13 +19,6 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         <hdfs:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </hdfs:config>
 
-    <flow name="write" doc:name="write">
-        <hdfs:write config-ref="HDFS" path="#[flowVars.path]" overwrite="#[flowVars.overwrite]"
-                    bufferSize="#[flowVars.bufferSize]"
-                    replication="#[flowVars.replication]" payload-ref="#[flowVars.payloadRef]"
-                    permission="#[flowVars.permission]"/>
-    </flow>
-
     <flow name="write-default-values" doc:name="write-default-values">
         <hdfs:write config-ref="HDFS" path="#[flowVars.path]" payload-ref="#[flowVars.payloadRef]" doc:name="HDFS"/>
     </flow>
@@ -37,84 +30,5 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
     <flow name="get-metadata" doc:name="get-metadata">
         <hdfs:get-metadata config-ref="HDFS" path="#[flowVars.path]" doc:name="HDFS"/>
     </flow>
-
-    <flow name="read" doc:name="read" initialState="stopped">
-        <hdfs:read config-ref="HDFS" path="myfile.txt"/>
-        <object-to-string-transformer/>
-        <vm:outbound-endpoint path="receive"/>
-    </flow>
-
-    <flow name="readOperation" doc:name="Read Operation">
-        <hdfs:read-operation config-ref="HDFS" path="myfile.txt"/>
-        <object-to-string-transformer/>
-        <vm:outbound-endpoint path="receive"/>
-    </flow>
-
-    <flow name="readOperationWhenFileDoesNotExist" doc:name="Read Operation">
-        <hdfs:read-operation config-ref="HDFS" path="fileThatDoesNotExist.txt"/>
-    </flow>
-
-    <flow name="append" doc:name="append">
-        <hdfs:append config-ref="HDFS" path="#[flowVars.path]" bufferSize="#[flowVars.bufferSize]"
-                     payload-ref="#[flowVars.payloadRef]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="make-directories" doc:name="make-directories">
-        <hdfs:make-directories config-ref="HDFS" path="#[flowVars.path]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="delete-directory" doc:name="delete-directory">
-        <hdfs:delete-directory config-ref="HDFS" path="#[flowVars.path]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="rename" doc:name="rename">
-        <hdfs:rename config-ref="HDFS" source="#[flowVars.fromPath]" target="#[flowVars.toPath]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="list-status" doc:name="list-status">
-        <hdfs:list-status config-ref="HDFS" path="#[flowVars.path]" filter="#[flowVars.filter]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="copy-from-local-file" doc:name="copy-from-local-file">
-        <hdfs:copy-from-local-file config-ref="HDFS" deleteSource="#[flowVars.deleteSrc]"
-                                   overwrite="#[flowVars.overwrite]" source="#[flowVars.source]"
-                                   target="#[flowVars.target]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="copy-to-local-file" doc:name="copy-to-local-file">
-        <hdfs:copy-to-local-file config-ref="HDFS" deleteSource="#[flowVars.deleteSrc]"
-                                 useRawLocalFileSystem="#[flowVars.useRawLocalFileSystem]" source="#[flowVars.source]"
-                                 target="#[flowVars.target]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="set-permission" doc:name="set-permission">
-        <hdfs:set-permission config-ref="HDFS" path="#[flowVars.path]" permission="#[flowVars.permission]"
-                             doc:name="HDFS"/>
-    </flow>
-
-    <flow name="set-owner" doc:name="set-owner">
-        <hdfs:set-owner config-ref="HDFS" path="#[flowVars.path]" groupname="#[flowVars.groupname]"
-                        ownername="#[flowVars.ownername]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="glob-status" doc:name="glob-status">
-        <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
-                          doc:name="HDFS"/>
-    </flow>
-
-    <!-- GET-META-DATA : BEGIN -->
-    <flow name="get-meta-data-rename" doc:name="get-meta-data-rename">
-        <hdfs:rename config-ref="HDFS" source="#[flowVars.fromPath]" target="#[flowVars.toPath]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="get-meta-data-list-status" doc:name="get-meta-data-list-status">
-        <hdfs:list-status config-ref="HDFS" path="#[flowVars.path]" filter="#[flowVars.filter]" doc:name="HDFS"/>
-    </flow>
-
-    <flow name="get-meta-data-glob-status" doc:name="get-meta-data-glob-status">
-        <hdfs:glob-status config-ref="HDFS" pathPattern="#[flowVars.pathPattern]" filter-ref="#[flowVars.filter]"
-                          doc:name="HDFS"/>
-    </flow>
-    <!-- GET-META-DATA : END -->
 
 </mule>

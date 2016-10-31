@@ -7,61 +7,9 @@
     <bean id="randomInputStream" class="org.mule.modules.tests.ConnectorTestUtils"
           factory-method="generateRandomInputStream" scope="prototype"/>
 
-    <bean id="randomUniqueText" class="org.mule.modules.tests.ConnectorTestUtils"
-          factory-method="generateRandomShortString" scope="prototype"/>
-
-    <bean id="rootDirectory" class="java.lang.String">
-        <constructor-arg value="hadoop"/>
-    </bean>
-
-    <bean id="filterRegex" class="org.mule.modules.hdfs.utils.RegexExcludePathFilter">
-        <constructor-arg value="^.*2013/12/31$"/>
-    </bean>
-
     <util:map id="getMetadataTestData" map-class="java.util.HashMap" key-type="java.lang.String"
               value-type="java.lang.Object" scope="prototype">
         <entry key="payloadRef" value-ref="randomInputStream"/>
         <entry key="path" value="myfile.txt"/>
-    </util:map>
-
-    <util:map id="readTestData" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.Object"
-              scope="prototype">
-        <entry key="payloadRef" value-ref="randomInputStream"/>
-        <entry key="path" value="myfile.txt"/>
-    </util:map>
-
-    <util:map id="renameTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="fromPath" value="hadoop-data"/>
-        <entry key="toPath" value="hadoop"/>
-        <entry key="payloadRef" value-ref="randomInputStream"/>
-        <entry key="permission" value="777"/>
-        <entry key="overwrite" value="true"/>
-        <entry key="bufferSize" value="#{8192}"/>
-        <entry key="blockSize" value="#{8192}"/>
-        <entry key="replication" value="#{1}"/>
-    </util:map>
-
-    <util:map id="setPermissionTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="rootPath" value-ref="rootDirectory"/>
-        <entry key="path">
-            <bean class="java.lang.String" factory-bean="rootDirectory" factory-method="concat">
-                <constructor-arg value="/new-file.txt"/>
-            </bean>
-        </entry>
-        <entry key="permission" value="754"/>
-    </util:map>
-
-    <util:map id="setOwnerTestData" map-class="java.util.HashMap" key-type="java.lang.String"
-              value-type="java.lang.Object" scope="prototype">
-        <entry key="rootPath" value-ref="rootDirectory"/>
-        <entry key="path">
-            <bean class="java.lang.String" factory-bean="rootDirectory" factory-method="concat">
-                <constructor-arg value="/new-file.txt"/>
-            </bean>
-        </entry>
-        <entry key="groupname" value="hadoop"/>
-        <entry key="ownername" value="qauser"/>
     </util:map>
 </beans>
