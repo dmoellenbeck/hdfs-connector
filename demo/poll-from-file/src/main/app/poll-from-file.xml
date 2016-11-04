@@ -4,7 +4,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
-    <hdfs:config name="HDFS__Configuration" nameNodeUri="${config.nameNodeUri}" username="${config.sysUser}" doc:name="HDFS: Configuration"/>
+    <hdfs:config name="HDFS__Configuration" nameNodeUri="${config.nameNodeUri}" username="${config.username}" doc:name="HDFS: Configuration"/>
     <flow name="poll-from-file-flow">
         <hdfs:read config-ref="HDFS__Configuration" path="${fileToPollFrom}" doc:name="Poll from file"/>
         <object-to-string-transformer doc:name="Convert read content to String"/>

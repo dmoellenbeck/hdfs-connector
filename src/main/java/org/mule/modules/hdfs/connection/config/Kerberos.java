@@ -33,6 +33,23 @@ public class Kerberos extends AbstractConfig {
     private static final Logger logger = LoggerFactory.getLogger(Kerberos.class);
 
     /**
+     * Kerberos principal. It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources and
+     * configurationEntries.
+     */
+    @Configurable
+    @Optional
+    @Placement(order = 1, group = "Authentication")
+    private String username; // we call it username for backward compatibility reasons in terms of what will be seen in xml
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
      * Path to the <a href="https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html">keytab file</a> associated with username. It is used in order to obtain TGT from
      * "Authorization server". If not provided it will look for a TGT associated to username within your local kerberos cache.
      */
@@ -64,7 +81,7 @@ public class Kerberos extends AbstractConfig {
     @TestConnectivity
     public void connect(@ConnectionKey @FriendlyName("NameNode URI") final String nameNodeUri) throws ConnectionException {
         hadoopClientConfigurationProvider = new HadoopClientConfigurationProvider();
-        final Configuration configuration = hadoopClientConfigurationProvider.forKerberosAuth(nameNodeUri, getUsername(), getConfigurationResources(), getConfigurationEntries());
+        final Configuration configuration = hadoopClientConfigurationProvider.forKerberosAuth(nameNodeUri, username, getConfigurationResources(), getConfigurationEntries());
         UserGroupInformation.setConfiguration(configuration);
         if (isKeytabProvided()) {
             loginUserUsingKeytab();
@@ -78,7 +95,7 @@ public class Kerberos extends AbstractConfig {
 
     private void loginUserUsingKeytab() throws ConnectionException {
         try {
-            UserGroupInformation.loginUserFromKeytab(getUsername(), getKeytabPath());
+            UserGroupInformation.loginUserFromKeytab(username, getKeytabPath());
         } catch (IOException e) {
             logger.error("Unable to login user using keytab", e);
             throw new ConnectionException(ConnectionExceptionCode.UNKNOWN, null, "Unable to login user using keytab", e);

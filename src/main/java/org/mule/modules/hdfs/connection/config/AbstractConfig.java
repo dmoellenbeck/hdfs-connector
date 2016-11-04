@@ -31,14 +31,6 @@ public abstract class AbstractConfig {
     private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
     /**
-     * A simple user identity of a client process. It is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overriden by values in configurationResources
-     * and configurationEntries.
-     */
-    @Configurable
-    @Optional
-    @Placement(order = 1, group = "Authentication")
-    private String username;
-    /**
      * A {@link java.util.List} of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
      */
     @Configurable
@@ -53,14 +45,6 @@ public abstract class AbstractConfig {
     @Placement(group = "Advanced")
     private Map<String, String> configurationEntries;
     private FileSystem fileSystem;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public FileSystem getFileSystem() {
         return fileSystem;

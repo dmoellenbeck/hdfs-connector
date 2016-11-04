@@ -23,7 +23,7 @@ In order to build and run this demo project you'll need:
 * Import the demo project into your workspace via "Anypoint Exchange" or "Import..." from "File" menu.
 * From the Package Explorer view, expand the demo project and open the **mule-app.properties** file. Fill in the values for properties as explained below:
     * **config.nameNodeUri** - hostname of the machine where your HDFS server is deployed.
-    * **config.sysUser** - (Optional) a simple user identity of a client process
+    * **config.username** - (Optional) a simple user identity of a client process
     * **fileToPollFrom** - path to file that you want to poll content from
 * Run the Mule Project.
 * The content of file should be logged to console at a rate of 5 seconds which is default.

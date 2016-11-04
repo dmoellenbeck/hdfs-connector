@@ -72,9 +72,9 @@ To use the HDFS connector in your Mule application, you must configure a global 
 |*NameNode URI* |The URI of the file system to connect to.
 [NOTE]
 This is passed to the HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overridden by values in configurationResources and configurationEntries.
-|*Username* |A simple user identity of a client process.
+|*Username* | User identity that Hadoop uses for permissions in HDFS.
 [NOTE]
-This is passed to the HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
+When Simple Authentication is used, Hadoop requires the user to be set as a System Property called HADOOP_USER_NAME. If you fill this field then the connector will set it for you, however you can set it by yourself. If the variable is not set, Hadoop will use the current logged in OS user.
 |*Configuration Resources* |A list of configuration resource files to be loaded by the HDFS client. Here you can provide additional configuration files. (e.g core-site.xml)
 |*Configuration Entries* |A map of configuration entries to be used by the HDFS client. Here you can provide additional configuration entries as key/value pairs.
 |===
@@ -90,7 +90,7 @@ image:hdfs-config.png[hdfs-config]
 |*NameNode URI* |The URI of the file system to connect to.
 [NOTE]
 This is passed to HDFS client as the *FileSystem#FS_DEFAULT_NAME_KEY* configuration entry. It can be overridden by values in configurationResources and configurationEntries.
-|*Username* |A simple user identity of a client process.
+|*Username* | Kerberos principal.
 [NOTE]
 This is passed to HDFS client as the "hadoop.job.ugi" configuration entry. It can be overridden by values in configurationResources and configurationEntries. If not provided it will use the currently logged in user.
 |*KeytabPath* |Path to the link:https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html[keytab file] associated with username.
