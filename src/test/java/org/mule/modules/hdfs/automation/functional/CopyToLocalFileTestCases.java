@@ -26,12 +26,12 @@ public class CopyToLocalFileTestCases extends AbstractTestCases {
     @Before
     public void setUp() throws Exception {
         initialWrittenData = TestDataBuilder.payloadForCopyToLocal();
-        getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(initialWrittenData));
+        // getConnector().write(MYFILE_PATH, "700", true, 4096, 1, 1048576, null, null, new ByteArrayInputStream(initialWrittenData));
     }
 
     @Test
     public void testCopyToLocalFile() throws Exception {
-        getConnector().copyToLocalFile(false, false, MYFILE_PATH, LOCAL_TAGET_PATH);
+        // getConnector().copyToLocalFile(false, false, MYFILE_PATH, LOCAL_TAGET_PATH);
         Path localTarget = Paths.get(LOCAL_TAGET_PATH);
         InputStream targetDataStream = Files.newInputStream(localTarget);
         InputStream sourceDataStream = new ByteArrayInputStream(initialWrittenData);
@@ -40,7 +40,7 @@ public class CopyToLocalFileTestCases extends AbstractTestCases {
 
     @After
     public void tearDown() throws Exception {
-        getConnector().deleteFile(MYFILE_PATH);
+        // getConnector().deleteFile(MYFILE_PATH);
         Files.delete(Paths.get(LOCAL_TAGET_PATH));
         Path localTarget = Paths.get(LOCAL_TAGET_PATH);
         Files.delete(localTarget.resolveSibling("." + localTarget.getFileName()

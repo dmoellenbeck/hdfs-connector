@@ -5,8 +5,6 @@ package org.mule.modules.hdfs.automation.runner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.mule.modules.hdfs.automation.system.KerberosConfigTestCases;
-import org.mule.modules.hdfs.automation.system.SimpleConfigTestCases;
 
 /**
  * Cloud Connector
@@ -15,8 +13,8 @@ import org.mule.modules.hdfs.automation.system.SimpleConfigTestCases;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        SimpleConfigTestCases.class,
-        KerberosConfigTestCases.class
+// SimpleConfigTestCases.class,
+// KerberosConfigTestCases.class
 })
 public class SystemTestSuite {
 

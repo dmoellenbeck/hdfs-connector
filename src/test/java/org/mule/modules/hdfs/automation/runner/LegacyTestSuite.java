@@ -13,8 +13,7 @@ import org.mule.modules.hdfs.automation.functional.legacy.*;
  * @author MuleSoft, Inc.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        GetMetadataTestCases.class, // we can not migrate to CTF yet as it has to make assertions on inbound properties and this is not supported by CTF
+@Suite.SuiteClasses({ GetMetadataTestCases.class, // we can not migrate to CTF yet as it has to make assertions on inbound properties and this is not supported by CTF
 })
 public class LegacyTestSuite {
 

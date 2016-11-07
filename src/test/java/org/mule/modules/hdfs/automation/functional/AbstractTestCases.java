@@ -5,16 +5,14 @@ package org.mule.modules.hdfs.automation.functional;
 
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-import org.mule.modules.hdfs.HDFSConnector;
-import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
 
-public class AbstractTestCases extends AbstractTestCase<HDFSConnector> {
+public class AbstractTestCases /* extends AbstractTestCase<HDFSConnector> */{
 
     // Set global timeout of tests to 5 minutes
     @Rule
     public Timeout globalTimeout = new Timeout(300000);
 
-    public AbstractTestCases() {
-        super(HDFSConnector.class);
-    }
+    // public AbstractTestCases() {
+    // super(HDFSConnector.class);
+    // }
 }

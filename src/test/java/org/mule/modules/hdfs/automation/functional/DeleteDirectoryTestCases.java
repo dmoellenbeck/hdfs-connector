@@ -17,18 +17,18 @@ public class DeleteDirectoryTestCases extends AbstractTestCases {
 
     @Before
     public void setUp() throws Exception {
-        getConnector().makeDirectories(PARENT_DIRECTORY + NEW_DIRECTORY, "700");
+        // getConnector().makeDirectories(PARENT_DIRECTORY + NEW_DIRECTORY, "700");
     }
 
     @Test
     public void testDeleteDirectory() throws Exception {
-        getConnector().deleteDirectory(PARENT_DIRECTORY + NEW_DIRECTORY);
+        // getConnector().deleteDirectory(PARENT_DIRECTORY + NEW_DIRECTORY);
         verifyDeletetionOfDirectory();
     }
 
     private void verifyDeletetionOfDirectory() throws Exception {
         fileNotFoundExpected.expect(Exception.class);
-        getConnector().listStatus(PARENT_DIRECTORY + NEW_DIRECTORY, null);
+        // getConnector().listStatus(PARENT_DIRECTORY + NEW_DIRECTORY, null);
     }
 
 }
