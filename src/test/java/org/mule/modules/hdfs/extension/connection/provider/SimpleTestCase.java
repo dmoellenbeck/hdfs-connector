@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mule.modules.hdfs.extension.connection.dto.AdvancedSettings;
-import org.mule.modules.hdfs.extension.connection.dto.KerberosSettings;
+import org.mule.modules.hdfs.extension.connection.dto.SimpleSettings;
 import org.mule.modules.hdfs.filesystem.*;
 import org.mule.modules.hdfs.filesystem.exception.AuthenticationFailed;
 import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
@@ -28,31 +28,28 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
  * @author MuleSoft, Inc.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class KerberosTestCase {
+public class SimpleTestCase {
 
     private static final String VALID_NAME_NODE_URI = "hdfs://localhost:9000";
-    private static final String VALID_KEYTAB_PATH = "hdfs.keytab";
-    private static final String VALID_PRINCIPAL = "principal/localhost@LOCALHOST";
+    private static final String VALID_USERNAME = "principal";
     private static final List<String> VALID_CONFIGURATION_RESOURCES = new ArrayList<>();
     private static final Map<String, String> VALID_CONFIGURATION_ENTRIES = new HashMap<>();
     private static final String INVALID_NAME_NODE_URI = "hdfs://invalid:9000";
-    private static final String INVALID_KEYTAB_PATH = "invalidhdfs.keytab";
-    private static final String INVALID_PRINCIPAL = "invalid/localhost@LOCALHOST";
+    private static final String INVALID_USERNAME = "invalid";
     private static final List<String> INVALID_CONFIGURATION_RESOURCES = new ArrayList<>();
     private static final Map<String, String> INVALID_CONFIGURATION_ENTRIES = new HashMap<>();
     @Mock
-    private KerberosSettings validKerberosSettings;
+    private SimpleSettings validSimpleSettings;
     @Mock
     private AdvancedSettings validAdvancedSettings;
     @Mock
-    private KerberosSettings invalidKerberosSettings;
+    private SimpleSettings invalidSimpleSettings;
     @Mock
     private AdvancedSettings invalidAdvancedSettings;
     @Mock
@@ -68,7 +65,7 @@ public class KerberosTestCase {
     @Mock
     private HdfsFileSystem hdfsFileSystemThrowingExceptionOnGetStatusCall;
     @InjectMocks
-    private Kerberos kerberos;
+    private Simple simple;
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     @Mock
@@ -82,9 +79,9 @@ public class KerberosTestCase {
 
     @Before
     public void setUp() {
-        mockValidKerberosSettings();
+        mockValidSimpleSettings();
         mockValidAdvancedSettings();
-        mockInvalidKerberosSettings();
+        mockInvalidSimpleSettings();
         mockInvalidAdvancedSettings();
         mockConnectionBuilder();
         mockHdfsFileSystemProvider();
@@ -115,13 +112,11 @@ public class KerberosTestCase {
                 .thenReturn(INVALID_CONFIGURATION_ENTRIES);
     }
 
-    private void mockInvalidKerberosSettings() {
-        Mockito.when(invalidKerberosSettings.getPrincipal())
-                .thenReturn(INVALID_PRINCIPAL);
-        Mockito.when(invalidKerberosSettings.getNameNodeUri())
+    private void mockInvalidSimpleSettings() {
+        Mockito.when(invalidSimpleSettings.getUsername())
+                .thenReturn(INVALID_USERNAME);
+        Mockito.when(invalidSimpleSettings.getNameNodeUri())
                 .thenReturn(INVALID_NAME_NODE_URI);
-        Mockito.when(invalidKerberosSettings.getKeytabPath())
-                .thenReturn(INVALID_KEYTAB_PATH);
     }
 
     private void mockValidAdvancedSettings() {
@@ -131,21 +126,19 @@ public class KerberosTestCase {
                 .thenReturn(VALID_CONFIGURATION_ENTRIES);
     }
 
-    private void mockValidKerberosSettings() {
-        Mockito.when(validKerberosSettings.getPrincipal())
-                .thenReturn(VALID_PRINCIPAL);
-        Mockito.when(validKerberosSettings.getNameNodeUri())
+    private void mockValidSimpleSettings() {
+        Mockito.when(validSimpleSettings.getUsername())
+                .thenReturn(VALID_USERNAME);
+        Mockito.when(validSimpleSettings.getNameNodeUri())
                 .thenReturn(VALID_NAME_NODE_URI);
-        Mockito.when(validKerberosSettings.getKeytabPath())
-                .thenReturn(VALID_KEYTAB_PATH);
     }
 
     private void mockConnectionBuilder() {
-        Mockito.when(hdfsConnectionBuilder.forKerberosAuth(Mockito.eq(VALID_NAME_NODE_URI), Mockito.eq(VALID_PRINCIPAL),
-                Mockito.eq(VALID_KEYTAB_PATH), Mockito.refEq(VALID_CONFIGURATION_RESOURCES), Mockito.refEq(VALID_CONFIGURATION_ENTRIES)))
+        Mockito.when(hdfsConnectionBuilder.forSimpleAuth(Mockito.eq(VALID_NAME_NODE_URI), Mockito.eq(VALID_USERNAME),
+                Mockito.refEq(VALID_CONFIGURATION_RESOURCES), Mockito.refEq(VALID_CONFIGURATION_ENTRIES)))
                 .thenReturn(validConnection);
-        Mockito.when(hdfsConnectionBuilder.forKerberosAuth(Mockito.eq(INVALID_NAME_NODE_URI), Mockito.eq(INVALID_PRINCIPAL),
-                Mockito.eq(INVALID_KEYTAB_PATH), Mockito.refEq(INVALID_CONFIGURATION_RESOURCES), Mockito.refEq(INVALID_CONFIGURATION_ENTRIES)))
+        Mockito.when(hdfsConnectionBuilder.forSimpleAuth(Mockito.eq(INVALID_NAME_NODE_URI), Mockito.eq(INVALID_USERNAME),
+                Mockito.refEq(INVALID_CONFIGURATION_RESOURCES), Mockito.refEq(INVALID_CONFIGURATION_ENTRIES)))
                 .thenReturn(wrongConnection);
     }
 
@@ -162,30 +155,30 @@ public class KerberosTestCase {
 
     @Test
     public void thatConnectIsReturningAValidConnection() throws Exception {
-        kerberos.setAdvancedSettings(validAdvancedSettings);
-        kerberos.setKerberosSettings(validKerberosSettings);
-        HdfsConnection hdfsConnection = kerberos.connect();
+        simple.setAdvancedSettings(validAdvancedSettings);
+        simple.setSimpleSettings(validSimpleSettings);
+        HdfsConnection hdfsConnection = simple.connect();
         assertThat(hdfsConnection, sameInstance(validConnection));
     }
 
     @Test
     public void thatConnectIsThrowingExceptionWhenInvalidConnection() throws Exception {
-        kerberos.setAdvancedSettings(invalidAdvancedSettings);
-        kerberos.setKerberosSettings(invalidKerberosSettings);
+        simple.setAdvancedSettings(invalidAdvancedSettings);
+        simple.setSimpleSettings(invalidSimpleSettings);
         expectedException.expect(ConnectionException.class);
-        kerberos.connect();
+        simple.connect();
     }
 
     @Test
     public void thatValidateIsReturningSuccessForValidConnection() {
-        ConnectionValidationResult validationResult = kerberos.validate(validConnection);
+        ConnectionValidationResult validationResult = simple.validate(validConnection);
         assertThat(validationResult, notNullValue());
         assertThat(validationResult.isValid(), is(true));
     }
 
     @Test
     public void thatValidateIsReturningUnknownFailureForInvalidConnection() {
-        ConnectionValidationResult validationResult = kerberos.validate(wrongConnection);
+        ConnectionValidationResult validationResult = simple.validate(wrongConnection);
         assertThat(validationResult, notNullValue());
         assertThat(validationResult.isValid(), is(false));
         assertThat(validationResult.getMessage(), equalTo("Unable to establish connection with server"));
@@ -194,7 +187,7 @@ public class KerberosTestCase {
 
     @Test
     public void thatValidateIsReturningInvalidCredentialsFailureForInvalidAuthenticationConnection() {
-        ConnectionValidationResult validationResult = kerberos.validate(invalidAuthenticationConnection);
+        ConnectionValidationResult validationResult = simple.validate(invalidAuthenticationConnection);
         assertThat(validationResult, notNullValue());
         assertThat(validationResult.isValid(), is(false));
         assertThat(validationResult.getMessage(), equalTo("Failed to authenticate against server."));
@@ -203,10 +196,11 @@ public class KerberosTestCase {
 
     @Test
     public void thatValidateIsReturningCannotReachFailureForInvalidConnectionRefusedConnection() {
-        ConnectionValidationResult validationResult = kerberos.validate(invalidConnectionRefusedConnection);
+        ConnectionValidationResult validationResult = simple.validate(invalidConnectionRefusedConnection);
         assertThat(validationResult, notNullValue());
         assertThat(validationResult.isValid(), is(false));
         assertThat(validationResult.getMessage(), equalTo("Server seems to be dead."));
         assertThat(validationResult.getCode(), equalTo(ConnectionExceptionCode.CANNOT_REACH));
     }
+
 }

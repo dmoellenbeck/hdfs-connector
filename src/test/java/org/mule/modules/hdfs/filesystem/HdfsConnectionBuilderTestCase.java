@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
  * @author MuleSoft, Inc.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class HdfsConnectionBuilderTest {
+public class HdfsConnectionBuilderTestCase {
 
     private HdfsConnectionBuilder provider;
     private String nameNodeUri;

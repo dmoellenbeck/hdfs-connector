@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-extensions-parent</artifactId>
-        <version>4.0.0-M3</version>
+        <version>4.0.0-M4</version>
     </parent>
     <groupId>org.mule.modules</groupId>
     <artifactId>mule-module-hdfs</artifactId>
@@ -121,6 +121,14 @@
             <layout>default</layout>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ci-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <distributionManagement>
         <repository>

@@ -5,20 +5,25 @@ package org.mule.modules.hdfs.extension.connection.provider;
 
 import org.mule.modules.hdfs.filesystem.HdfsConnection;
 import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
+import org.mule.modules.hdfs.filesystem.exception.AuthenticationFailed;
+import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
 import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
 import org.mule.runtime.api.connection.ConnectionException;
+import org.mule.runtime.api.connection.ConnectionExceptionCode;
 import org.mule.runtime.api.connection.ConnectionProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mule.runtime.api.connection.ConnectionValidationResult;
+
+import javax.inject.Inject;
 
 /**
  * @author MuleSoft, Inc.
  */
 public abstract class BaseProvider implements ConnectionProvider<HdfsConnection> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseProvider.class);
+    @Inject
+    private HdfsFileSystemProvider hdfsFileSystemProvider;
 
-    public void checkConnect(HdfsConnection hdfsConnection) throws ConnectionException {
+    protected void checkConnect(HdfsConnection hdfsConnection) throws ConnectionException {
         try {
             checkFileSystem(hdfsConnection);
         } catch (RuntimeIO e) {
@@ -27,9 +32,21 @@ public abstract class BaseProvider implements ConnectionProvider<HdfsConnection>
     }
 
     protected void checkFileSystem(HdfsConnection hdfsConnection) {
-        HdfsFileSystemProvider hdfsFileSystemProvider = new HdfsFileSystemProvider();
         hdfsFileSystemProvider.fileSystem(hdfsConnection)
                 .fileSystemStatus();
     }
 
+    @Override
+    public ConnectionValidationResult validate(HdfsConnection connection) {
+        try {
+            checkFileSystem(connection);
+            return ConnectionValidationResult.success();
+        } catch (AuthenticationFailed e) {
+            return ConnectionValidationResult.failure("Failed to authenticate against server.", ConnectionExceptionCode.INCORRECT_CREDENTIALS, e);
+        } catch (ConnectionRefused e) {
+            return ConnectionValidationResult.failure("Server seems to be dead.", ConnectionExceptionCode.CANNOT_REACH, e);
+        } catch (RuntimeIO e) {
+            return ConnectionValidationResult.failure("Unable to establish connection with server", ConnectionExceptionCode.UNKNOWN, e);
+        }
+    }
 }

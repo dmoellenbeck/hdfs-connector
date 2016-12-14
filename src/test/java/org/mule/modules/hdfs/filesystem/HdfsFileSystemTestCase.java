@@ -4,6 +4,8 @@
 package org.mule.modules.hdfs.filesystem;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSTestUtil;
@@ -11,13 +13,19 @@ import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
+import org.mule.modules.hdfs.filesystem.dto.DataChunk;
 import org.mule.modules.hdfs.filesystem.dto.FileSystemStatus;
 import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
 import org.mule.modules.hdfs.filesystem.exception.FileNotFound;
 import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
+import org.mule.modules.hdfs.filesystem.exception.UnableToSeekToPosition;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -65,81 +73,154 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     }
 
     @Test
-    public void openRelativePath() throws Exception {
-        openAndValidateContent(URI.create(RELATIVE_FILE), DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE)));
+    public void consumeRelativePath() throws Exception {
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 100, DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE)));
     }
 
-    private void openAndValidateContent(URI uri, String expectedContent) throws Exception {
-        InputStream openedStream = hdfsFileSystem.open(uri);
-        validateOpenedStreamContent(expectedContent, openedStream);
+    private void consumeAndValidateContent(URI uri, long startPosition, int bufferSize, String expectedContent) throws Exception {
+        final List<DataChunk> contentSequence = new ArrayList<>();
+        Consumer<DataChunk> fileContentConsumer = item -> contentSequence.add(item);
+        hdfsFileSystem.consume(uri, startPosition, bufferSize, fileContentConsumer);
+        long exptectedStartPosition = (startPosition > 0)? startPosition : 0;
+        int expectedBufferSize = (bufferSize > 0)? bufferSize : 4096;
+        validateConsumedContent(expectedContent, exptectedStartPosition, expectedBufferSize, contentSequence);
     }
 
     @Test
-    public void openAbsolutePath() throws Exception {
-        openAndValidateContent(URI.create(ABSOLUTE_FILE), DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(ABSOLUTE_FILE)));
+    public void consumeAbsolutePath() throws Exception {
+        consumeAndValidateContent(URI.create(ABSOLUTE_FILE), 0, 100, DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(ABSOLUTE_FILE)));
     }
 
     @Test
-    public void openFileSchemaPath() throws Exception {
+    public void consumeFileSchemaPath() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(startsWith("Wrong FS"));
-        hdfsFileSystem.open(URI.create(FILE_SCHEMA_URI));
+        hdfsFileSystem.consume(URI.create(FILE_SCHEMA_URI), 0, 100, item -> {});
     }
 
     @Test
-    public void openURIWhenAuthorityDiffersFromUnderlayingFileSystem() throws Exception {
+    public void consumeURIWhenAuthorityDiffersFromUnderlayingFileSystem() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(startsWith("Wrong FS"));
-        hdfsFileSystem.open(URI.create("hdfs://fake:9000/myfile.txt"));
+        hdfsFileSystem.consume(URI.create("hdfs://fake:9000/myfile.txt"), 0, 100, item -> {});
     }
 
     @Test
-    public void openHdfsSchemaPath() throws Exception {
-        openAndValidateContent(URI.create(HDFS_SCHEMA_URI), DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(HDFS_SCHEMA_URI)));
+    public void consumeHdfsSchemaPath() throws Exception {
+        consumeAndValidateContent(URI.create(HDFS_SCHEMA_URI), 0, 100, DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(HDFS_SCHEMA_URI)));
     }
 
     @Test
-    public void openRelativePathThatDoesNotExist() throws Exception {
+    public void consumeRelativePathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.open(URI.create(RELATIVE_FILE_THAT_DOES_NOT_EXIST));
+        hdfsFileSystem.consume(URI.create(RELATIVE_FILE_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
     }
 
     @Test
-    public void openAbsolutePathThatDoesNotExist() throws Exception {
+    public void consumeAbsolutePathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.open(URI.create(ABSOLUTE_FILE_THAT_DOES_NOT_EXIST));
+        hdfsFileSystem.consume(URI.create(ABSOLUTE_FILE_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
     }
 
     @Test
-    public void openHdfsSchemaPathThatDoesNotExist() throws Exception {
+    public void consumeHdfsSchemaPathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.open(URI.create(HDFS_SCHEMA_URI_THAT_DOES_NOT_EXIST));
+        hdfsFileSystem.consume(URI.create(HDFS_SCHEMA_URI_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
     }
 
     @Test
-    public void openNullPath() throws Exception {
+    public void consumeNullPath() throws Exception {
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage(equalTo("URI can not be null."));
-        hdfsFileSystem.open(null);
+        hdfsFileSystem.consume(null, 0, 100, item -> {});
     }
 
-    private void validateOpenedStreamContent(String expectedContent, InputStream openedStream) throws Exception {
-        assertThat("Opened stream can not be null.", openedStream, notNullValue());
-        assertThat("Opened stream does not have the expected content.", IOUtils.toString(openedStream), equalTo(expectedContent));
+    private void validateConsumedContent(String expectedContent, long startPosition, int bufferSize, List<DataChunk> contentSequence) throws Exception {
+        ByteArrayOutputStream contentCollector = new ByteArrayOutputStream();
+        long currentPosition = startPosition;
+        for (DataChunk item : contentSequence) {
+            assertThat("Start byte is not following the sequence.", item.getStartByte(), equalTo(currentPosition));
+            assertThat("Number of bytes read greater than buffer size.", item.getBytesRead(), lessThanOrEqualTo(bufferSize));
+            contentCollector.write(item.getData());
+            currentPosition = currentPosition + item.getBytesRead();
+        }
+        ByteArrayInputStream expectedDataStream = new ByteArrayInputStream(contentCollector.toByteArray());
+        assertThat("Opened stream does not have the expected content.", IOUtils.toString(expectedDataStream), equalTo(expectedContent));
     }
 
     @Test
-    public void thatConnectionExceptionIsRaisedWhenOpeningRelativeFileButClusterNotDeployed() throws Exception {
+    public void thatConsumeRaisesConnectionExceptionWhenOpeningRelativeFileButClusterNotDeployed() throws Exception {
         HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(createFileSystem(clusterAuthority(globalCluster).replaceAll(".$", "")));
         expectedException.expect(ConnectionRefused.class);
-        hdfsFileSystem.open(URI.create(RELATIVE_FILE));
+        hdfsFileSystem.consume(URI.create(RELATIVE_FILE), 0, 100, item -> {});
     }
 
     @Test
-    public void thatConnectionExceptionIsRaisedWhenOpeningAbsoluteFileButClusterNotDeployed() throws Exception {
+    public void thatConsumeRaisesConnectionExceptionWhenOpeningAbsoluteFileButClusterNotDeployed() throws Exception {
         HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(createFileSystem(clusterAuthority(globalCluster).replaceAll(".$", "")));
         expectedException.expect(ConnectionRefused.class);
-        hdfsFileSystem.open(URI.create(ABSOLUTE_FILE));
+        hdfsFileSystem.consume(URI.create(ABSOLUTE_FILE), 0, 100, item -> {});
+    }
+
+    @Test
+    public void thatConsumeReadsContentFromTheBeginningWhenStartPositionIsNegative() throws Exception {
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), -3, 100, DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE)));
+    }
+
+    @Test
+    public void thatConsumeReadsContentFromTheBeginningWhenStartPositionIsZero() throws Exception {
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 100, DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE)));
+    }
+
+    @Test
+    public void thatConsumeThrowsExceptionWhenStartPositionOverflows() throws Exception {
+        expectedException.expect(UnableToSeekToPosition.class);
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 205, 100, "");
+    }
+
+    @Test
+    public void thatConsumeReadsContentFromStartPositionWhenStartPositionIsBetweenZeroAndLength() throws Exception {
+        ByteArrayInputStream fileContentStream = new ByteArrayInputStream(DFSTestUtil.readFileBuffer(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE)));
+        fileContentStream.skip(73);
+        int bufferSize = fileContentStream.available();
+        byte[] expectedContentAsBytes = new byte[bufferSize];
+        IOUtils.read(fileContentStream, expectedContentAsBytes, 0, bufferSize);
+        String expectedContent = new String(expectedContentAsBytes);
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 73, 100, expectedContent);
+    }
+
+    @Test
+    public void thatConsumeReadsContentWhenBlockSizeIsNegative() throws Exception {
+        String expectedContent = DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE));
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, -4, expectedContent);
+    }
+
+    @Test
+    public void thatConsumeReadsContentWhenBlockSizeIsZero() throws Exception {
+        String expectedContent = DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE));
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 0, expectedContent);
+    }
+
+    @Test
+    public void thatConsumeReadsContentWhenBlockSizeIsBetweenZeroAndLength() throws Exception {
+        String expectedContent = DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE));
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 33, expectedContent);
+    }
+
+    @Test
+    public void thatConsumeReadsContentWhenBlockSizeIsGreaterThanLength() throws Exception {
+        String expectedContent = DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE));
+        consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 33, expectedContent);
+    }
+
+    @Test
+    public void thatConsumeClosesStreamWhichItIsReadingFrom() throws Exception {
+        FSDataInputStream mockedFsDataInputStream = Mockito.mock(FSDataInputStream.class);
+        FileSystem mockedFileSystem = Mockito.mock(FileSystem.class);
+        Mockito.when(mockedFileSystem.open(Mockito.any(Path.class), Mockito.anyInt())).thenReturn(mockedFsDataInputStream);
+        HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(mockedFileSystem);
+        hdfsFileSystem.consume(URI.create(RELATIVE_FILE), 0, 100, item -> {});
+        Mockito.verify(mockedFsDataInputStream, Mockito.times(1)).close();
     }
 
     @Test

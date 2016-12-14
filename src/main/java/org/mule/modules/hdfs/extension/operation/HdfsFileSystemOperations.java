@@ -3,22 +3,23 @@
  */
 package org.mule.modules.hdfs.extension.operation;
 
-public class HDFSConnectorOperations {
+public class HdfsFileSystemOperations {
 
-    // /**
-    // * Read the content of a file designated by its path and streams it to the rest of the flow:
-    // *
-    // * @param path
-    // * the path of the file to read.
-    // * @param bufferSize
-    // * the buffer size to use when reading the file.
-    // */
+    /**
+     * Read the content of a file designated by its path and streams it to the rest of the flow:
+     *
+     * @param path
+     *            the path of the file to read.
+     * @param bufferSize
+     *            the buffer size to use when reading the file.
+     */
     // public InputStream readOperation(@Connection AbstractConfig connection, String path, @Optional(defaultValue = "4096") int bufferSize) throws HDFSConnectorException {
     // HDFSConnector connector = new HDFSConnector();
     // connector.setConnection(connection);
     // InputStream result = connector.readOperation(path, bufferSize);
     // return result;
     // }
+
     //
     // /**
     // * Get the metadata of a path, as described in {@link HDFSConnector#read(String, int, SourceCallback)}, and store it in flow variables.

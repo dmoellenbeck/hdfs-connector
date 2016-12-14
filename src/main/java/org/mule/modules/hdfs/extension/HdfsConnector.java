@@ -5,28 +5,24 @@ package org.mule.modules.hdfs.extension;
 
 import org.mule.modules.hdfs.extension.connection.provider.Kerberos;
 import org.mule.modules.hdfs.extension.connection.provider.Simple;
-import org.mule.modules.hdfs.extension.enricher.IOExceptionException;
-import org.mule.modules.hdfs.extension.operation.HDFSConnectorOperations;
+import org.mule.modules.hdfs.extension.operation.HdfsFileSystemOperations;
 import org.mule.modules.hdfs.extension.source.ReadSource;
 import org.mule.runtime.extension.api.annotation.Extension;
-import org.mule.runtime.extension.api.annotation.OnException;
 import org.mule.runtime.extension.api.annotation.Operations;
 import org.mule.runtime.extension.api.annotation.Sources;
-import org.mule.runtime.extension.api.annotation.connector.ConnectionProviders;
+import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 
 /**
  * Hadoop Distributed File System (HDFS) Connector.
  * 
  */
 @Extension(name = "HDFS", description = "HDFS Connector")
-@OnException(IOExceptionException.class)
 @ConnectionProviders({
         Simple.class,
         Kerberos.class
 })
-@Sources({ ReadSource.class
-})
-@Operations(HDFSConnectorOperations.class)
-public class HDFSExtension {
+@Sources(ReadSource.class)
+@Operations(HdfsFileSystemOperations.class)
+public class HdfsConnector {
 
 }

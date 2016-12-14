@@ -3,81 +3,156 @@
  */
 package org.mule.modules.hdfs.extension.source;
 
-import org.mule.modules.hdfs.HDFSConnector;
 import org.mule.modules.hdfs.exception.UnableToStopSource;
 import org.mule.modules.hdfs.filesystem.HdfsConnection;
+import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
+import org.mule.modules.hdfs.filesystem.MuleFileSystem;
+import org.mule.modules.hdfs.filesystem.dto.DataChunk;
+import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
 import org.mule.runtime.api.message.Attributes;
-import org.mule.runtime.extension.api.annotation.Parameter;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
+import org.mule.runtime.extension.api.annotation.param.Parameter;
+import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
+import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.Source;
-import org.mule.runtime.extension.api.runtime.source.SourceContext;
+import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
+import javax.inject.Inject;
+import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
- * Read the content of a file designated by its path and streams it to the rest of the flow, while adding the path metadata in the following inbound properties:
- * <ul>
- * <li>{@link HDFSConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path exists</li>
- * <li>{@link HDFSConnector#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.</li>
- * <li>{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.</li>
- * <li>{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
- * </ul>
- * 
+ * Pools the content of the given path every 5 seconds.
+ *
+ * @author MuleSoft, Inc.
  */
-public class ReadSource extends Source<InputStream, Attributes> {
+public class ReadSource extends Source<DataChunk, Attributes> {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadSource.class);
 
-    private ExecutorService executor;
+    private ScheduledExecutorService scheduledExecutorService;
 
     /**
-     * 
-     * @param path
-     *            the path of the file to read.
+     * The path of the file to pool the content from.
      */
     @Parameter
     private String path;
 
-    /**
-     * 
-     * @param bufferSize
-     *            the buffer size to use when reading the file.
-     */
+    @Parameter
+    @Optional(defaultValue = "0")
+    private Long startPosition;
+
     @Parameter
     @Optional(defaultValue = "4096")
-    private int bufferSize;
+    private Integer blockSize;
+
+    @Parameter
+    @Optional(defaultValue = "5000")
+    @DisplayName("Polling frequency (ms)")
+    private Long pollingFrequency;
 
     @Connection
-    private HdfsConnection connection;
+    private HdfsConnection hdfsConnection;
 
-    @Override
-    public void start() {
-        Runnable runnable = this.createRunnable(this.sourceContext);
-        executor = Executors.newScheduledThreadPool(1);
-        ((ScheduledExecutorService) executor).scheduleAtFixedRate(runnable, 0, 5000L, TimeUnit.MILLISECONDS);
+    @Inject
+    private HdfsFileSystemProvider fileSystemProvider;
+
+    public String getPath() {
+        return path;
     }
 
-    private Runnable createRunnable(final SourceContext sourceContext) {
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Long getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(Long startPosition) {
+        this.startPosition = startPosition;
+    }
+
+    public Integer getBlockSize() {
+        return blockSize;
+    }
+
+    public void setBlockSize(Integer blockSize) {
+        this.blockSize = blockSize;
+    }
+
+    public Long getPollingFrequency() {
+        return pollingFrequency;
+    }
+
+    public void setPollingFrequency(Long pollingFrequency) {
+        this.pollingFrequency = pollingFrequency;
+    }
+
+    public HdfsConnection getHdfsConnection() {
+        return hdfsConnection;
+    }
+
+    public void setHdfsConnection(HdfsConnection hdfsConnection) {
+        this.hdfsConnection = hdfsConnection;
+    }
+
+    public HdfsFileSystemProvider getFileSystemProvider() {
+        return fileSystemProvider;
+    }
+
+    public void setFileSystemProvider(HdfsFileSystemProvider fileSystemProvider) {
+        this.fileSystemProvider = fileSystemProvider;
+    }
+
+    @Override
+    public void onStart(SourceCallback<DataChunk, Attributes> sourceCallback) {
+        URI uriToFileToReadFrom = uriForFileToReadFrom();
+        Consumer<DataChunk> contentConsumer = item -> {
+            sourceCallback.handle(Result.<DataChunk, Attributes>builder().output(item).build());
+        };
+        Consumer<RuntimeIO> exceptionConsumer = sourceCallback::onSourceException;
+        Runnable runnable = createRunnable(uriToFileToReadFrom, startPosition, blockSize, contentConsumer, exceptionConsumer);
+        startPollingTheContentFromFile(runnable);
+    }
+
+    private void startPollingTheContentFromFile(Runnable runnable) {
+        scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        scheduledExecutorService.scheduleAtFixedRate(runnable, 0, pollingFrequency, TimeUnit.MILLISECONDS);
+    }
+
+    private URI uriForFileToReadFrom() {
+        return URI.create(path);
+    }
+
+    private MuleFileSystem fileSystem() {
+        return fileSystemProvider.fileSystem(hdfsConnection);
+    }
+
+    private Runnable createRunnable(URI uriOfTheFileToReadFrom, long startPosition, int blockSize,
+            Consumer<DataChunk> contentConsumer, Consumer<RuntimeIO> exceptionConsumer) {
         return () -> {
-//                SourceUtils.executeOperation(connection,
-//                        sourceContext.getExceptionCallback(),
-//                        hdfsConnector -> hdfsConnector.read(path, bufferSize, sourceContext.getMessageHandler()));
-            };
+            try {
+                fileSystem().consume(uriOfTheFileToReadFrom, startPosition, blockSize, contentConsumer);
+            } catch (RuntimeIO exception) {
+                exceptionConsumer.accept(exception);
+            }
+        };
     }
 
     @Override
-    public void stop() {
-        executor.shutdownNow();
+    public void onStop() {
+        scheduledExecutorService.shutdownNow();
         try {
-            executor.awaitTermination(3, TimeUnit.SECONDS);
-        } catch (Exception e) {
+            scheduledExecutorService.awaitTermination(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("Something happened while stopping source.", e);
             throw new UnableToStopSource("Something happened while stopping source.", e);
         }
     }

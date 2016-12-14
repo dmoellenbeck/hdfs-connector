@@ -38,7 +38,7 @@ public abstract class HdfsClusterDependentTestBase {
     }
 
     protected void createFileIntoCluster(MiniDFSCluster hdfsCluster, String validFile) throws Exception {
-        DFSTestUtil.createFile(createFileSystem(clusterAuthority(hdfsCluster)), new Path(validFile), 100, (short) 1, 100);
+        DFSTestUtil.createFile(createFileSystem(clusterAuthority(hdfsCluster)), new Path(validFile), 162, (short) 1, 100);
     }
 
     protected String clusterAuthority(MiniDFSCluster hdfsCluster) {
