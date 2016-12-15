@@ -3,8 +3,8 @@
  */
 package org.mule.modules.hdfs.extension.connection.provider;
 
-import org.mule.modules.hdfs.extension.connection.dto.AdvancedSettings;
-import org.mule.modules.hdfs.extension.connection.dto.SimpleSettings;
+import org.mule.modules.hdfs.extension.dto.connection.AdvancedSettings;
+import org.mule.modules.hdfs.extension.dto.connection.SimpleSettings;
 import org.mule.modules.hdfs.filesystem.HdfsConnection;
 import org.mule.modules.hdfs.filesystem.HdfsConnectionBuilder;
 import org.mule.runtime.api.connection.ConnectionException;

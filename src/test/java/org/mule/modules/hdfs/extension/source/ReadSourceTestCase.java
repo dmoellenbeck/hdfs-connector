@@ -12,19 +12,27 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.mule.modules.hdfs.extension.dto.ReadParameters;
 import org.mule.modules.hdfs.filesystem.HdfsConnection;
 import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
 import org.mule.modules.hdfs.filesystem.MuleFileSystem;
 import org.mule.modules.hdfs.filesystem.dto.DataChunk;
+import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
 import org.mule.runtime.api.message.Attributes;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author MuleSoft, Inc.
@@ -42,31 +50,55 @@ public class ReadSourceTestCase {
     private ReadSource readSource;
     @Mock
     private MuleFileSystem validFileSystem;
+    @Mock
+    private MuleFileSystem fileSystemThrowingException;
+    @Mock
+    private SourceCallback<DataChunk, Attributes> sourceCallback;
+    private List<DataChunk> dataChunksStartingFromZero;
+    private List<DataChunk> dataChunksStartingFrom71;
+    @Mock
+    private ConnectionRefused fileSystemException;
 
     @Before
     public void setUp() {
+        dataChunksStartingFromZero = mockDataChunksStartingFrom(0);
+        dataChunksStartingFrom71 = mockDataChunksStartingFrom(71);
         mockValidFileSystem();
+        mockFileSystemThrowingException();
         mockHdfsFileSystemProvider();
+
+    }
+
+    private void mockFileSystemThrowingException() {
+        Mockito.doThrow(fileSystemException)
+                .when(fileSystemThrowingException)
+                .consume(Mockito.any(), Mockito.anyLong(), Mockito.anyInt(), Mockito.any());
     }
 
     private void mockValidFileSystem() {
-        List<DataChunk> dataChunksStartingFromZero = dataChunksStartingFrom(0);
-        Mockito.doAnswer(new Answer() {
+        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFromZero))
+                .when(validFileSystem)
+                .consume(Mockito.any(), Mockito.eq(0L), Mockito.anyInt(), Mockito.any());
+        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFrom71))
+                .when(validFileSystem)
+                .consume(Mockito.any(), Mockito.eq(71L), Mockito.anyInt(), Mockito.any());
+    }
+
+    private Answer answerGeneratorFromDataChunks(List<DataChunk> dataChunks) {
+        return new Answer() {
 
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Consumer<DataChunk> consumerToFeedMOckDataInto = (Consumer<DataChunk>) invocationOnMock.getArguments()[3];
-                for (DataChunk dataChunk : dataChunksStartingFromZero) {
+                for (DataChunk dataChunk : dataChunks) {
                     consumerToFeedMOckDataInto.accept(dataChunk);
                 }
                 return null;
             }
-        })
-                .when(validFileSystem)
-                .consume(Mockito.any(), Mockito.anyLong(), Mockito.anyInt(), Mockito.any());
+        };
     }
 
-    private List<DataChunk> dataChunksStartingFrom(int startPosition) {
+    private List<DataChunk> mockDataChunksStartingFrom(int startPosition) {
         List<DataChunk> dataChunks = new ArrayList<>();
         long dynamicGeneratedStartPosition = startPosition;
         for (int i = 0; i < 3; i++) {
@@ -80,57 +112,118 @@ public class ReadSourceTestCase {
     private void mockHdfsFileSystemProvider() {
         Mockito.when(hdfsFileSystemProvider.fileSystem(validConnection))
                 .thenReturn(validFileSystem);
+        Mockito.when(hdfsFileSystemProvider.fileSystem(wrongConnection))
+                .thenReturn(fileSystemThrowingException);
     }
 
     @Test
     public void thatSourceIsAbleToConsumeValidContentStartingFromBeginning() throws Exception {
-        SourceCallback<DataChunk, Attributes> sourceCallback = Mockito.mock(SourceCallback.class);
+        List<DataChunk> collectedDataChunks = collectDataChunksFromSource("hdfs://localhost:9000/myfile.txt", 0L, 4096, validConnection);
+        assertThat(collectedDataChunks, hasItems(dataChunksStartingFromZero.toArray(new DataChunk[0])));
+    }
+
+    @Test
+    public void thatSourceIsAbleToConsumeValidContentStartingFrom71() throws Exception {
+        List<DataChunk> collectedDataChunks = collectDataChunksFromSource("hdfs://localhost:9000/myfile.txt", 71L, 4096, validConnection);
+        assertThat(collectedDataChunks, hasItems(dataChunksStartingFrom71.toArray(new DataChunk[0])));
+    }
+
+    @Test
+    public void thatSourceIsProperlyPropagatingException() throws Exception {
+        List<Throwable> thrownExceptions = collectExceptionsFromSource("hdfs://localhost:9000/myfile.txt", 0L, 4096, wrongConnection);
+        assertThat(thrownExceptions, hasSize(1));
+        Throwable throwable = thrownExceptions.get(0);
+        assertThat(throwable, sameInstance(fileSystemException));
+    }
+
+    private List<Throwable> collectExceptionsFromSource(String filePath, long startPosition, int blockSize, HdfsConnection hdfsConnection) throws Exception {
+        List<Throwable> collectedExceptions = new ArrayList<>();
+        final Lock consumptionEndedLock = new ReentrantLock();
+        final Condition consumptionEnded = consumptionEndedLock.newCondition();
+        collectThrownExceptionsOnSourceCallback(throwable -> {
+            collectedExceptions.add(throwable);
+            signalCondition(consumptionEndedLock, consumptionEnded);
+        });
+        populateReadSource(filePath, startPosition, blockSize, hdfsConnection);
+        readSource.onStart(sourceCallback);
+        waitCondition(consumptionEndedLock, consumptionEnded);
+        readSource.onStop();
+        return collectedExceptions;
+    }
+
+    private void collectThrownExceptionsOnSourceCallback(final Consumer<Throwable> exceptionConsumer) {
+        Mockito.doAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Throwable throwable = (Throwable) invocationOnMock.getArguments()[0];
+                exceptionConsumer.accept(throwable);
+                return null;
+            }
+        })
+                .when(sourceCallback)
+                .onSourceException(Mockito.any());
+    }
+
+    private List<DataChunk> collectDataChunksFromSource(String filePath, long startPosition, int blockSize, HdfsConnection hdfsConnection)
+            throws Exception {
         List<DataChunk> collectedDataChunks = new ArrayList<>();
-        Lock consumptionEnded = new ReentrantLock();
+        final Lock consumptionEndedLock = new ReentrantLock();
+        final Condition consumptionEnded = consumptionEndedLock.newCondition();
+        consumeDataSentToSourceCallback(dataChunk -> {
+            if (dataChunk.getBytesRead() > 0) {
+                collectedDataChunks.add(dataChunk);
+            } else {
+                collectedDataChunks.add(dataChunk);
+                signalCondition(consumptionEndedLock, consumptionEnded);
+            }
+        });
+        populateReadSource(filePath, startPosition, blockSize, hdfsConnection);
+        readSource.onStart(sourceCallback);
+        waitCondition(consumptionEndedLock, consumptionEnded);
+        readSource.onStop();
+        return collectedDataChunks;
+    }
+
+    private void consumeDataSentToSourceCallback(Consumer<DataChunk> consumer) {
         Mockito.doAnswer(new Answer() {
 
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Result<DataChunk, Attributes> resultToCollect = (Result<DataChunk, Attributes>) invocationOnMock.getArguments()[0];
                 DataChunk dataChunk = resultToCollect.getOutput();
-                if (dataChunk.getBytesRead() > 0) {
-                    collectedDataChunks.add(dataChunk);
-                } else {
-                    collectedDataChunks.add(dataChunk);
-                    readSource.onStop();
-
-                    consumptionEnded.lock();
-                    try {
-                        consumptionEnded.newCondition()
-                                .signalAll();
-                    } finally {
-                        consumptionEnded.unlock();
-                    }
-                }
-
+                consumer.accept(dataChunk);
                 return null;
             }
         })
                 .when(sourceCallback)
                 .handle(Mockito.any());
-        populateReadSource("hdfs://localhost:9000/myfile.txt", 0L, 4096, validConnection);
-        readSource.onStart(sourceCallback);
+    }
 
-        consumptionEnded.lock();
+    private void waitCondition(Lock consumptionEndedLock, Condition consumptionEnded) throws Exception {
+        consumptionEndedLock.lock();
         try {
-            consumptionEnded.newCondition()
-                    .await();
+            consumptionEnded.await();
         } finally {
-            consumptionEnded.unlock();
+            consumptionEndedLock.unlock();
         }
+    }
 
-        System.out.println("consumedData: " + collectedDataChunks);
+    private void signalCondition(Lock consumptionEndedLock, Condition consumptionEnded) {
+        consumptionEndedLock.lock();
+        try {
+            consumptionEnded.signalAll();
+        } finally {
+            consumptionEndedLock.unlock();
+        }
     }
 
     private void populateReadSource(String path, Long startPosition, Integer blockSize, HdfsConnection hdfsConnection) {
-        readSource.setPath(path);
-        readSource.setStartPosition(startPosition);
-        readSource.setBlockSize(blockSize);
+        ReadParameters readParameters = new ReadParameters();
+        readParameters.setPath(path);
+        readParameters.setStartPosition(startPosition);
+        readParameters.setChunkSize(blockSize);
+        readSource.setReadParameters(readParameters);
         readSource.setPollingFrequency(10000L);
         readSource.setHdfsConnection(hdfsConnection);
     }
