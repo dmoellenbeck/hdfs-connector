@@ -4,6 +4,7 @@
 package org.mule.modules.hdfs.extension.source;
 
 import org.mule.modules.hdfs.exception.UnableToStopSource;
+import org.mule.modules.hdfs.extension.dto.ReadParameters;
 import org.mule.modules.hdfs.filesystem.HdfsConnection;
 import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
 import org.mule.modules.hdfs.filesystem.MuleFileSystem;
@@ -13,6 +14,7 @@ import org.mule.runtime.api.message.Attributes;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
+import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.Source;
@@ -38,24 +40,13 @@ public class ReadSource extends Source<DataChunk, Attributes> {
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    /**
-     * The path of the file to pool the content from.
-     */
-    @Parameter
-    private String path;
-
-    @Parameter
-    @Optional(defaultValue = "0")
-    private Long startPosition;
-
-    @Parameter
-    @Optional(defaultValue = "4096")
-    private Integer blockSize;
-
     @Parameter
     @Optional(defaultValue = "5000")
     @DisplayName("Polling frequency (ms)")
     private Long pollingFrequency;
+
+    @ParameterGroup("Read")
+    private ReadParameters readParameters;
 
     @Connection
     private HdfsConnection hdfsConnection;
@@ -63,36 +54,20 @@ public class ReadSource extends Source<DataChunk, Attributes> {
     @Inject
     private HdfsFileSystemProvider fileSystemProvider;
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public Long getStartPosition() {
-        return startPosition;
-    }
-
-    public void setStartPosition(Long startPosition) {
-        this.startPosition = startPosition;
-    }
-
-    public Integer getBlockSize() {
-        return blockSize;
-    }
-
-    public void setBlockSize(Integer blockSize) {
-        this.blockSize = blockSize;
-    }
-
     public Long getPollingFrequency() {
         return pollingFrequency;
     }
 
     public void setPollingFrequency(Long pollingFrequency) {
         this.pollingFrequency = pollingFrequency;
+    }
+
+    public ReadParameters getReadParameters() {
+        return readParameters;
+    }
+
+    public void setReadParameters(ReadParameters readParameters) {
+        this.readParameters = readParameters;
     }
 
     public HdfsConnection getHdfsConnection() {
@@ -103,14 +78,6 @@ public class ReadSource extends Source<DataChunk, Attributes> {
         this.hdfsConnection = hdfsConnection;
     }
 
-    public HdfsFileSystemProvider getFileSystemProvider() {
-        return fileSystemProvider;
-    }
-
-    public void setFileSystemProvider(HdfsFileSystemProvider fileSystemProvider) {
-        this.fileSystemProvider = fileSystemProvider;
-    }
-
     @Override
     public void onStart(SourceCallback<DataChunk, Attributes> sourceCallback) {
         URI uriToFileToReadFrom = uriForFileToReadFrom();
@@ -118,7 +85,7 @@ public class ReadSource extends Source<DataChunk, Attributes> {
             sourceCallback.handle(Result.<DataChunk, Attributes>builder().output(item).build());
         };
         Consumer<RuntimeIO> exceptionConsumer = sourceCallback::onSourceException;
-        Runnable runnable = createRunnable(uriToFileToReadFrom, startPosition, blockSize, contentConsumer, exceptionConsumer);
+        Runnable runnable = createRunnable(uriToFileToReadFrom, readParameters.getStartPosition(), readParameters.getChunkSize(), contentConsumer, exceptionConsumer);
         startPollingTheContentFromFile(runnable);
     }
 
@@ -128,7 +95,7 @@ public class ReadSource extends Source<DataChunk, Attributes> {
     }
 
     private URI uriForFileToReadFrom() {
-        return URI.create(path);
+        return URI.create(readParameters.getPath());
     }
 
     private MuleFileSystem fileSystem() {
