@@ -18,12 +18,14 @@ import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
 import org.mule.modules.hdfs.filesystem.MuleFileSystem;
 import org.mule.modules.hdfs.filesystem.dto.DataChunk;
 import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
+import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
 import org.mule.runtime.api.message.Attributes;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -58,6 +60,10 @@ public class ReadSourceTestCase {
     private List<DataChunk> dataChunksStartingFrom71;
     @Mock
     private ConnectionRefused fileSystemException;
+    @Mock
+    private DataChunksConsumer chunksConsumerFromZero;
+    @Mock
+    private DataChunksConsumer chunksConsumerFrom71;
 
     @Before
     public void setUp() {
@@ -66,22 +72,35 @@ public class ReadSourceTestCase {
         mockValidFileSystem();
         mockFileSystemThrowingException();
         mockHdfsFileSystemProvider();
+        mockChunksConsumerFromZero();
+        mockChunksConsumerFrom71();
+    }
 
+    private void mockChunksConsumerFromZero() {
+        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFromZero))
+                .when(chunksConsumerFromZero)
+                .consume(Mockito.any());
+    }
+
+    private void mockChunksConsumerFrom71() {
+        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFrom71))
+                .when(chunksConsumerFrom71)
+                .consume(Mockito.any());
     }
 
     private void mockFileSystemThrowingException() {
         Mockito.doThrow(fileSystemException)
                 .when(fileSystemThrowingException)
-                .consume(Mockito.any(), Mockito.anyLong(), Mockito.anyInt(), Mockito.any());
+                .openConsumer(Mockito.any(), Mockito.anyLong(), Mockito.anyInt());
     }
 
     private void mockValidFileSystem() {
-        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFromZero))
+        Mockito.doReturn(chunksConsumerFromZero)
                 .when(validFileSystem)
-                .consume(Mockito.any(), Mockito.eq(0L), Mockito.anyInt(), Mockito.any());
-        Mockito.doAnswer(answerGeneratorFromDataChunks(dataChunksStartingFrom71))
+                .openConsumer(Mockito.any(), Mockito.eq(0L), Mockito.anyInt());
+        Mockito.doReturn(chunksConsumerFrom71)
                 .when(validFileSystem)
-                .consume(Mockito.any(), Mockito.eq(71L), Mockito.anyInt(), Mockito.any());
+                .openConsumer(Mockito.any(), Mockito.eq(71L), Mockito.anyInt());
     }
 
     private Answer answerGeneratorFromDataChunks(List<DataChunk> dataChunks) {
@@ -89,7 +108,7 @@ public class ReadSourceTestCase {
 
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Consumer<DataChunk> consumerToFeedMOckDataInto = (Consumer<DataChunk>) invocationOnMock.getArguments()[3];
+                Consumer<DataChunk> consumerToFeedMOckDataInto = (Consumer<DataChunk>) invocationOnMock.getArguments()[0];
                 for (DataChunk dataChunk : dataChunks) {
                     consumerToFeedMOckDataInto.accept(dataChunk);
                 }
@@ -134,6 +153,13 @@ public class ReadSourceTestCase {
         assertThat(thrownExceptions, hasSize(1));
         Throwable throwable = thrownExceptions.get(0);
         assertThat(throwable, sameInstance(fileSystemException));
+    }
+
+    @Test
+    public void thatSourceClosesChunksConsumerAtOnStop() throws Exception {
+        collectDataChunksFromSource("hdfs://localhost:9000/myfile.txt", 0L, 4096, validConnection);
+        Mockito.verify(chunksConsumerFromZero, Mockito.times(1))
+                .close();
     }
 
     private List<Throwable> collectExceptionsFromSource(String filePath, long startPosition, int blockSize, HdfsConnection hdfsConnection) throws Exception {
@@ -203,7 +229,7 @@ public class ReadSourceTestCase {
     private void waitCondition(Lock consumptionEndedLock, Condition consumptionEnded) throws Exception {
         consumptionEndedLock.lock();
         try {
-            consumptionEnded.await();
+            consumptionEnded.await(10, TimeUnit.SECONDS);
         } finally {
             consumptionEndedLock.unlock();
         }

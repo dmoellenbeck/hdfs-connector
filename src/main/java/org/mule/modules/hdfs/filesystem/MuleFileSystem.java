@@ -3,18 +3,17 @@
  */
 package org.mule.modules.hdfs.filesystem;
 
-import org.mule.modules.hdfs.filesystem.dto.DataChunk;
 import org.mule.modules.hdfs.filesystem.dto.FileSystemStatus;
+import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
 
 import java.net.URI;
-import java.util.function.Consumer;
 
 /**
  * @author MuleSoft, Inc.
  */
 public interface MuleFileSystem {
 
-    void consume(URI path, long startPosition, int bufferSize, Consumer<DataChunk> consumer);
+    DataChunksConsumer openConsumer(URI path, long startPosition, int bufferSize);
 
     FileSystemStatus fileSystemStatus();
 }

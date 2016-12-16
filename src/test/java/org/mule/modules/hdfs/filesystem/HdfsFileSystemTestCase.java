@@ -5,7 +5,6 @@ package org.mule.modules.hdfs.filesystem;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSTestUtil;
@@ -13,13 +12,13 @@ import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
 import org.mule.modules.hdfs.filesystem.dto.DataChunk;
 import org.mule.modules.hdfs.filesystem.dto.FileSystemStatus;
 import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
 import org.mule.modules.hdfs.filesystem.exception.FileNotFound;
 import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
 import org.mule.modules.hdfs.filesystem.exception.UnableToSeekToPosition;
+import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -80,7 +79,8 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     private void consumeAndValidateContent(URI uri, long startPosition, int bufferSize, String expectedContent) throws Exception {
         final List<DataChunk> contentSequence = new ArrayList<>();
         Consumer<DataChunk> fileContentConsumer = item -> contentSequence.add(item);
-        hdfsFileSystem.consume(uri, startPosition, bufferSize, fileContentConsumer);
+        DataChunksConsumer chunksConsumer = hdfsFileSystem.openConsumer(uri, startPosition, bufferSize);
+        chunksConsumer.consume(fileContentConsumer);
         long exptectedStartPosition = (startPosition > 0)? startPosition : 0;
         int expectedBufferSize = (bufferSize > 0)? bufferSize : 4096;
         validateConsumedContent(expectedContent, exptectedStartPosition, expectedBufferSize, contentSequence);
@@ -95,14 +95,14 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     public void consumeFileSchemaPath() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(startsWith("Wrong FS"));
-        hdfsFileSystem.consume(URI.create(FILE_SCHEMA_URI), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(FILE_SCHEMA_URI), 0, 100);
     }
 
     @Test
     public void consumeURIWhenAuthorityDiffersFromUnderlayingFileSystem() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage(startsWith("Wrong FS"));
-        hdfsFileSystem.consume(URI.create("hdfs://fake:9000/myfile.txt"), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create("hdfs://fake:9000/myfile.txt"), 0, 100);
     }
 
     @Test
@@ -113,26 +113,26 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     @Test
     public void consumeRelativePathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.consume(URI.create(RELATIVE_FILE_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(RELATIVE_FILE_THAT_DOES_NOT_EXIST), 0, 100);
     }
 
     @Test
     public void consumeAbsolutePathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.consume(URI.create(ABSOLUTE_FILE_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(ABSOLUTE_FILE_THAT_DOES_NOT_EXIST), 0, 100);
     }
 
     @Test
     public void consumeHdfsSchemaPathThatDoesNotExist() throws Exception {
         expectedException.expect(FileNotFound.class);
-        hdfsFileSystem.consume(URI.create(HDFS_SCHEMA_URI_THAT_DOES_NOT_EXIST), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(HDFS_SCHEMA_URI_THAT_DOES_NOT_EXIST), 0, 100);
     }
 
     @Test
     public void consumeNullPath() throws Exception {
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage(equalTo("URI can not be null."));
-        hdfsFileSystem.consume(null, 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(null, 0, 100);
     }
 
     private void validateConsumedContent(String expectedContent, long startPosition, int bufferSize, List<DataChunk> contentSequence) throws Exception {
@@ -152,14 +152,14 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     public void thatConsumeRaisesConnectionExceptionWhenOpeningRelativeFileButClusterNotDeployed() throws Exception {
         HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(createFileSystem(clusterAuthority(globalCluster).replaceAll(".$", "")));
         expectedException.expect(ConnectionRefused.class);
-        hdfsFileSystem.consume(URI.create(RELATIVE_FILE), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(RELATIVE_FILE), 0, 100);
     }
 
     @Test
     public void thatConsumeRaisesConnectionExceptionWhenOpeningAbsoluteFileButClusterNotDeployed() throws Exception {
         HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(createFileSystem(clusterAuthority(globalCluster).replaceAll(".$", "")));
         expectedException.expect(ConnectionRefused.class);
-        hdfsFileSystem.consume(URI.create(ABSOLUTE_FILE), 0, 100, item -> {});
+        hdfsFileSystem.openConsumer(URI.create(ABSOLUTE_FILE), 0, 100);
     }
 
     @Test
@@ -211,16 +211,6 @@ public class HdfsFileSystemTestCase extends HdfsClusterDependentTestBase {
     public void thatConsumeReadsContentWhenBlockSizeIsGreaterThanLength() throws Exception {
         String expectedContent = DFSTestUtil.readFile(createFileSystem(clusterAuthority(globalCluster)), new Path(RELATIVE_FILE));
         consumeAndValidateContent(URI.create(RELATIVE_FILE), 0, 33, expectedContent);
-    }
-
-    @Test
-    public void thatConsumeClosesStreamWhichItIsReadingFrom() throws Exception {
-        FSDataInputStream mockedFsDataInputStream = Mockito.mock(FSDataInputStream.class);
-        FileSystem mockedFileSystem = Mockito.mock(FileSystem.class);
-        Mockito.when(mockedFileSystem.open(Mockito.any(Path.class), Mockito.anyInt())).thenReturn(mockedFsDataInputStream);
-        HdfsFileSystem hdfsFileSystem = new HdfsFileSystem(mockedFileSystem);
-        hdfsFileSystem.consume(URI.create(RELATIVE_FILE), 0, 100, item -> {});
-        Mockito.verify(mockedFsDataInputStream, Mockito.times(1)).close();
     }
 
     @Test
