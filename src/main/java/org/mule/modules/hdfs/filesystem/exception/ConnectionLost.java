@@ -6,11 +6,11 @@ package org.mule.modules.hdfs.filesystem.exception;
 /**
  * @author MuleSoft, Inc.
  */
-public class ConnectionClosed extends RuntimeIO {
+public class ConnectionLost extends RuntimeIO {
 
     private static final long serialVersionUID = 5020757614632933073L;
 
-    public ConnectionClosed(String message, Throwable cause) {
+    public ConnectionLost(String message, Throwable cause) {
         super(message, cause);
     }
 }

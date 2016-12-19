@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 /**
  * @author MuleSoft, Inc.
  */
-public class StartingAtSpecificPosition implements DataChunksConsumer {
+public class ConsumerStartingAtSpecificPosition implements DataChunksConsumer {
 
     private static final int DEFAULT_BUFFER_SIZE = 4096;
     private long startPosition;
@@ -29,7 +29,7 @@ public class StartingAtSpecificPosition implements DataChunksConsumer {
     private volatile boolean consuming;
     private volatile boolean running;
 
-    public StartingAtSpecificPosition(long startPosition, int chunkSize, FSDataInputStream sourceDataStream) {
+    public ConsumerStartingAtSpecificPosition(long startPosition, int chunkSize, FSDataInputStream sourceDataStream) {
         Objects.requireNonNull(sourceDataStream, "Source data stream can not be null");
         this.startPosition = startPosition;
         this.chunkSize = chunkSize;
@@ -67,7 +67,7 @@ public class StartingAtSpecificPosition implements DataChunksConsumer {
                 }
             }
         } catch (IOException e) {
-            throw new ConnectionClosed("Connection unexpectedly closed.", e);
+            throw new ConnectionLost("Connection unexpectedly closed.", e);
         } finally {
             close(sourceDataStream);
         }
@@ -90,7 +90,7 @@ public class StartingAtSpecificPosition implements DataChunksConsumer {
                 try {
                     sourceDataStream.close();
                 } catch (IOException e) {
-                    throw new RuntimeIO("Unable to close stream.", e);
+                    throw new ConnectionLost("Unable to close stream.", e);
                 }
             }
         } finally {

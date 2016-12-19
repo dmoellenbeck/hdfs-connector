@@ -17,6 +17,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.mule.modules.hdfs.filesystem.dto.DataChunk;
+import org.mule.modules.hdfs.filesystem.exception.ConnectionLost;
 import org.mule.modules.hdfs.filesystem.exception.ConsumerAlreadyClosed;
 import org.mule.modules.hdfs.filesystem.exception.ConsumerClosed;
 import org.mule.modules.hdfs.filesystem.exception.UnableToSeekToPosition;
@@ -39,7 +40,7 @@ import static org.junit.Assert.assertThat;
  * @author MuleSoft, Inc.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class StartingAtSpecificPositionTestCase {
+public class ConsumerStartingAtSpecificPositionTestCase {
 
     private static final String FILE_PATH = "myFile.txt";
     private static final String MOCK_FILES = "mock_files/";
@@ -48,17 +49,44 @@ public class StartingAtSpecificPositionTestCase {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     @Mock
-    private FSDataInputStream fsDataInputStreamThatThrowsExceptionOnSecondCall;
+    private FSDataInputStream fsDataInputStreamThatThrowsExceptionOnSecondCallToRead;
+    @Mock
+    private FSDataInputStream streamThatThrowsExceptionOnCallToClose;
+    @Mock
+    private FSDataInputStream streamThatThrowsExceptionOnCallToAvailable;
+    @Mock
+    private FSDataInputStream streamThatThrowsExceptionOnCallToSeek;
 
     @Before
     public void setUp() throws Exception {
         mockFsDataInputStream();
         mockFsDataInputStreamThatThrowsExceptionOnSecondCall();
+        mockStreamThatThrowsExceptionOnCallToClose();
+        mockStreamThatThrowsExceptionOnCallToAvailable();
+        mockStreamThatThrowsExceptionOnCallToSeek();
+    }
+
+    private void mockStreamThatThrowsExceptionOnCallToSeek() throws Exception {
+        Mockito.doThrow(new IOException("Connection closed."))
+                .when(streamThatThrowsExceptionOnCallToAvailable)
+                .seek(Mockito.anyLong());
+    }
+
+    private void mockStreamThatThrowsExceptionOnCallToAvailable() throws Exception {
+        Mockito.doThrow(new IOException("Connection closed."))
+                .when(streamThatThrowsExceptionOnCallToAvailable)
+                .available();
+    }
+
+    private void mockStreamThatThrowsExceptionOnCallToClose() throws Exception {
+        Mockito.doThrow(new IOException("Connection closed."))
+                .when(streamThatThrowsExceptionOnCallToClose)
+                .close();
     }
 
     private void mockFsDataInputStreamThatThrowsExceptionOnSecondCall() throws Exception {
-        Mockito.when(fsDataInputStreamThatThrowsExceptionOnSecondCall.read(Mockito.any(ByteBuffer.class)))
-                .thenReturn(0)
+        Mockito.when(fsDataInputStreamThatThrowsExceptionOnSecondCallToRead.read(Mockito.any(ByteBuffer.class)))
+                .thenReturn(30)
                 .thenThrow(new RuntimeException());
     }
 
@@ -129,7 +157,7 @@ public class StartingAtSpecificPositionTestCase {
     private void consumeAndValidateContent(long startPosition, int bufferSize, String expectedContent) throws Exception {
         final List<DataChunk> contentSequence = new ArrayList<>();
         Consumer<DataChunk> fileContentConsumer = item -> contentSequence.add(item);
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(startPosition, bufferSize, fsDataInputStream);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(startPosition, bufferSize, fsDataInputStream);
         consumer.consume(fileContentConsumer);
         long exptectedStartPosition = (startPosition > 0)? startPosition : 0;
         int expectedBufferSize = (bufferSize > 0)? bufferSize : 4096;
@@ -193,19 +221,19 @@ public class StartingAtSpecificPositionTestCase {
     @Test
     public void thatConsumeReadsContentWhenBlockSizeIsGreaterThanLength() throws Exception {
         String expectedContent = readMockFileAsString(MOCK_FILES + FILE_PATH);
-        consumeAndValidateContent(0, 33, expectedContent);
+        consumeAndValidateContent(0, 2048, expectedContent);
     }
 
     @Test
     public void thatConsumeClosesStreamWhichItIsReadingFrom() throws Exception {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStream);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStream);
         consumer.consume(item -> {});
         Mockito.verify(fsDataInputStream, Mockito.times(1)).close();
     }
 
     @Test
     public void thatConsumeCanBeStopped() {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStream);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStream);
         List<DataChunk> dataChunks = new ArrayList<>();
         consumer.consume(item -> {
             dataChunks.add(item);
@@ -216,14 +244,14 @@ public class StartingAtSpecificPositionTestCase {
 
     @Test
     public void thatConsumeClosesStreamWhichItIsReadingFromWhenItIsStopped() throws Exception {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStream);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStream);
         consumer.consume(item -> consumer.close());
         Mockito.verify(fsDataInputStream, Mockito.times(1)).close();
     }
 
     @Test
     public void thatYouCannotStopConsumptionTwice() throws Exception {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCall);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCallToRead);
         consumer.close();
         expectedException.expect(ConsumerAlreadyClosed.class);
         consumer.close();
@@ -231,17 +259,35 @@ public class StartingAtSpecificPositionTestCase {
 
     @Test
     public void thatStopConsumptionClosesStreamEvenIfNeverStartedToConsume() throws Exception {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCall);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCallToRead);
         consumer.close();
-        Mockito.verify(fsDataInputStreamThatThrowsExceptionOnSecondCall, Mockito.times(1))
+        Mockito.verify(fsDataInputStreamThatThrowsExceptionOnSecondCallToRead, Mockito.times(1))
                 .close();
     }
 
     @Test
     public void thatDataCanNotBeConsumedAfterStopConsumption() throws Exception {
-        StartingAtSpecificPosition consumer = new StartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCall);
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, fsDataInputStreamThatThrowsExceptionOnSecondCallToRead);
         consumer.close();
         expectedException.expect(ConsumerClosed.class);
+        consumer.consume(item -> {});
+    }
+
+    @Test
+    public void thatAppropriateExceptonIsThrownWhenConnectionIsLostBeforeClosingConsumer() throws Exception {
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, streamThatThrowsExceptionOnCallToClose);
+        expectedException.expect(ConnectionLost.class);
+        consumer.close();
+    }
+
+    @Test
+    public void thatAppropriateExceptonIsThrownWhenConnectionIsLostBeforeSeekingToStartPosition() throws Exception {
+        ConsumerStartingAtSpecificPosition consumer = new ConsumerStartingAtSpecificPosition(0, 100, streamThatThrowsExceptionOnCallToAvailable);
+        expectedException.expect(ConnectionLost.class);
+        consumer.consume(item -> {});
+
+        consumer = new ConsumerStartingAtSpecificPosition(0, 100, streamThatThrowsExceptionOnCallToSeek);
+        expectedException.expect(ConnectionLost.class);
         consumer.consume(item -> {});
     }
 }

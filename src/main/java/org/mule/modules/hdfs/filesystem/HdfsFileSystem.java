@@ -11,7 +11,8 @@ import org.mule.modules.hdfs.filesystem.exception.ConnectionRefused;
 import org.mule.modules.hdfs.filesystem.exception.FileNotFound;
 import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
 import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
-import org.mule.modules.hdfs.filesystem.read.consumer.StartingAtSpecificPosition;
+import org.mule.modules.hdfs.filesystem.read.DataChunksReader;
+import org.mule.modules.hdfs.filesystem.read.consumer.ConsumerStartingAtSpecificPosition;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class HdfsFileSystem implements MuleFileSystem {
         try {
             Objects.requireNonNull(uri, "URI can not be null.");
             int positiveBufferSize = (bufferSize > 0) ? bufferSize : DEFAULT_BUFFER_SIZE;
-            return new StartingAtSpecificPosition(startPosition, positiveBufferSize, fileSystem.open(new Path(uri), positiveBufferSize));
+            return new ConsumerStartingAtSpecificPosition(startPosition, positiveBufferSize, fileSystem.open(new Path(uri), positiveBufferSize));
         } catch (FileNotFoundException e) {
             throw new FileNotFound("File does not exist.", e);
         } catch (ConnectException e) {
