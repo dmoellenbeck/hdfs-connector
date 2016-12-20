@@ -28,7 +28,7 @@ public class HDFSConnectorTest {
     public void testRead() {
         // try {
         // FSDataInputStream inputStream = Mockito.mock(FSDataInputStream.class);
-        // when(fileSystem.open(any(Path.class), anyInt())).thenReturn(inputStream);
+        // when(fileSystem.openConsumer(any(Path.class), anyInt())).thenReturn(inputStream);
 
         // connector.read("foo", 4084, readSourceCallback);
         // Mockito.verify(readSourceCallback, times(1)).process(Mockito.any(), Mockito.anyMap());

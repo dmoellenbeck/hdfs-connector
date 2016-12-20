@@ -10,6 +10,7 @@ import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
 import org.mule.modules.hdfs.filesystem.MuleFileSystem;
 import org.mule.modules.hdfs.filesystem.dto.DataChunk;
 import org.mule.modules.hdfs.filesystem.exception.RuntimeIO;
+import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
 import org.mule.runtime.api.message.Attributes;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
@@ -38,21 +39,18 @@ public class ReadSource extends Source<DataChunk, Attributes> {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadSource.class);
 
-    private ScheduledExecutorService scheduledExecutorService;
-
     @Parameter
     @Optional(defaultValue = "5000")
     @DisplayName("Polling frequency (ms)")
     private Long pollingFrequency;
-
     @ParameterGroup("Read")
     private ReadParameters readParameters;
-
     @Connection
     private HdfsConnection hdfsConnection;
-
     @Inject
     private HdfsFileSystemProvider fileSystemProvider;
+    private ScheduledExecutorService scheduledExecutorService;
+    private DataChunksConsumerTask chunksConsumerTask;
 
     public Long getPollingFrequency() {
         return pollingFrequency;
@@ -85,8 +83,8 @@ public class ReadSource extends Source<DataChunk, Attributes> {
             sourceCallback.handle(Result.<DataChunk, Attributes>builder().output(item).build());
         };
         Consumer<RuntimeIO> exceptionConsumer = sourceCallback::onSourceException;
-        Runnable runnable = createRunnable(uriToFileToReadFrom, readParameters.getStartPosition(), readParameters.getChunkSize(), contentConsumer, exceptionConsumer);
-        startPollingTheContentFromFile(runnable);
+        chunksConsumerTask = new DataChunksConsumerTask(uriToFileToReadFrom, readParameters.getStartPosition(), readParameters.getChunkSize(), contentConsumer, exceptionConsumer);
+        startPollingTheContentFromFile(chunksConsumerTask);
     }
 
     private void startPollingTheContentFromFile(Runnable runnable) {
@@ -102,25 +100,58 @@ public class ReadSource extends Source<DataChunk, Attributes> {
         return fileSystemProvider.fileSystem(hdfsConnection);
     }
 
-    private Runnable createRunnable(URI uriOfTheFileToReadFrom, long startPosition, int blockSize,
-            Consumer<DataChunk> contentConsumer, Consumer<RuntimeIO> exceptionConsumer) {
-        return () -> {
-            try {
-                fileSystem().consume(uriOfTheFileToReadFrom, startPosition, blockSize, contentConsumer);
-            } catch (RuntimeIO exception) {
-                exceptionConsumer.accept(exception);
-            }
-        };
-    }
-
     @Override
     public void onStop() {
+        try {
+            chunksConsumerTask.stopTask();
+        } finally {
+            stopExecutor();
+        }
+    }
+
+    private void stopExecutor() {
         scheduledExecutorService.shutdownNow();
         try {
             scheduledExecutorService.awaitTermination(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("Something happened while stopping source.", e);
-            throw new UnableToStopSource("Something happened while stopping source.", e);
+            logger.error("Something happened while stopping source thread.", e);
+            throw new UnableToStopSource("Something happened while stopping source thread.", e);
+        }
+    }
+
+    private class DataChunksConsumerTask implements Runnable {
+
+        private DataChunksConsumer chunksConsumer;
+        private Consumer<DataChunk> contentConsumer;
+        private Consumer<RuntimeIO> exceptionConsumer;
+        private URI uriOfTheFileToReadFrom;
+        private long startPosition;
+        private int blockSize;
+
+        public DataChunksConsumerTask(URI uriOfTheFileToReadFrom, long startPosition, int blockSize, Consumer<DataChunk> contentConsumer,
+                Consumer<RuntimeIO> exceptionConsumer) {
+            this.uriOfTheFileToReadFrom = uriOfTheFileToReadFrom;
+            this.startPosition = startPosition;
+            this.blockSize = blockSize;
+            this.contentConsumer = contentConsumer;
+            this.exceptionConsumer = exceptionConsumer;
+        }
+
+        @Override
+        public void run() {
+            try {
+                chunksConsumer = fileSystem().openConsumer(uriOfTheFileToReadFrom, startPosition, blockSize);
+                chunksConsumer.consume(contentConsumer);
+            } catch (RuntimeIO e) {
+                logger.error("Something bad happened while consuming data chunks.", e);
+                exceptionConsumer.accept(e);
+            }
+        }
+
+        private void stopTask() {
+            if (chunksConsumer != null) {
+                chunksConsumer.close();
+            }
         }
     }
 
