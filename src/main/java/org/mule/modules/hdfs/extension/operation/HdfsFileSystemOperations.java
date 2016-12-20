@@ -3,26 +3,45 @@
  */
 package org.mule.modules.hdfs.extension.operation;
 
+import org.mule.modules.hdfs.extension.dto.ReadParameters;
+import org.mule.modules.hdfs.extension.operation.page.DataChunksPaginator;
+import org.mule.modules.hdfs.filesystem.HdfsConnection;
+import org.mule.modules.hdfs.filesystem.HdfsFileSystemProvider;
+import org.mule.modules.hdfs.filesystem.MuleFileSystem;
+import org.mule.modules.hdfs.filesystem.read.DataChunksReader;
+import org.mule.runtime.extension.api.annotation.param.Connection;
+import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
+
+import javax.inject.Inject;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class HdfsFileSystemOperations {
+
+    @Inject
+    private HdfsFileSystemProvider hdfsFileSystemProvider;
 
     /**
      * Read the content of a file designated by its path and streams it to the rest of the flow:
-     *
-     * @param path
-     *            the path of the file to read.
-     * @param bufferSize
-     *            the buffer size to use when reading the file.
      */
-    // public InputStream readOperation(@Connection AbstractConfig connection, String path, @Optional(defaultValue = "4096") int bufferSize) throws HDFSConnectorException {
-    // HDFSConnector connector = new HDFSConnector();
-    // connector.setConnection(connection);
-    // InputStream result = connector.readOperation(path, bufferSize);
-    // return result;
-    // }
+    public DataChunksPaginator read(@Connection HdfsConnection connection, @ParameterGroup("Read") ReadParameters readParameters) {
+        MuleFileSystem muleFileSystem = hdfsFileSystemProvider.fileSystem(connection);
+        DataChunksReader dataChunksReader = muleFileSystem.openReader(createURIFromFilePath(readParameters.getPath()),
+                readParameters.getStartPosition(), readParameters.getChunkSize());
+        return new DataChunksPaginator(dataChunksReader);
+    }
+
+    private URI createURIFromFilePath(String path) {
+        try {
+            return new URI(path);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(String.format("Invalid path. Path: %s is not a valid URI.", path), e);
+        }
+    }
 
     //
     // /**
-    // * Get the metadata of a path, as described in {@link HDFSConnector#read(String, int, SourceCallback)}, and store it in flow variables.
+    // * Get the metadata of a path, as described in {@link HDFSConnector#page(String, int, SourceCallback)}, and store it in flow variables.
     // * <p>
     // * This flow variables are:
     // * <ul>
