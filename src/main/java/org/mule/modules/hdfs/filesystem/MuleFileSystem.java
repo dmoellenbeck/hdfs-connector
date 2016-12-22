@@ -5,6 +5,7 @@ package org.mule.modules.hdfs.filesystem;
 
 import org.mule.modules.hdfs.filesystem.dto.FileSystemStatus;
 import org.mule.modules.hdfs.filesystem.read.DataChunksConsumer;
+import org.mule.modules.hdfs.filesystem.read.DataChunksReader;
 
 import java.net.URI;
 
@@ -14,6 +15,8 @@ import java.net.URI;
 public interface MuleFileSystem {
 
     DataChunksConsumer openConsumer(URI path, long startPosition, int bufferSize);
+
+    DataChunksReader openReader(URI path, long startPosition, int bufferSize);
 
     FileSystemStatus fileSystemStatus();
 }
