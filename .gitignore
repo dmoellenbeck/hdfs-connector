@@ -1,0 +1,17 @@
+.classpath
+.settings/
+.project
+.factorypath
+*.iml
+*.ipr
+*.iws
+target/
+bin/
+.idea/
+*.class
+*.jar
+*.war
+.DS_Store
+automation-credentials.properties
+muleLicenseKey.lic
+
