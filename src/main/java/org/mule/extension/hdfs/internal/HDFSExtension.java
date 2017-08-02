@@ -1,7 +1,7 @@
 ///**
 // * (c) 2003-2016 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
 // */
-//package org.mule.modules.hdfs;
+//package org.mule.extension.hdfs.internal;
 //
 //import org.apache.commons.lang.StringUtils;
 //import org.apache.hadoop.fs.*;
@@ -33,10 +33,10 @@
 // *
 // * @author MuleSoft Inc.
 // */
-//@Connector(name = HDFSConnector.HDFS, schemaVersion = "5.0", friendlyName = "HDFS", description = "HDFS Connector", minMuleVersion = "3.6.0")
+//@Connector(name = HDFSExtension.HDFS, schemaVersion = "5.0", friendlyName = "HDFS", description = "HDFS Connector", minMuleVersion = "3.6.0")
 //@RequiresEnterpriseLicense(allowEval = true)
 //@ReconnectOn(exceptions = IOException.class)
-//public class HDFSConnector {
+//public class HDFSExtension {
 //
 //    public static final String HDFS = "hdfs";
 //    public static final String HDFS_PATH_EXISTS = HDFS + ".path.exists";
@@ -52,10 +52,10 @@
 //    /**
 //     * Read the content of a file designated by its path and streams it to the rest of the flow, while adding the path metadata in the following inbound properties:
 //     * <ul>
-//     * <li>{@link HDFSConnector#HDFS_PATH_EXISTS}: a boolean set to true if the path exists</li>
-//     * <li>{@link HDFSConnector#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.</li>
-//     * <li>{@link HDFSConnector#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.</li>
-//     * <li>{@link HDFSConnector#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
+//     * <li>{@link HDFSExtension#HDFS_PATH_EXISTS}: a boolean set to true if the path exists</li>
+//     * <li>{@link HDFSExtension#HDFS_CONTENT_SUMMARY}: an instance of {@link ContentSummary} if the path exists.</li>
+//     * <li>{@link HDFSExtension#HDFS_FILE_STATUS}: an instance of {@link FileStatus} if the path exists.</li>
+//     * <li>{@link HDFSExtension#HDFS_FILE_CHECKSUM}: an instance of {@link FileChecksum} if the path exists, is a file and has a checksum.</li>
 //     * </ul>
 //     *
 //     * @param path
@@ -132,7 +132,7 @@
 //    }
 //
 //    /**
-//     * Get the metadata of a path, as described in {@link HDFSConnector#read(String, int, SourceCallback)}, and store it in flow variables.
+//     * Get the metadata of a path, as described in {@link HDFSExtension#read(String, int, SourceCallback)}, and store it in flow variables.
 //     * <p>
 //     * This flow variables are:
 //     * <ul>
