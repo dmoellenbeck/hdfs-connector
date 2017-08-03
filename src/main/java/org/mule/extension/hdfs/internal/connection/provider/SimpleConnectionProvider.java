@@ -12,7 +12,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.mule.extension.hdfs.api.connection.param.SimpleConnectionParams;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
-import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigProvider;
+import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigurationUtil;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.extension.api.annotation.Alias;
@@ -43,7 +43,7 @@ public class SimpleConnectionProvider extends FileSystemConnectionProvider imple
     public HdfsConnection connect() throws ConnectionException {
         try {
             putProvidedUsernameAsSystemProperty();
-            HadoopConfigProvider hadoopConfigProvider = new HadoopConfigProvider();
+            HadoopConfigurationUtil hadoopConfigProvider = new HadoopConfigurationUtil();
             final Configuration configuration = hadoopConfigProvider.getSimpleAuthConfig(simpleConnectionParams.getNameNodeUri(), simpleConnectionParams.getUsername(),
                     simpleConnectionParams.getConfigurationResources(), simpleConnectionParams.getConfigurationEntries());
             UserGroupInformation.setConfiguration(configuration);

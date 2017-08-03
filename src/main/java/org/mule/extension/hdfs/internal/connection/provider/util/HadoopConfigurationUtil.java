@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author MuleSoft, Inc.
  */
-public class HadoopConfigProvider {
+public class HadoopConfigurationUtil {
 
     public Configuration getSimpleAuthConfig(String nameNodeUri, String principal, List<String> configurationResources, Map<String, String> configurationEntries) {
         validateNameNodeUri(nameNodeUri);

@@ -15,7 +15,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.mule.extension.hdfs.api.connection.param.KerberosConnectionParams;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
-import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigProvider;
+import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigurationUtil;
 import org.mule.extension.hdfs.internal.service.exception.UnableToCloseConnection;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionProvider;
@@ -46,7 +46,7 @@ public class KerberosConnectionProvider extends FileSystemConnectionProvider imp
     @Override
     public HdfsConnection connect() throws ConnectionException {
         try {
-            HadoopConfigProvider hadoopConfigProvider = new HadoopConfigProvider();
+            HadoopConfigurationUtil hadoopConfigProvider = new HadoopConfigurationUtil();
             final Configuration configuration = hadoopConfigProvider.getSimpleAuthConfig(kerberosConnectionParams.getNameNodeUri(), kerberosConnectionParams.getUsername(),
                     kerberosConnectionParams.getConfigurationResources(), kerberosConnectionParams.getConfigurationEntries());
             UserGroupInformation.setConfiguration(configuration);
