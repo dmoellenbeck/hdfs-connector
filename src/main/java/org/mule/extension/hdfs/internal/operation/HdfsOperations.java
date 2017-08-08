@@ -40,7 +40,7 @@ public class HdfsOperations {
     public InputStream readOperation(
             @Config HdfsConfiguration configuration,
             @Connection HdfsConnection connection,
-            @Content String path,
+            String path,
             @Optional(defaultValue = "4096") final int bufferSize)
 
     {
@@ -48,6 +48,60 @@ public class HdfsOperations {
 
         try {
             return hdfsApiService.read(path, bufferSize);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Write the current payload to the designated path, either creating a new file or appending to an existing one.
+     *
+     * @param path
+     *            the path of the file to write to.
+     * @param permission
+     *            the file system permission to use if a new file is created, either in octal or symbolic format (umask).
+     * @param overwrite
+     *            if a pre-existing file should be overwritten with the new content.
+     * @param bufferSize
+     *            the buffer size to use when appending to the file.
+     * @param replication
+     *            block replication for the file.
+     * @param blockSize
+     *            the buffer size to use when appending to the file.
+     * @param ownerUserName
+     *            the username owner of the file.
+     * @param ownerGroupName
+     *            the group owner of the file.
+     * @param payload
+     *            the payload to write to the file.
+     * @throws HDFSConnectorException
+     *             if any issue occurs during the execution.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void write(
+            @Config HdfsConfiguration configuration,
+            @Connection HdfsConnection connection,
+            String path,
+            @Optional(defaultValue = "700") String permission,
+            @Optional(defaultValue = "true") boolean overwrite,
+            @Optional(defaultValue = "4096") int bufferSize,
+            @Optional(defaultValue = "1") int replication,
+            @Optional(defaultValue = "1048576") long blockSize,
+            @Optional final String ownerUserName,
+            @Optional final String ownerGroupName,
+            @Content InputStream payload) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.create(path, permission, overwrite, bufferSize, replication,
+                    blockSize, ownerUserName, ownerGroupName, payload);
         } catch (InvalidRequestDataException e) {
             throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
         } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
