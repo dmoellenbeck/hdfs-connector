@@ -92,21 +92,7 @@
 			<url>http://repository.mulesoft.org/snapshots/</url>
 			<layout>default</layout>
 		</repository>
-		<repository>
-			<id>ci-releases</id>
-			<name>MuleSoft Release Repository</name>
-			<url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
-		</repository>
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>ci-releases</id>
-			<name>MuleSoft Release Repository</name>
-			<url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
-			<layout>default</layout>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<distributionManagement>
         <repository>

@@ -64,7 +64,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
         } catch (ConnectException e) {
             throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
-        } catch (IllegalArgumentException | IOException | NullPointerException e) {
+        } catch (IllegalArgumentException | IOException e) {
             throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
         }
     }

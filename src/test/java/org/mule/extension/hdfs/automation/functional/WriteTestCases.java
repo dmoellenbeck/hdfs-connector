@@ -57,7 +57,7 @@ public class WriteTestCases extends BaseTest {
     @Test
     public void testWriteNullPayloadFlow() throws Exception {
         expectedException.expect(MessagingException.class);
-        expectedException.expectMessage(StringContains.containsString("Something went wrong with input data"));
+        expectedException.expectMessage(StringContains.containsString("Payload cannot be null"));
 
         InputStream payload = null;
         flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)

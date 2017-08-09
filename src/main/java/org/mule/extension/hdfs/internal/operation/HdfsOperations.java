@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.api.error.HdfsOperationErrorTypeProvider;
+import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
 import org.mule.extension.hdfs.internal.config.HdfsConfiguration;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
@@ -17,8 +18,8 @@ import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
 import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
-import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
+import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
 
 public class HdfsOperations {
@@ -87,21 +88,13 @@ public class HdfsOperations {
     public void write(
             @Config HdfsConfiguration configuration,
             @Connection HdfsConnection connection,
-            String path,
-            @Optional(defaultValue = "700") String permission,
-            @Optional(defaultValue = "true") boolean overwrite,
-            @Optional(defaultValue = "4096") int bufferSize,
-            @Optional(defaultValue = "1") int replication,
-            @Optional(defaultValue = "1048576") long blockSize,
-            @Optional final String ownerUserName,
-            @Optional final String ownerGroupName,
-            @Content InputStream payload) {
+            @ParameterGroup(name = "Input parameters") WriteOpParams param) {
 
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
 
         try {
-            hdfsApiService.create(path, permission, overwrite, bufferSize, replication,
-                    blockSize, ownerUserName, ownerGroupName, payload);
+            hdfsApiService.create(param.getPath(), param.getPermission(), param.isOverwrite(), param.getBufferSize(), param.getReplication(),
+                    param.getBlockSize(), param.getOwnerUserName(), param.getOwnerGroupName(), param.getPayload());
         } catch (InvalidRequestDataException e) {
             throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
         } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
