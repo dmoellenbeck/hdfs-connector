@@ -30,14 +30,14 @@ public class HdfsOperations {
 
     /**
      * Read the content of a file designated by its path and streams it to the rest of the flow:
-     *
+     * 
+     * @param configuration
+     * @param connection
      * @param path
      *            the path of the file to read.
      * @param bufferSize
      *            the buffer size to use when reading the file.
      * @return the result from executing the rest of the flow.
-     * @throws HDFSConnectorException
-     *             if any issue occurs during the execution.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public InputStream readOperation(
@@ -64,27 +64,10 @@ public class HdfsOperations {
 
     /**
      * Write the current payload to the designated path, either creating a new file or appending to an existing one.
-     *
-     * @param path
-     *            the path of the file to write to.
-     * @param permission
-     *            the file system permission to use if a new file is created, either in octal or symbolic format (umask).
-     * @param overwrite
-     *            if a pre-existing file should be overwritten with the new content.
-     * @param bufferSize
-     *            the buffer size to use when appending to the file.
-     * @param replication
-     *            block replication for the file.
-     * @param blockSize
-     *            the buffer size to use when appending to the file.
-     * @param ownerUserName
-     *            the username owner of the file.
-     * @param ownerGroupName
-     *            the group owner of the file.
-     * @param payload
-     *            the payload to write to the file.
-     * @throws HDFSConnectorException
-     *             if any issue occurs during the execution.
+     * 
+     * @param configuration
+     * @param connection
+     * @param param
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void write(
@@ -110,21 +93,22 @@ public class HdfsOperations {
 
     /**
      * List the statuses of the files/directories in the given path if the path is a directory
+     * 
+     * @param configuration
+     * @param connection
      *
      * @param path
      *            the given path
      * @param filter
      *            the user supplied path filter
      * @return FileStatus the statuses of the files/directories in the given path
-     * @throws HDFSConnectorException
-     *             if any issue occurs during the execution.
+     * @return
      */
-
     @Throws(HdfsOperationErrorTypeProvider.class)
 
     public List<FileStatus> listStatus(@Config HdfsConfiguration configuration,
             @Connection HdfsConnection connection, final String path, @Optional final String filter) {
-       
+
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
 
         try {
@@ -138,7 +122,6 @@ public class HdfsOperations {
         } catch (Exception e) {
             throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
         }
-
     }
 
 }
