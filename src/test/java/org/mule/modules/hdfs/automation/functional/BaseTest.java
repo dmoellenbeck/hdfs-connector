@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 
-@Ignore
-public class BaseTest extends MuleArtifactFunctionalTestCase{
+public abstract class BaseTest extends MuleArtifactFunctionalTestCase {
 
     private static Properties hdfsProp;
 

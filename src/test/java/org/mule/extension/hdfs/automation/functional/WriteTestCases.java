@@ -5,9 +5,11 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.hadoop.fs.FileStatus;
 import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,8 +22,10 @@ import org.mule.runtime.core.exception.MessagingException;
 
 public class WriteTestCases extends BaseTest {
 
-    private final byte[] writtenData = RandomStringUtils.randomAlphanumeric(20).getBytes();
+    private final byte[] writtenData = RandomStringUtils.randomAlphanumeric(20)
+            .getBytes();
     private final String FILE_PATH = "hdfs-test-write-file.txt";
+    private final String NO_PERMISSION_FILE_PATH = "no-permission-write-file.txt";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -68,4 +72,28 @@ public class WriteTestCases extends BaseTest {
                 .getValue();
     }
 
+    @Test
+    public void testWriteNoPermissionFlow() throws Exception {
+
+        InputStream payload = new ByteArrayInputStream(writtenData);
+        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
+                .withVariable("permission", "000")
+                .withPayload(payload)
+                .run()
+                .getMessage()
+                .getPayload()
+                .getValue();
+
+        List<FileStatus> listStatus = (List<FileStatus>) flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
+                .withPayload(payload)
+                .run()
+                .getMessage()
+                .getPayload()
+                .getValue();
+
+        assertThat("It should be at list one file.", listStatus.size() > 0);
+        assertThat("File should have no permission.", listStatus.get(0)
+                .getPermission()
+                .toString(), equalTo("---------"));
+    }
 }

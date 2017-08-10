@@ -13,6 +13,8 @@ public class Util {
 
         public static final String READ_OP_FLOW = "readOpFlow";
         public static final String WRITE_FLOW = "writeFlow";
+        public static final String LIST_STATUS_FLOW = "listStatusFlow";
+
      }
 
 }

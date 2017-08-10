@@ -4,7 +4,9 @@
 package org.mule.extension.hdfs.internal.operation;
 
 import java.io.InputStream;
+import java.util.List;
 
+import org.apache.hadoop.fs.FileStatus;
 import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.api.error.HdfsOperationErrorTypeProvider;
 import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
@@ -104,6 +106,39 @@ public class HdfsOperations {
         } catch (Exception e) {
             throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
         }
+    }
+
+    /**
+     * List the statuses of the files/directories in the given path if the path is a directory
+     *
+     * @param path
+     *            the given path
+     * @param filter
+     *            the user supplied path filter
+     * @return FileStatus the statuses of the files/directories in the given path
+     * @throws HDFSConnectorException
+     *             if any issue occurs during the execution.
+     */
+
+    @Throws(HdfsOperationErrorTypeProvider.class)
+
+    public List<FileStatus> listStatus(@Config HdfsConfiguration configuration,
+            @Connection HdfsConnection connection, final String path, @Optional final String filter) {
+       
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            return hdfsApiService.listStatus(path, filter);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+
     }
 
 }

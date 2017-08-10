@@ -22,10 +22,14 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </flow>
     
     <flow name="writeFlow">
-        <hdfs:write config-ref="simple-config" path="#[variables.path]" ownerUserName="#[variables.ownerUserName]">
+        <hdfs:write config-ref="simple-config" path="#[variables.path]" ownerUserName="#[variables.ownerUserName]" permission="#[variables.permission]">
           <hdfs:payload>#[payload]</hdfs:payload>
         </hdfs:write>
     </flow>
-
+    
+    <flow name="listStatusFlow">
+        <hdfs:list-status config-ref="simple-config" path="#[variables.path]" >
+        </hdfs:list-status>
+    </flow>
 
 </mule>
