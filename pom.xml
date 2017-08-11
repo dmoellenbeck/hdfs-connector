@@ -18,7 +18,7 @@
     <properties>
         <category>Select</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.7.2</hadoop.version>
+        <hadoop.version>2.8.1</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
         <connector.test.version>2.0.7</connector.test.version>
         <harmcrest.version>1.3</harmcrest.version>
@@ -27,11 +27,11 @@
     <dependencies>
         <!-- Mule Connector Test Framework -->
         <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-connector-test</artifactId>
-            <version>${connector.test.version}</version>
-            <scope>test</scope>
-        </dependency>
+			<groupId>org.mule.tests</groupId>
+			<artifactId>mule-tests-unit</artifactId>
+			<version>4.0.0-BETA</version>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
@@ -43,6 +43,12 @@
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
+        <dependency>
+	    	<groupId>xml-apis</groupId>
+		    <artifactId>xml-apis</artifactId>
+		    <version>1.4.01</version>
+		    <scope>test</scope>
+		</dependency>
     </dependencies>
 
     <build>
@@ -74,21 +80,21 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>http://repository.mulesoft.org/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>mulesoft-snapshots</id>
-            <name>MuleSoft Snapshots Repository</name>
-            <url>http://repository.mulesoft.org/snapshots/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
+		<repository>
+			<id>mulesoft-ee-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>http://repository.mulesoft.org/releases/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>mulesoft-snapshots</id>
+			<name>MuleSoft Snapshots Repository</name>
+			<url>http://repository.mulesoft.org/snapshots/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
-    <distributionManagement>
+	<distributionManagement>
         <repository>
             <id>mule-ee-releases</id>
             <name>MuleEE Releases Repository</name>
