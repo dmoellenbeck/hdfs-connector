@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.mule.runtime.core.api.Event;
 
 public class TestDataBuilder {
 
@@ -51,5 +52,11 @@ public class TestDataBuilder {
         return new ByteArrayInputStream(RandomStringUtils.randomAlphanumeric(20)
                 .getBytes());
 
+    }
+
+    public static Object getValue(Event ev) {
+        return ev.getMessage()
+                .getPayload()
+                .getValue();
     }
 }

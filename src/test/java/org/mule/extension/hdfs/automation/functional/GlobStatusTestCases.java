@@ -13,21 +13,17 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 
+@SuppressWarnings("unchecked")
 public class GlobStatusTestCases extends BaseTest {
 
     private final String PARENT_DIRECTORY = "hdfs-test-glob-status/";
     public static final String INVALID_PATH_PATTERN = "invalidPathPattern";
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Override
     protected String getConfigFile() {
@@ -45,7 +41,7 @@ public class GlobStatusTestCases extends BaseTest {
                     .run();
         }
     }
-  
+
     @After
     public void tearDown() throws Exception {
         flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
@@ -55,12 +51,10 @@ public class GlobStatusTestCases extends BaseTest {
     @Test
     public void testGlobStatus() throws Exception {
         String filter = new String("^.*2013/12/31$");
-        List<FileStatus> fileStatuses = (List<FileStatus>) flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
-                .withVariable("filter", filter)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
+                        .withVariable("filter", filter)
+                        .run());
 
         assertThat(fileStatuses, notNullValue());
         assertThat(fileStatuses.size(), is(1));
@@ -72,12 +66,10 @@ public class GlobStatusTestCases extends BaseTest {
     @Test
     public void testGlobStatusWhenFilterSetToNull() throws Exception {
 
-        List<FileStatus> fileStatuses = (List<FileStatus>) flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
-                .withVariable("filter", null)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
+                        .withVariable("filter", null)
+                        .run());
 
         assertThat(fileStatuses, notNullValue());
         assertThat(fileStatuses.size(), is(2));
@@ -89,15 +81,12 @@ public class GlobStatusTestCases extends BaseTest {
     @Test
     public void testGlobStatusWhenNoFileMatches() throws Exception {
 
-        List<FileStatus> fileStatuses = (List<FileStatus>) flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + INVALID_PATH_PATTERN)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + INVALID_PATH_PATTERN)
+                        .run());
 
         assertThat(fileStatuses, notNullValue());
         assertThat(fileStatuses, empty());
-        assertThat(fileStatuses.size(), is(0));
     }
 
 }

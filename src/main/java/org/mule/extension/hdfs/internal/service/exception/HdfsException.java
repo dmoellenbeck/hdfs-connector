@@ -3,9 +3,6 @@
  */
 package org.mule.extension.hdfs.internal.service.exception;
 
-/**
- * @author MuleSoft, Inc.
- */
 public class HdfsException extends RuntimeException {
 
     private static final long serialVersionUID = 5861111931034719104L;

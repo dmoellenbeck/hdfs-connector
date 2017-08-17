@@ -41,10 +41,7 @@ public class ReadOperationTestCases extends BaseTest {
         InputStream payload = new ByteArrayInputStream(writtenData);
         flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
                 .withPayload(payload)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+                .run();
 
         CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
                 .keepStreamsOpen()
@@ -65,10 +62,7 @@ public class ReadOperationTestCases extends BaseTest {
         expectedException.expectMessage(StringContains.containsString("Something went wrong with input data"));
 
         flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+                .run();
     }
 
 }

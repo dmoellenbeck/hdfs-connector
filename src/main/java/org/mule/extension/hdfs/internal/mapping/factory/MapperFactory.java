@@ -9,9 +9,6 @@ import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.mapping.dozer.DozerMapper;
 import org.mule.extension.hdfs.internal.mapping.object.ObjectMap;
 
-/**
- * @author MuleSoft, Inc.
- */
 public class MapperFactory {
     
     private MapperFactory(){

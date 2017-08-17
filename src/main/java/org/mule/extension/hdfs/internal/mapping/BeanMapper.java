@@ -3,10 +3,6 @@
  */
 package org.mule.extension.hdfs.internal.mapping;
 
-
-/**
- * @author MuleSoft, Inc.
- */
 public interface BeanMapper {
 
     <I, O> O map(I original, Class<O> destClass);

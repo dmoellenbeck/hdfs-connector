@@ -34,8 +34,8 @@ public class HdfsOperations {
     /**
      * Read the content of a file designated by its path and streams it to the rest of the flow:
      * 
-     * @param configuration
      * @param connection
+     *            the connection object
      * @param path
      *            the path of the file to read.
      * @param bufferSize
@@ -66,9 +66,10 @@ public class HdfsOperations {
     /**
      * Write the current payload to the designated path, either creating a new file or appending to an existing one.
      * 
-     * @param configuration
      * @param connection
+     *            the connection object
      * @param param
+     *            parameters used for write operation
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void write(@Connection HdfsConnection connection,
@@ -93,15 +94,13 @@ public class HdfsOperations {
     /**
      * List the statuses of the files/directories in the given path if the path is a directory
      * 
-     * @param configuration
      * @param connection
-     *
+     *            the connection object
      * @param path
      *            the given path
      * @param filter
      *            the user supplied path filter
-     * @return FileStatus the statuses of the files/directories in the given path
-     * @return
+     * @return the statuses of the files/directories in the given path
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public List<FileStatus> listStatus(@Connection HdfsConnection connection, final String path, @Optional final String filter) {
@@ -128,13 +127,13 @@ public class HdfsOperations {
     /**
      * Return all the files that match file pattern and are not checksum files. Results are sorted by their names.
      * 
-     * @param configuration
      * @param connection
+     *            the connection object
      * @param pathPattern
      *            a regular expression specifying the path pattern.
      * @param filter
      *            the user supplied path filter
-     * @return FileStatus an array of paths that match the path pattern.
+     * @return an array of paths that match the path pattern.
      */
     public List<FileStatus> globStatus(@Connection HdfsConnection connection, String pathPattern, @Optional String filter) {
 
@@ -160,13 +159,13 @@ public class HdfsOperations {
 
     /**
      * Make the given file and all non-existent parents into directories. Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error.
-     *
+     * 
+     * @param connection
+     *            the connection object
      * @param path
      *            the path to create directories for.
      * @param permission
      *            the file system permission to use when creating the directories, either in octal or symbolic format (umask).
-     * @throws HDFSConnectorException
-     *             if any issue occurs during the execution.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void makeDirectories(@Connection HdfsConnection connection,
@@ -190,8 +189,8 @@ public class HdfsOperations {
     /**
      * Delete the file or directory located at the designated path.
      * 
-     * @param configuration
      * @param connection
+     *            the connection object
      * @param path
      *            the path of the file to delete.
      */

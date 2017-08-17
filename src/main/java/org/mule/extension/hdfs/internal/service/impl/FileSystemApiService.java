@@ -29,6 +29,7 @@ import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
 import org.mule.extension.hdfs.internal.service.dto.FileStatusDTO;
+import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
 import org.mule.extension.hdfs.internal.service.exception.HdfsException;
 import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
@@ -53,9 +54,9 @@ public class FileSystemApiService implements HdfsAPIService {
             InputStream input = fileSystem.open(hdfsPath, bufferSize);
             return IOUtils.toBufferedInputStream(input);
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
 
@@ -80,9 +81,9 @@ public class FileSystemApiService implements HdfsAPIService {
             }
 
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
 
@@ -91,20 +92,20 @@ public class FileSystemApiService implements HdfsAPIService {
             throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
-            if (StringUtils.isNotEmpty(filter)) {
+            if (StringUtils.isNotBlank(filter)) {
                 PathFilter pathFilter = getPathFilter(hdfsPath, filter);
                 return mapFileStatusFiles(fileSystem.listStatus(hdfsPath, pathFilter));
             }
             return mapFileStatusFiles(fileSystem.listStatus(hdfsPath));
 
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (PatternSyntaxException e) {
-            throw new InvalidRequestDataException("Invalid input filter: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(PatternSyntaxException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         } catch (FileNotFoundException e) {
-            throw new InvalidRequestDataException("Invalid file path: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
 
@@ -122,13 +123,13 @@ public class FileSystemApiService implements HdfsAPIService {
             return mapFileStatusFiles(fileSystem.globStatus(hdfsPath));
 
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (PatternSyntaxException e) {
-            throw new InvalidRequestDataException("Invalid input filter: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(PatternSyntaxException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         } catch (FileNotFoundException e) {
-            throw new InvalidRequestDataException("Invalid file path: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
 
@@ -145,12 +146,12 @@ public class FileSystemApiService implements HdfsAPIService {
                 throw new HdfsException("Unable to create directory!");
             }
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void deleteDirectory(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
         try {
@@ -160,9 +161,9 @@ public class FileSystemApiService implements HdfsAPIService {
                 throw new HdfsException("Unable to delete directory!");
             }
         } catch (ConnectException e) {
-            throw new HdfsConnectionException("Something went wrong while sending data to hadoop: " + e.getMessage(), e);
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
-            throw new InvalidRequestDataException("Something went wrong with input data: " + e.getMessage(), e.getMessage(), e);
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
     }
 

@@ -20,13 +20,14 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 
+@SuppressWarnings("unchecked")
 public class ListStatusTestCases extends BaseTest {
 
     private final String PARENT_DIRECTORY = "hdfs-test-list-status/";
     private final String FILE_PATH1 = PARENT_DIRECTORY + "hdfs-test-write-file1.txt";
     private final String FILE_PATH2 = PARENT_DIRECTORY + "hdfs-test-write-file2.txt";
 
-    private final String OWNER = "adriaan";
+    private final String OWNER = "hdfs-connector";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -62,12 +63,10 @@ public class ListStatusTestCases extends BaseTest {
                 .withPayload(TestDataBuilder.payloadForWrite())
                 .run();
 
-        List<FileStatus> listStatus = (List<FileStatus>) flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH1)
-                .withPayload(TestDataBuilder.payloadForWrite())
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH1)
+                        .withPayload(TestDataBuilder.payloadForWrite())
+                        .run());
 
         assertThat("It should be at list one file.", listStatus.size() > 0);
         assertThat("File should have no permission.", listStatus.get(0)
@@ -84,12 +83,10 @@ public class ListStatusTestCases extends BaseTest {
                     .run();
         }
 
-        List<FileStatus> listStatus = (List<FileStatus>) flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
-                .withVariable("filter", ".*csv")
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
+                        .withVariable("filter", ".*csv")
+                        .run());
 
         assertThat(listStatus, notNullValue());
         assertThat(listStatus.size(), is(3));
@@ -103,11 +100,9 @@ public class ListStatusTestCases extends BaseTest {
                 .withPayload(TestDataBuilder.payloadForWrite())
                 .run();
 
-        List<FileStatus> listStatus = (List<FileStatus>) flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
+                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
+                        .run());
 
         assertThat(listStatus, notNullValue());
         assertThat(listStatus.size(), is(1));

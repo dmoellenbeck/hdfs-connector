@@ -11,33 +11,57 @@ import org.mule.runtime.extension.api.annotation.param.Parameter;
 
 public class WriteOpParams {
 
+    /**
+     * the path of the file to write to.
+     */
     @Parameter
     private String path;
-    
+
+    /**
+     * the file system permission to use if a new file is created, either in octal or symbolic format (umask).
+     */
     @Parameter
     @Optional(defaultValue = "700")
     private String permission;
 
+    /**
+     * if a pre-existing file should be overwritten with the new content.
+     */
     @Parameter
     @Optional(defaultValue = "true")
     private boolean overwrite;
 
+    /**
+     * the buffer size to use when appending to the file.
+     */
     @Parameter
     @Optional(defaultValue = "4096")
     private int bufferSize;
-    
+
+    /**
+     * block replication for the file.
+     */
     @Parameter
     @Optional(defaultValue = "1")
     private int replication;
 
+    /**
+     * the buffer size to use when appending to the file.
+     */
     @Parameter
     @Optional(defaultValue = "1048576")
     private long blockSize;
 
+    /**
+     * the username owner of the file.
+     */
     @Parameter
     @Optional
     private String ownerUserName;
 
+    /**
+     * the group owner of the file.
+     */
     @Parameter
     @Optional
     private String ownerGroupName;
