@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+	
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" 
+      xmlns:context="http://www.springframework.org/schema/context"
+      xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+
+	<spring:beans>
+        <spring:import resource="base-flows.xml"/>
+    </spring:beans>
+    
+    <flow name="writeFlow">
+        <hdfs:write config-ref="simple-config" path="#[variables.path]" ownerUserName="#[variables.ownerUserName]" permission="#[variables.permission]">
+          <hdfs:payload>#[payload]</hdfs:payload>
+        </hdfs:write>
+    </flow>
+    
+    <flow name="globStatusFlow">
+        <hdfs:glob-status config-ref="simple-config" pathPattern="#[variables.pathPattern]" filter="#[variables.filter]">
+        </hdfs:glob-status>
+    </flow>
+    
+     <flow name="makeDirFlow">
+        <hdfs:make-directories config-ref="simple-config" path="#[variables.path]" permission="#[variables.permission]">
+        </hdfs:make-directories>
+    </flow>
+    
+    <flow name="deleteDirFlow">
+        <hdfs:delete-directory config-ref="simple-config" path="#[variables.path]">
+        </hdfs:delete-directory>
+    </flow>
+    
+</mule>

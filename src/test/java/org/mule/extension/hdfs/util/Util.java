@@ -7,14 +7,17 @@ public class Util {
 
     public static final String READ_OPERATION_FLOW_PATH = "flows/readOp-flows.xml";
     public static final String WRITE_OPERATION_FLOW_PATH = "flows/write-flows.xml";
-
+    public static final String LIST_STATUS_FLOW_PATH = "flows/listStatus-flows.xml";
+    public static final String GLOBAL_STATUS_FLOW_PATH = "flows/globalStatus-flows.xml";
 
     public class FlowNames {
 
         public static final String READ_OP_FLOW = "readOpFlow";
         public static final String WRITE_FLOW = "writeFlow";
         public static final String LIST_STATUS_FLOW = "listStatusFlow";
-
+        public static final String GLOB_STATUS_FLOW = "globStatusFlow";
+        public static final String MAKE_DIR_FLOW = "makeDirFlow";
+        public static final String DELETE_DIR_FLOW = "deleteDirFlow";
      }
 
 }

@@ -5,21 +5,16 @@ package org.mule.extension.hdfs.internal.connection.provider;
 
 import static org.mule.runtime.extension.api.annotation.param.ParameterGroup.CONNECTION;
 
-import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.mule.extension.hdfs.api.connection.param.KerberosConnectionParams;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigurationUtil;
-import org.mule.extension.hdfs.internal.service.exception.UnableToCloseConnection;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionProvider;
-import org.mule.runtime.api.connection.ConnectionValidationResult;
 import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;

@@ -1,3 +1,6 @@
+/**
+ * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.extension.hdfs.automation.functional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,11 +12,11 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.hadoop.fs.FileStatus;
 import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
@@ -92,8 +95,7 @@ public class WriteTestCases extends BaseTest {
                 .getValue();
 
         assertThat("It should be at list one file.", listStatus.size() > 0);
-        assertThat("File should have no permission.", listStatus.get(0)
-                .getPermission()
-                .toString(), equalTo("---------"));
+        assertThat("File should have no permission.", listStatus.get(0).getPermission().toString()
+                , equalTo("---------"));
     }
 }

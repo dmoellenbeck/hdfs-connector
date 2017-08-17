@@ -3,22 +3,25 @@
  */
 package org.mule.extension.hdfs.internal.operation;
 
+import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
+
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.hadoop.fs.FileStatus;
+import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.api.error.HdfsOperationErrorTypeProvider;
 import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
-import org.mule.extension.hdfs.internal.config.HdfsConfiguration;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
+import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
+import org.mule.extension.hdfs.internal.service.dto.FileStatusDTO;
 import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
-import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
@@ -40,9 +43,7 @@ public class HdfsOperations {
      * @return the result from executing the rest of the flow.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
-    public InputStream readOperation(
-            @Config HdfsConfiguration configuration,
-            @Connection HdfsConnection connection,
+    public InputStream readOperation(@Connection HdfsConnection connection,
             String path,
             @Optional(defaultValue = "4096") final int bufferSize)
 
@@ -70,9 +71,7 @@ public class HdfsOperations {
      * @param param
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
-    public void write(
-            @Config HdfsConfiguration configuration,
-            @Connection HdfsConnection connection,
+    public void write(@Connection HdfsConnection connection,
             @ParameterGroup(name = "Input parameters") WriteOpParams param) {
 
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
@@ -105,14 +104,105 @@ public class HdfsOperations {
      * @return
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
-
-    public List<FileStatus> listStatus(@Config HdfsConfiguration configuration,
-            @Connection HdfsConnection connection, final String path, @Optional final String filter) {
+    public List<FileStatus> listStatus(@Connection HdfsConnection connection, final String path, @Optional final String filter) {
 
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
 
         try {
-            return hdfsApiService.listStatus(path, filter);
+            List<FileStatusDTO> flsDtos = hdfsApiService.listStatus(path, filter);
+            BeanMapper beanMapper = dozerMapper();
+            return flsDtos.stream()
+                    .map(flsDto -> beanMapper.map(flsDto, FileStatus.class))
+                    .collect(Collectors.toList());
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Return all the files that match file pattern and are not checksum files. Results are sorted by their names.
+     * 
+     * @param configuration
+     * @param connection
+     * @param pathPattern
+     *            a regular expression specifying the path pattern.
+     * @param filter
+     *            the user supplied path filter
+     * @return FileStatus an array of paths that match the path pattern.
+     */
+    public List<FileStatus> globStatus(@Connection HdfsConnection connection, String pathPattern, @Optional String filter) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+
+            List<FileStatusDTO> flsDtos = hdfsApiService.globStatus(pathPattern, filter);
+            BeanMapper beanMapper = dozerMapper();
+            return flsDtos.stream()
+                    .map(flsDto -> beanMapper.map(flsDto, FileStatus.class))
+                    .collect(Collectors.toList());
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Make the given file and all non-existent parents into directories. Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error.
+     *
+     * @param path
+     *            the path to create directories for.
+     * @param permission
+     *            the file system permission to use when creating the directories, either in octal or symbolic format (umask).
+     * @throws HDFSConnectorException
+     *             if any issue occurs during the execution.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void makeDirectories(@Connection HdfsConnection connection,
+            String path, @Optional final String permission) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.mkdirs(path, permission);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Delete the file or directory located at the designated path.
+     * 
+     * @param configuration
+     * @param connection
+     * @param path
+     *            the path of the file to delete.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void deleteDirectory(@Connection HdfsConnection connection,
+            String path) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.deleteDirectory(path);
         } catch (InvalidRequestDataException e) {
             throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
         } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
