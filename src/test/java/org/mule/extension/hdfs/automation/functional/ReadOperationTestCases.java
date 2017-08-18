@@ -59,7 +59,7 @@ public class ReadOperationTestCases extends BaseTest {
     public void testReadOpFlowUnexistingFile() throws Exception {
 
         expectedException.expect(MessagingException.class);
-        expectedException.expectMessage(StringContains.containsString("Something went wrong with input data"));
+        expectedException.expectMessage(StringContains.containsString("Invalid request data"));
 
         flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
                 .run();
