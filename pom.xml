@@ -43,11 +43,10 @@
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
-        <dependency>
-	    	<groupId>xml-apis</groupId>
-		    <artifactId>xml-apis</artifactId>
-		    <version>1.4.01</version>
-		    <scope>test</scope>
+		<dependency>
+			<groupId>net.sf.dozer</groupId>
+			<artifactId>dozer</artifactId>
+			<version>5.5.1</version>
 		</dependency>
     </dependencies>
 

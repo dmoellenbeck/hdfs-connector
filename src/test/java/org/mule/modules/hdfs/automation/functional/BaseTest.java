@@ -25,7 +25,7 @@ public abstract class BaseTest extends MuleArtifactFunctionalTestCase {
     }
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpBeforeClass() {
         try {
             hdfsProp = TestDataBuilder.getProperties(TestDataBuilder.CREDENTIALS_FILE);
         } catch (IOException e) {

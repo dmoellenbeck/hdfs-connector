@@ -1,3 +1,6 @@
+/**
+ * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.extension.hdfs.automation.functional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,10 +41,7 @@ public class ReadOperationTestCases extends BaseTest {
         InputStream payload = new ByteArrayInputStream(writtenData);
         flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
                 .withPayload(payload)
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+                .run();
 
         CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
                 .keepStreamsOpen()
@@ -62,10 +62,7 @@ public class ReadOperationTestCases extends BaseTest {
         expectedException.expectMessage(StringContains.containsString("Something went wrong with input data"));
 
         flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
-                .run()
-                .getMessage()
-                .getPayload()
-                .getValue();
+                .run();
     }
 
 }
