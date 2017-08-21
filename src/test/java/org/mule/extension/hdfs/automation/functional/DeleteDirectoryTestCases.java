@@ -3,16 +3,20 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.hamcrest.core.StringContains;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
+import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
+import org.mule.runtime.core.exception.MessagingException;
 
 @SuppressWarnings("unchecked")
 public class DeleteDirectoryTestCases extends BaseTest {
@@ -33,16 +37,17 @@ public class DeleteDirectoryTestCases extends BaseTest {
                 .withVariable("permission", "700")
                 .run();
     }
-    
-  @Test
-  public void testDeleteDirectory() throws Exception {
-      flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
-      .run();
-      verifyDeletetionOfDirectory();
-  }
+
+    @Test
+    public void testDeleteDirectory() throws Exception {
+        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+                .run();
+        verifyDeletetionOfDirectory();
+    }
 
     private void verifyDeletetionOfDirectory() throws Exception {
-        fileNotFoundExpected.expect(Exception.class);
+        fileNotFoundExpected.expect(MessagingException.class);
+        fileNotFoundExpected.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName())));
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
                 .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                         .run());

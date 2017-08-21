@@ -32,6 +32,16 @@ public class MakeDirectoriesTestCases extends BaseTest {
         flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
+        verifyMakeDirectory();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+                .run();
+    }
+
+    private void verifyMakeDirectory() throws Exception {
 
         List<FileStatus> parentDirectoryStatuses = (List<FileStatus>) TestDataBuilder
                 .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
@@ -41,12 +51,5 @@ public class MakeDirectoriesTestCases extends BaseTest {
 
         assertThat(parentDirectoryStatuses.get(0)
                 .getPath(), containsString(NEW_DIRECTORY));
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
-                .run();
     }
 }
