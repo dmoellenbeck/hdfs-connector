@@ -15,6 +15,8 @@ import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
+import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
 import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
@@ -59,7 +61,7 @@ public class ReadOperationTestCases extends BaseTest {
     public void testReadOpFlowUnexistingFile() throws Exception {
 
         expectedException.expect(MessagingException.class);
-        expectedException.expectMessage(StringContains.containsString("Something went wrong with input data"));
+        expectedException.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName())));
 
         flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
                 .run();

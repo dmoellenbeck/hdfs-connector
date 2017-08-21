@@ -9,7 +9,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
     <context:property-placeholder location="automation-credentials.properties" />
 
-    <hdfs:hdfs-config name="simple-config">
+    <hdfs:hdfs-config name="kerberos-config">
         <hdfs:kerberos-connection nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}" keytabPath="${hdfs.keytabPath}"/>
     </hdfs:hdfs-config>
 

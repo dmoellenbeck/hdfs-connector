@@ -9,6 +9,8 @@ public class Util {
     public static final String WRITE_OPERATION_FLOW_PATH = "flows/write-flows.xml";
     public static final String LIST_STATUS_FLOW_PATH = "flows/listStatus-flows.xml";
     public static final String GLOBAL_STATUS_FLOW_PATH = "flows/globalStatus-flows.xml";
+    public static final String DELETE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
+    public static final String MAKE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
 
     public class FlowNames {
 

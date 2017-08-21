@@ -65,7 +65,6 @@ public class ListStatusTestCases extends BaseTest {
 
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
                 .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH1)
-                        .withPayload(TestDataBuilder.payloadForWrite())
                         .run());
 
         assertThat("It should be at list one file.", listStatus.size() > 0);
