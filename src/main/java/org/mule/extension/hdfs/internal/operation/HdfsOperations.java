@@ -7,6 +7,7 @@ import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.doz
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.mule.extension.hdfs.api.FileStatus;
@@ -213,4 +214,30 @@ public class HdfsOperations {
         }
     }
 
+    /**
+     * Get the metadata of a path, as described in {@link HDFSExtension#read(String, int, SourceCallback)}, and store it in flow variables.
+     * <p>
+     * This flow variables are:
+     * <ul>
+     * <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+     * <li>hdfs.content.summary - A resume of the path info</li>
+     * <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+     * <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+     * </ul>
+     *
+     * @param path      the path whose existence must be checked.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public Map<String, Object> getMetadata(@Connection HdfsConnection connection, final String path) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            return hdfsApiService.getMetadata(path);
+        } catch (InvalidRequestDataException | IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
 }

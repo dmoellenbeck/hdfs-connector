@@ -20,6 +20,7 @@ public class Util {
         public static final String GLOB_STATUS_FLOW = "globStatusFlow";
         public static final String MAKE_DIR_FLOW = "makeDirFlow";
         public static final String DELETE_DIR_FLOW = "deleteDirFlow";
+        public static final String GET_METADATA_FLOW = "getMetadataFlow";
      }
 
 }

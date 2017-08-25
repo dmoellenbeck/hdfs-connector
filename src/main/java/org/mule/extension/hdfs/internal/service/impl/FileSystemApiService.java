@@ -10,20 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.mapping.BeanMapper;
@@ -37,6 +31,12 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveRespon
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 
 public class FileSystemApiService implements HdfsAPIService {
+
+    public static final String HDFS = "hdfs";
+    public static final String HDFS_PATH_EXISTS = HDFS + ".path.exists";
+    public static final String HDFS_FILE_STATUS = HDFS + ".file.status";
+    public static final String HDFS_FILE_CHECKSUM = HDFS + ".file.checksum";
+    public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
 
     private FileSystem fileSystem;
     private BeanMapper beanMapper;
@@ -164,6 +164,40 @@ public class FileSystemApiService implements HdfsAPIService {
             throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
         } catch (IllegalArgumentException | IOException e) {
             throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getMetadata(String path) {
+        if (StringUtils.isBlank(path)) {
+            throw new IllegalArgumentException(ExceptionMessages.resolveExceptionMessage(IllegalArgumentException.class.getSimpleName() + "Parameter name: path"));
+        } else {
+            Path hdfsPath = new Path(path);
+            final Map<String, Object> metaData = new HashMap<>();
+
+            try {
+                final boolean pathExists = fileSystem.exists(hdfsPath);
+                metaData.put(HDFS_PATH_EXISTS, pathExists);
+                if (!pathExists) {
+                    return metaData;
+                }
+
+                metaData.put(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
+
+                final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
+                metaData.put(HDFS_FILE_STATUS, fileStatus);
+                if (fileStatus.isDirectory()) {
+                    return metaData;
+                }
+
+                final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
+                if (fileChecksum != null) {
+                    metaData.put(HDFS_FILE_CHECKSUM, fileChecksum);
+                }
+            } catch (IOException e) {
+                throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+            }
+            return metaData;
         }
     }
 
