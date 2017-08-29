@@ -66,6 +66,9 @@ public class WriteOpParams {
     @Optional
     private String ownerGroupName;
 
+    /**
+     * the payload to write to the file.
+     */
     @Parameter
     @Content
     private InputStream payload;

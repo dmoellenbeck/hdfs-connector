@@ -23,6 +23,7 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestExc
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
 import org.mule.runtime.extension.api.annotation.param.Connection;
+import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
@@ -202,6 +203,65 @@ public class HdfsOperations {
 
         try {
             hdfsApiService.deleteDirectory(path);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Append the current payload to a file located at the designated path. <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any
+     * data to an existing file refer to dfs.support.append configuration parameter
+     * 
+     * @param connection
+     *            the connection object
+     * @param path
+     *            the path of the file to write to.
+     * @param bufferSize
+     *            the buffer size to use when appending to the file.
+     * @param payload
+     *            the payload to append to the file.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void append(@Connection HdfsConnection connection,
+            final String path, @Optional(defaultValue = "4096") final int bufferSize, @Content InputStream payload) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.append(path, bufferSize, payload);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Delete the file or directory located at the designated path.
+     * 
+     * @param connection
+     *            the connection object
+     * @param path
+     *            the path of the file to delete.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void deleteFile(@Connection HdfsConnection connection,
+            String path) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.deleteFile(path);
         } catch (InvalidRequestDataException e) {
             throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
         } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {

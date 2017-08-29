@@ -23,8 +23,10 @@ public class DeleteDirectoryTestCases extends BaseTest {
 
     private static final String PARENT_DIRECTORY = "rootDirectory/";
     private static final String NEW_DIRECTORY = "newDirectory";
+    private static final String UNEXISTING_FILE = "unexisting.txt";
+
     @Rule
-    public ExpectedException fileNotFoundExpected = ExpectedException.none();
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Override
     protected String getConfigFile() {
@@ -42,12 +44,22 @@ public class DeleteDirectoryTestCases extends BaseTest {
     public void testDeleteDirectory() throws Exception {
         flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .run();
-        verifyDeletetionOfDirectory();
+        verifyDeletionOfDirectory();
     }
 
-    private void verifyDeletetionOfDirectory() throws Exception {
-        fileNotFoundExpected.expect(MessagingException.class);
-        fileNotFoundExpected.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName())));
+    @Test
+    public void testDeleteUnexistingDir() throws Exception {
+
+        expectedException.expect(MessagingException.class);
+        expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_DIR));
+
+        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", UNEXISTING_FILE)
+                .run();
+    }
+
+    private void verifyDeletionOfDirectory() throws Exception {
+        expectedException.expect(MessagingException.class);
+        expectedException.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName())));
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
                 .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                         .run());

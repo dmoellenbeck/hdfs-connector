@@ -11,6 +11,8 @@ public class Util {
     public static final String GLOBAL_STATUS_FLOW_PATH = "flows/globalStatus-flows.xml";
     public static final String DELETE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
     public static final String MAKE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
+    public static final String APPEND_FLOW_PATH = "flows/append-flows.xml";
+    public static final String DELETE_FILE_FLOW_PATH = "flows/delFile-flows.xml";
 
     public class FlowNames {
 
@@ -20,6 +22,9 @@ public class Util {
         public static final String GLOB_STATUS_FLOW = "globStatusFlow";
         public static final String MAKE_DIR_FLOW = "makeDirFlow";
         public static final String DELETE_DIR_FLOW = "deleteDirFlow";
+        public static final String APPEND_DIR_FLOW = "appendFlow";
+        public static final String DELETE_FILE_FLOW = "deleteFileFlow";
+
      }
 
 }
