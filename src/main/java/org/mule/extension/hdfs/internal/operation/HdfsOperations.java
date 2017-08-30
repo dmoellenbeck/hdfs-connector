@@ -217,7 +217,7 @@ public class HdfsOperations {
     }
 
     /**
-     * Get the metadata of a path, as described in {@link HDFSExtension#read(String, int, SourceCallback)}, and store it in flow variables.
+     * Get the metadata of a path
      * <p>
      * This flow variables are:
      * <ul>
