@@ -158,7 +158,43 @@ public class FileSystemApiService implements HdfsAPIService {
             Path hdfsPath = new Path(path);
             boolean result = fileSystem.delete(hdfsPath, true);
             if (!result) {
-                throw new HdfsException("Unable to delete directory!");
+                throw new HdfsException(ExceptionMessages.UNABLE_TO_DELETE_DIR);
+            }
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void append(String path, int bufferSize, InputStream payload)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+        try {
+
+            validateCreate(payload);
+
+            Path hdfsPath = new Path(path);
+
+            final FSDataOutputStream fsDataOutputStream = fileSystem.append(hdfsPath, bufferSize);
+            IOUtils.copyLarge(payload, fsDataOutputStream);
+            IOUtils.closeQuietly(fsDataOutputStream);
+
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+        try {
+            Path hdfsPath = new Path(path);
+            boolean result = fileSystem.delete(hdfsPath, false);
+            if (!result) {
+                throw new HdfsException(ExceptionMessages.UNABLE_TO_DELETE_FILE);
             }
         } catch (ConnectException e) {
             throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);

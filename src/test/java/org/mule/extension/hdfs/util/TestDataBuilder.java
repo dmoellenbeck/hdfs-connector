@@ -59,4 +59,10 @@ public class TestDataBuilder {
                 .getPayload()
                 .getValue();
     }
+
+    public static byte[] payloadShortString() throws Exception {
+        return RandomStringUtils.randomAlphanumeric(5)
+                .getBytes();
+    }
+
 }

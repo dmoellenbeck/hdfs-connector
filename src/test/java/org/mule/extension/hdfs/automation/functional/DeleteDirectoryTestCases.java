@@ -3,17 +3,12 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
 import org.hamcrest.core.StringContains;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
-import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
@@ -23,8 +18,10 @@ public class DeleteDirectoryTestCases extends BaseTest {
 
     private static final String PARENT_DIRECTORY = "rootDirectory/";
     private static final String NEW_DIRECTORY = "newDirectory";
+    private static final String UNEXISTING_FILE = "unexisting.txt";
+
     @Rule
-    public ExpectedException fileNotFoundExpected = ExpectedException.none();
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Override
     protected String getConfigFile() {
@@ -42,13 +39,23 @@ public class DeleteDirectoryTestCases extends BaseTest {
     public void testDeleteDirectory() throws Exception {
         flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .run();
-        verifyDeletetionOfDirectory();
+        verifyDeletionOfDirectory();
     }
 
-    private void verifyDeletetionOfDirectory() throws Exception {
-        fileNotFoundExpected.expect(MessagingException.class);
-        fileNotFoundExpected.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_FILE_PATH));
+    @Test
+    public void testDeleteUnexistingDir() throws Exception {
+
+        expectedException.expect(MessagingException.class);
+        expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_DIR));
+
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", UNEXISTING_FILE)
+                .run();
+    }
+
+    private void verifyDeletionOfDirectory() throws Exception {
+        expectedException.expect(MessagingException.class);
+        expectedException.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_FILE_PATH));
         flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
-                        .run();
+                .run();
     }
 }

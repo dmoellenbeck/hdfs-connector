@@ -28,7 +28,12 @@ public interface HdfsAPIService {
 
     void mkdirs(String path, String permission) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
-    void deleteDirectory(String path)  throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+    void deleteDirectory(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void append(String path, int bufferSize, InputStream payload)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;;
+
+    void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
     Map<String, Object> getMetadata(String path);
 }

@@ -24,6 +24,10 @@ public class ExceptionMessages {
     private static final String INVALID_FILE_PATH = "Invalid file path: ";
 
     private static final String UNKNOWN_EXCEPTION_MESSAGE = "Unknown error occurred!";
+   
+    public static final String UNABLE_TO_DELETE_FILE = "Unable to delete file!";
+    public static final String UNABLE_TO_DELETE_DIR = "Unable to delete directory!";
+
 
     static Map<String, String> exceptionsMapping = new HashMap<>();
 
