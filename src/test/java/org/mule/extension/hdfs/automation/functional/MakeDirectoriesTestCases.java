@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 
 @SuppressWarnings("unchecked")
@@ -24,12 +24,12 @@ public class MakeDirectoriesTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.MAKE_DIR_FLOW_PATH;
+        return TestConstants.MAKE_DIR_FLOW_PATH;
     }
 
     @Test
     public void testMakeDirectories() throws Exception {
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
         verifyMakeDirectory();
@@ -37,14 +37,14 @@ public class MakeDirectoriesTestCases extends BaseTest {
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .run();
     }
 
     private void verifyMakeDirectory() throws Exception {
 
         List<FileStatus> parentDirectoryStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
                         .run());
 
         assertThat(parentDirectoryStatuses, notNullValue());

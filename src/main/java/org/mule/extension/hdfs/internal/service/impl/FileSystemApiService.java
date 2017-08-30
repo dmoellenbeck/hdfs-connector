@@ -170,7 +170,7 @@ public class FileSystemApiService implements HdfsAPIService {
     @Override
     public Map<String, Object> getMetadata(String path) {
         if (StringUtils.isBlank(path)) {
-            throw new IllegalArgumentException(ExceptionMessages.resolveExceptionMessage(IllegalArgumentException.class.getSimpleName() + "Parameter name: path"));
+            throw new IllegalArgumentException(ExceptionMessages.resolveExceptionMessage(IllegalArgumentException.class.getSimpleName()) + "Parameter name: path");
         } else {
             Path hdfsPath = new Path(path);
             final Map<String, Object> metaData = new HashMap<>();

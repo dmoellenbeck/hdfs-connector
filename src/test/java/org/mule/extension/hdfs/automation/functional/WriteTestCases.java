@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
@@ -37,18 +37,18 @@ public class WriteTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.WRITE_OPERATION_FLOW_PATH;
+        return TestConstants.WRITE_OPERATION_FLOW_PATH;
     }
 
     @Test
     public void testWriteFlow() throws Exception {
 
         InputStream payload = new ByteArrayInputStream(writtenData);
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
                 .withPayload(payload)
                 .run();
 
-        CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
+        CursorStream cursor = ((CursorStreamProvider) flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
                 .keepStreamsOpen()
                 .run()
                 .getMessage()
@@ -66,7 +66,7 @@ public class WriteTestCases extends BaseTest {
         expectedException.expectMessage(StringContains.containsString("Payload cannot be null"));
 
         InputStream payload = null;
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
                 .withPayload(payload)
                 .run();
     }
@@ -75,13 +75,13 @@ public class WriteTestCases extends BaseTest {
     public void testWriteNoPermissionFlow() throws Exception {
 
         InputStream payload = new ByteArrayInputStream(writtenData);
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
                 .withVariable("permission", "000")
                 .withPayload(payload)
                 .run();
 
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", NO_PERMISSION_FILE_PATH)
                         .withPayload(payload)
                         .run());
 

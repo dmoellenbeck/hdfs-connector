@@ -23,10 +23,12 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveRespon
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
+import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
+import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
 
 public class HdfsOperations {
 
@@ -228,6 +230,7 @@ public class HdfsOperations {
      * @param path      the path whose existence must be checked.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
+    @OutputResolver(output = NullQueryMetadataResolver.class)
     public Map<String, Object> getMetadata(@Connection HdfsConnection connection, final String path) {
 
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);

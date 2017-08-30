@@ -14,7 +14,7 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
 
@@ -28,28 +28,27 @@ public class DeleteDirectoryTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.DELETE_DIR_FLOW_PATH;
+        return TestConstants.DELETE_DIR_FLOW_PATH;
     }
 
     @Before
     public void setUp() throws Exception {
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
     }
 
     @Test
     public void testDeleteDirectory() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .run();
         verifyDeletetionOfDirectory();
     }
 
     private void verifyDeletetionOfDirectory() throws Exception {
         fileNotFoundExpected.expect(MessagingException.class);
-        fileNotFoundExpected.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(FileNotFoundException.class.getSimpleName())));
-        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
-                        .run());
+        fileNotFoundExpected.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_FILE_PATH));
+        flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+                        .run();
     }
 }
