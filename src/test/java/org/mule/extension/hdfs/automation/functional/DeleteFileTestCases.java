@@ -18,9 +18,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
-import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
 
@@ -36,34 +35,34 @@ public class DeleteFileTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.DELETE_FILE_FLOW_PATH;
+        return TestConstants.DELETE_FILE_FLOW_PATH;
     }
 
     @Before
     public void setUp() throws Exception {
 
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(TestDataBuilder.payloadShortString()))
                 .run();
     }
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .run();
     }
 
     @Test
     public void testDeleteFile() throws Exception {
       
-        flowRunner(Util.FlowNames.DELETE_FILE_FLOW).withVariable("path", MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.DELETE_FILE_FLOW).withVariable("path", MYFILE_PATH)
                 .run();
 
         List<FileStatus> parentDirectoryStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
                         .run());
         assertThat(parentDirectoryStatuses, notNullValue());
         assertThat(parentDirectoryStatuses, empty());
@@ -75,7 +74,7 @@ public class DeleteFileTestCases extends BaseTest {
         expectedException.expect(MessagingException.class);
         expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_FILE));
         
-        flowRunner(Util.FlowNames.DELETE_FILE_FLOW).withVariable("path", UNEXISTING_FILE)
+        flowRunner(TestConstants.FlowNames.DELETE_FILE_FLOW).withVariable("path", UNEXISTING_FILE)
                 .run();
     }
 

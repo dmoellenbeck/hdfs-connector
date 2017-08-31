@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 
 @SuppressWarnings("unchecked")
@@ -34,16 +34,16 @@ public class ListStatusTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.LIST_STATUS_FLOW_PATH;
+        return TestConstants.LIST_STATUS_FLOW_PATH;
     }
 
     @Before
     public void setUp() throws Exception {
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
         for (String fileName : TestDataBuilder.fileNamesForGlobStatus()) {
-            flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
+            flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
                     .withPayload(TestDataBuilder.payloadForWrite())
                     .run();
         }
@@ -51,20 +51,20 @@ public class ListStatusTestCases extends BaseTest {
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .run();
     }
 
     @Test
     public void testStatusPermissionFlow() throws Exception {
 
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH1)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH1)
                 .withVariable("permission", "000")
                 .withPayload(TestDataBuilder.payloadForWrite())
                 .run();
 
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH1)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH1)
                         .run());
 
         assertThat("It should be at list one file.", listStatus.size() > 0);
@@ -77,13 +77,13 @@ public class ListStatusTestCases extends BaseTest {
     public void testStatusUsingFilterFlow() throws Exception {
 
         for (String fileName : TestDataBuilder.fileNamesForListStatus()) {
-            flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
+            flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
                     .withPayload(TestDataBuilder.payloadForWrite())
                     .run();
         }
 
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
                         .withVariable("filter", ".*csv")
                         .run());
 
@@ -94,13 +94,13 @@ public class ListStatusTestCases extends BaseTest {
     @Test
     public void testStatusOwnerFlow() throws Exception {
 
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH2)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH2)
                 .withVariable("ownerUserName", OWNER)
                 .withPayload(TestDataBuilder.payloadForWrite())
                 .run();
 
         List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
                         .run());
 
         assertThat(listStatus, notNullValue());

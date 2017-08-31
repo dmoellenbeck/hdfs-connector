@@ -3,7 +3,7 @@
  */
 package org.mule.extension.hdfs.util;
 
-public class Util {
+public class TestConstants {
 
     public static final String READ_OPERATION_FLOW_PATH = "flows/readOp-flows.xml";
     public static final String WRITE_OPERATION_FLOW_PATH = "flows/write-flows.xml";
@@ -11,6 +11,7 @@ public class Util {
     public static final String GLOBAL_STATUS_FLOW_PATH = "flows/globalStatus-flows.xml";
     public static final String DELETE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
     public static final String MAKE_DIR_FLOW_PATH = "flows/delDirectory-flows.xml";
+    public static final String GET_METADATA_FLOW_PATH = "flows/getMetadata-flows.xml";
     public static final String APPEND_FLOW_PATH = "flows/append-flows.xml";
     public static final String DELETE_FILE_FLOW_PATH = "flows/delFile-flows.xml";
 
@@ -22,9 +23,20 @@ public class Util {
         public static final String GLOB_STATUS_FLOW = "globStatusFlow";
         public static final String MAKE_DIR_FLOW = "makeDirFlow";
         public static final String DELETE_DIR_FLOW = "deleteDirFlow";
+        public static final String GET_METADATA_FLOW = "getMetadataFlow";
         public static final String APPEND_DIR_FLOW = "appendFlow";
         public static final String DELETE_FILE_FLOW = "deleteFileFlow";
 
      }
 
+    public class ExceptionMessages {
+        public static final String UNABLE_RETRIEVE = "Something went wrong while retrieving data from Hadoop";
+        public static final String UNABLE_SEND = "Something went wrong while sending data to Hadoop: ";
+        public static final String INVALID_REQUEST_DATA = "Invalid request data :";
+        public static final String ILLEGAL_ARGUMENT = "Invalid parameter!";
+        public static final String ILLEGAL_PATH = "Can not create a Path";
+        public static final String INVALID_INPUT_FILTER = "Invalid input filter: ";
+        public static final String INVALID_FILE_PATH = "Invalid file path: ";
+        public static final String UNKNOWN_EXCEPTION_MESSAGE = "Unknown error occurred!";
+    }
 }

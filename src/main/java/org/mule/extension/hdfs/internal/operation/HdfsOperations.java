@@ -7,6 +7,7 @@ import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.doz
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.mule.extension.hdfs.api.FileStatus;
@@ -22,11 +23,13 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveRespon
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
+import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
+import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
 
 public class HdfsOperations {
 
@@ -217,7 +220,7 @@ public class HdfsOperations {
     /**
      * Append the current payload to a file located at the designated path. <b>Note:</b> by default the Hadoop server has the append option disabled. In order to be able append any
      * data to an existing file refer to dfs.support.append configuration parameter
-     * 
+     *
      * @param connection
      *            the connection object
      * @param path
@@ -248,7 +251,7 @@ public class HdfsOperations {
 
     /**
      * Delete the file or directory located at the designated path.
-     * 
+     *
      * @param connection
      *            the connection object
      * @param path
@@ -273,4 +276,31 @@ public class HdfsOperations {
         }
     }
 
+    /**
+     * Get the metadata of a path
+     * <p>
+     * This flow variables are:
+     * <ul>
+     * <li>hdfs.path.exists - Indicates if the path exists (true or false)</li>
+     * <li>hdfs.content.summary - A resume of the path info</li>
+     * <li>hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)</li>
+     * <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
+     * </ul>
+     *
+     * @param path      the path whose existence must be checked.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    @OutputResolver(output = NullQueryMetadataResolver.class)
+    public Map<String, Object> getMetadata(@Connection HdfsConnection connection, final String path) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            return hdfsApiService.getMetadata(path);
+        } catch (InvalidRequestDataException | IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
 }

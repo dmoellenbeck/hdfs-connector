@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 
 @SuppressWarnings("unchecked")
@@ -27,16 +27,16 @@ public class GlobStatusTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.GLOBAL_STATUS_FLOW_PATH;
+        return TestConstants.GLOBAL_STATUS_FLOW_PATH;
     }
 
     @Before
     public void setUp() throws Exception {
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
         for (String fileName : TestDataBuilder.fileNamesForGlobStatus()) {
-            flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
+            flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + fileName)
                     .withPayload(TestDataBuilder.payloadForWrite())
                     .run();
         }
@@ -44,7 +44,7 @@ public class GlobStatusTestCases extends BaseTest {
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .run();
     }
 
@@ -52,7 +52,7 @@ public class GlobStatusTestCases extends BaseTest {
     public void testGlobStatus() throws Exception {
         String filter = new String("^.*2013/12/31$");
         List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
+                .getValue(flowRunner(TestConstants.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
                         .withVariable("filter", filter)
                         .run());
 
@@ -67,7 +67,7 @@ public class GlobStatusTestCases extends BaseTest {
     public void testGlobStatusWhenFilterSetToNull() throws Exception {
 
         List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
+                .getValue(flowRunner(TestConstants.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + "/2013/*/*")
                         .withVariable("filter", null)
                         .run());
 
@@ -82,7 +82,7 @@ public class GlobStatusTestCases extends BaseTest {
     public void testGlobStatusWhenNoFileMatches() throws Exception {
 
         List<FileStatus> fileStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + INVALID_PATH_PATTERN)
+                .getValue(flowRunner(TestConstants.FlowNames.GLOB_STATUS_FLOW).withVariable("pathPattern", PARENT_DIRECTORY + INVALID_PATH_PATTERN)
                         .run());
 
         assertThat(fileStatuses, notNullValue());

@@ -29,15 +29,4 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
           <hdfs:payload>#[payload]</hdfs:payload>
         </hdfs:write>
     </flow>
-
-	<flow name="makeDirFlow">
-        <hdfs:make-directories config-ref="simple-config" path="#[variables.path]" permission="#[variables.permission]">
-        </hdfs:make-directories>
-    </flow>
-    
-    <flow name="deleteDirFlow">
-        <hdfs:delete-directory config-ref="simple-config" path="#[variables.path]">
-        </hdfs:delete-directory>
-    </flow>
-    
 </mule>

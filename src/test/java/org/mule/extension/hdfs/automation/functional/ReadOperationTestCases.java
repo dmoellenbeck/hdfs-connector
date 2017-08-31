@@ -15,9 +15,7 @@ import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
-import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
@@ -34,18 +32,18 @@ public class ReadOperationTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.READ_OPERATION_FLOW_PATH;
+        return TestConstants.READ_OPERATION_FLOW_PATH;
     }
 
     @Test
     public void testReadFlow() throws Exception {
 
         InputStream payload = new ByteArrayInputStream(writtenData);
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", FILE_PATH)
                 .withPayload(payload)
                 .run();
 
-        CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
+        CursorStream cursor = ((CursorStreamProvider) flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", FILE_PATH)
                 .keepStreamsOpen()
                 .run()
                 .getMessage()
@@ -61,9 +59,9 @@ public class ReadOperationTestCases extends BaseTest {
     public void testReadOpFlowUnexistingFile() throws Exception {
 
         expectedException.expect(MessagingException.class);
-        expectedException.expectMessage(StringContains.containsString(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName())));
+        expectedException.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_REQUEST_DATA));
 
-        flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
+        flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
                 .run();
     }
 
