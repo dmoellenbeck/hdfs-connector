@@ -12,8 +12,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
@@ -26,24 +26,24 @@ public class AppendTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.APPEND_FLOW_PATH;
+        return TestConstants.APPEND_FLOW_PATH;
     }
 
     @Before
     public void setUp() throws Exception {
         initialWrittenData = TestDataBuilder.payloadShortString();
 
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(initialWrittenData))
                 .run();
     }
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
                 .run();
     }
 
@@ -57,11 +57,11 @@ public class AppendTestCases extends BaseTest {
 
         SequenceInputStream inputStreamsSequence = new SequenceInputStream(inputStreams.elements());
 
-        flowRunner(Util.FlowNames.APPEND_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.APPEND_DIR_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(inputStreamToAppend))
                 .run();
 
-        CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
+        CursorStream cursor = ((CursorStreamProvider) flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
                 .keepStreamsOpen()
                 .run()
                 .getMessage()

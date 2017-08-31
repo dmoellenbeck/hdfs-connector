@@ -34,6 +34,7 @@ public class TestConstants {
         public static final String UNABLE_SEND = "Something went wrong while sending data to Hadoop: ";
         public static final String INVALID_REQUEST_DATA = "Invalid request data :";
         public static final String ILLEGAL_ARGUMENT = "Invalid parameter!";
+        public static final String ILLEGAL_PATH = "Can not create a Path";
         public static final String INVALID_INPUT_FILTER = "Invalid input filter: ";
         public static final String INVALID_FILE_PATH = "Invalid file path: ";
         public static final String UNKNOWN_EXCEPTION_MESSAGE = "Unknown error occurred!";

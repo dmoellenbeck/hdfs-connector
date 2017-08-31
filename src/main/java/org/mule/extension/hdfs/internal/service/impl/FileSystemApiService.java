@@ -62,7 +62,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void create(String path, String permission, boolean overwrite, int bufferSize, int replication, long blockSize, String ownerUserName, String ownerGroupName,
-            InputStream payload)
+                       InputStream payload)
             throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
 
         try {
@@ -205,36 +205,32 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public Map<String, Object> getMetadata(String path) {
-        if (StringUtils.isBlank(path)) {
-            throw new IllegalArgumentException(ExceptionMessages.resolveExceptionMessage(IllegalArgumentException.class.getSimpleName()) + "Parameter name: path");
-        } else {
-            Path hdfsPath = new Path(path);
-            final Map<String, Object> metaData = new HashMap<>();
+        Path hdfsPath = new Path(path);
+        final Map<String, Object> metaData = new HashMap<>();
 
-            try {
-                final boolean pathExists = fileSystem.exists(hdfsPath);
-                metaData.put(HDFS_PATH_EXISTS, pathExists);
-                if (!pathExists) {
-                    return metaData;
-                }
-
-                metaData.put(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
-
-                final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
-                metaData.put(HDFS_FILE_STATUS, fileStatus);
-                if (fileStatus.isDirectory()) {
-                    return metaData;
-                }
-
-                final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
-                if (fileChecksum != null) {
-                    metaData.put(HDFS_FILE_CHECKSUM, fileChecksum);
-                }
-            } catch (IOException e) {
-                throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        try {
+            final boolean pathExists = fileSystem.exists(hdfsPath);
+            metaData.put(HDFS_PATH_EXISTS, pathExists);
+            if (!pathExists) {
+                return metaData;
             }
-            return metaData;
+
+            metaData.put(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
+
+            final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
+            metaData.put(HDFS_FILE_STATUS, fileStatus);
+            if (fileStatus.isDirectory()) {
+                return metaData;
+            }
+
+            final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
+            if (fileChecksum != null) {
+                metaData.put(HDFS_FILE_CHECKSUM, fileChecksum);
+            }
+        } catch (IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
+        return metaData;
     }
 
     private List<FileStatusDTO> mapFileStatusFiles(FileStatus[] files) {
