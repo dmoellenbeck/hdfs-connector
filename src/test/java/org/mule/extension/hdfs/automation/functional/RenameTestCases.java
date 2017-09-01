@@ -12,8 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.Util;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
 
@@ -29,7 +29,7 @@ public class RenameTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.RENAME_FLOW_PATH;
+        return TestConstants.RENAME_FLOW_PATH;
     }
 
     @Rule
@@ -38,50 +38,50 @@ public class RenameTestCases extends BaseTest {
     @Before
     public void setUp() throws Exception {
         writtenData = TestDataBuilder.payloadShortString();
-        flowRunner(Util.FlowNames.WRITE_FLOW).withVariable("path", MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(writtenData))
                 .run();
-        flowRunner(Util.FlowNames.MAKE_DIR_FLOW).withVariable("path", DIRECTORY)
+        flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", DIRECTORY)
                 .withVariable("permission", "700")
                 .run();
     }
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", ROOT_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", ROOT_DIRECTORY)
                 .run();
     }
 
     @Test
     public void testRenameDir() throws Exception {
-        flowRunner(Util.FlowNames.RENAME_FLOW).withVariable("source", DIRECTORY)
+        flowRunner(TestConstants.FlowNames.RENAME_FLOW).withVariable("source", DIRECTORY)
                 .withVariable("destination", NEW_DIRECTORY_NAME)
                 .run();
         List<FileStatus> destDirStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", NEW_DIRECTORY_NAME)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", NEW_DIRECTORY_NAME)
                         .run());
         assertThat(destDirStatuses, notNullValue());
 
         expectedException.expect(MessagingException.class);
         List<FileStatus> sourceDirStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", DIRECTORY)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", DIRECTORY)
                         .run());
     }
 
     @Test
     public void testRenameFile() throws Exception {
-        flowRunner(Util.FlowNames.RENAME_FLOW).withVariable("source", MYFILE_PATH)
+        flowRunner(TestConstants.FlowNames.RENAME_FLOW).withVariable("source", MYFILE_PATH)
                 .withVariable("destination", NEW_MYFILE_PATH)
                 .run();
         List<FileStatus> destDirStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", NEW_MYFILE_PATH)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", NEW_MYFILE_PATH)
                         .run());
         assertThat(destDirStatuses, notNullValue());
 
         expectedException.expect(Exception.class);
 
         TestDataBuilder
-                .getValue(flowRunner(Util.FlowNames.LIST_STATUS_FLOW).withVariable("path", MYFILE_PATH)
+                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", MYFILE_PATH)
                         .run());
     }
 

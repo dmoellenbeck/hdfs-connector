@@ -35,8 +35,9 @@ public interface HdfsAPIService {
 
     void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
-    Map<String, Object> getMetadata(String path);
-   void rename(String source, String destination) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+    Map<String, Object> getMetadata(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void rename(String source, String destination) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
     void copyToLocalFile(boolean deleteSource, boolean useRawLocalFileSystem, String source, String destination)
             throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
@@ -45,5 +46,8 @@ public interface HdfsAPIService {
             throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
     void setPermission(String path, String permission) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void setOwner(String path, String ownername, String groupname)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
 }

@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Test;
-import org.mule.extension.hdfs.util.Util;
+import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
@@ -23,7 +23,7 @@ public class CopyFromLocalFileTestCases extends BaseTest {
 
     @Override
     protected String getConfigFile() {
-        return Util.COPY_FROM_LOCAL_FLOW_PATH;
+        return TestConstants.COPY_FROM_LOCAL_FLOW_PATH;
     }
 
     @Test
@@ -32,13 +32,13 @@ public class CopyFromLocalFileTestCases extends BaseTest {
         Path remoteTarget = Paths.get(TARGET_DIRECTORY)
                 .resolve(localSource.getFileName());
 
-        flowRunner(Util.FlowNames.COPY_FROM_LOCAL_FILE_FLOW).withVariable("deleteSource", false)
+        flowRunner(TestConstants.FlowNames.COPY_FROM_LOCAL_FILE_FLOW).withVariable("deleteSource", false)
                 .withVariable("overwrite", true)
                 .withVariable("source", LOCAL_SOURCE_PATH)
                 .withVariable("destination", remoteTarget.toString())
                 .run();
 
-        CursorStream cursor = ((CursorStreamProvider) flowRunner(Util.FlowNames.READ_OP_FLOW).withVariable("path", remoteTarget.toString())
+        CursorStream cursor = ((CursorStreamProvider) flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", remoteTarget.toString())
                 .keepStreamsOpen()
                 .run()
                 .getMessage()
@@ -51,7 +51,7 @@ public class CopyFromLocalFileTestCases extends BaseTest {
 
     @After
     public void tearDown() throws Exception {
-        flowRunner(Util.FlowNames.DELETE_DIR_FLOW).withVariable("path", TARGET_DIRECTORY)
+        flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", TARGET_DIRECTORY)
                 .run();
     }
 }

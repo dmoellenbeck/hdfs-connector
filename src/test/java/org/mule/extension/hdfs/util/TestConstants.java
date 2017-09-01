@@ -18,6 +18,7 @@ public class TestConstants {
     public static final String COPY_TO_LOCAL_FLOW_PATH = "flows/copyToLocal-flows.xml";
     public static final String COPY_FROM_LOCAL_FLOW_PATH = "flows/copyFromLocal-flows.xml";
     public static final String SET_PERMISSION_FLOW_PATH = "flows/setPermission-flows.xml";
+    public static final String SET_OWNER_FLOW_PATH = "flows/setOwner-flows.xml";
 
 
     public class FlowNames {
@@ -35,6 +36,7 @@ public class TestConstants {
         public static final String COPY_TO_LOCAL_FILE_FLOW = "copyToLocalFileFlow";
         public static final String COPY_FROM_LOCAL_FILE_FLOW = "copyFromLocalFileFlow";
         public static final String SET_PERMISSION_FLOW = "setPermissionFlow";
+        public static final String SET_OWNER_FLOW = "setOwnerFlow";
 
     }
 

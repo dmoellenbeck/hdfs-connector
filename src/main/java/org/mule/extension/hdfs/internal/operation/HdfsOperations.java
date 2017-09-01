@@ -287,7 +287,8 @@ public class HdfsOperations {
      * <li>hdfs.file.status - A Hadoop object that contains info about the status of the file (org.apache.hadoop.fs.FileStatus</li>
      * </ul>
      *
-     * @param path      the path whose existence must be checked.
+     * @param path
+     *            the path whose existence must be checked.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     @OutputResolver(output = NullQueryMetadataResolver.class)
@@ -430,29 +431,35 @@ public class HdfsOperations {
         }
     }
 
-    // /**
-    // * Set permission of a path (i.e., a file or a directory).
-    // *
-    // * @param path
-    // * the path of the file or directory to set permission.
-    // * @param permission
-    // * the file system permission to be set.
-    // * @throws HDFSConnectorException
-    // * if any issue occurs during the execution.
-    // */
-    // @Processor
-    // public void setPermission(final String path, final String permission) throws HDFSConnectorException {
-    // try {
-    // runHdfsPathAction(path, new VoidHdfsPathAction() {
-    //
-    // public void run(final Path hdfsPath) throws Exception { // NOSONAR
-    // fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
-    // }
-    // });
-    // } catch (Exception e) {
-    // throw new HDFSConnectorException(e);
-    // }
-    // }
-    //
- 
+    /**
+     * Set owner of a path (i.e., a file or a directory). The parameters username and groupname cannot both be null.
+     * 
+     * @param connection
+     *            the connection object
+     * @param path
+     *            the path of the file or directory to set owner.
+     * @param ownername
+     *            If it is null, the original username remains unchanged.
+     * @param groupname
+     *            If it is null, the original groupname remains unchanged.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void setOwner(@Connection HdfsConnection connection,
+            String path, String ownername, String groupname) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.setOwner(path, ownername, groupname);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
 }

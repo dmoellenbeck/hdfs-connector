@@ -10,15 +10,15 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 	<spring:beans>
         <spring:import resource="base-flows.xml"/>
     </spring:beans>
-     
+    
     <flow name="setPermissionFlow">
         <hdfs:set-permission config-ref="simple-config" path="#[variables.path]" permission="#[variables.permission]">
         </hdfs:set-permission>
     </flow>    
 
-    <flow name="deleteDirFlow">
-        <hdfs:delete-directory config-ref="simple-config" path="#[variables.path]">
-        </hdfs:delete-directory>
+	<flow name="readOpFlow">
+        <hdfs:read-operation config-ref="simple-config" path="#[variables.path]">
+        </hdfs:read-operation>
     </flow>
     
     <flow name="writeFlow">
@@ -31,5 +31,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <hdfs:list-status config-ref="simple-config" path="#[variables.path]" >
         </hdfs:list-status>
     </flow>
+    
 
 </mule>
