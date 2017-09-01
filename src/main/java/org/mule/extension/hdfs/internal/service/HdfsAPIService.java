@@ -36,4 +36,14 @@ public interface HdfsAPIService {
     void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
     Map<String, Object> getMetadata(String path);
+   void rename(String source, String destination) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void copyToLocalFile(boolean deleteSource, boolean useRawLocalFileSystem, String source, String destination)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void copyFromLocalFile(boolean deleteSource, boolean overwrite, String source, String destination)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
+    void setPermission(String path, String permission) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+
 }

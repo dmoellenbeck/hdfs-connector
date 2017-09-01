@@ -14,6 +14,11 @@ public class TestConstants {
     public static final String GET_METADATA_FLOW_PATH = "flows/getMetadata-flows.xml";
     public static final String APPEND_FLOW_PATH = "flows/append-flows.xml";
     public static final String DELETE_FILE_FLOW_PATH = "flows/delFile-flows.xml";
+    public static final String RENAME_FLOW_PATH = "flows/rename-flows.xml";
+    public static final String COPY_TO_LOCAL_FLOW_PATH = "flows/copyToLocal-flows.xml";
+    public static final String COPY_FROM_LOCAL_FLOW_PATH = "flows/copyFromLocal-flows.xml";
+    public static final String SET_PERMISSION_FLOW_PATH = "flows/setPermission-flows.xml";
+
 
     public class FlowNames {
 
@@ -26,8 +31,12 @@ public class TestConstants {
         public static final String GET_METADATA_FLOW = "getMetadataFlow";
         public static final String APPEND_DIR_FLOW = "appendFlow";
         public static final String DELETE_FILE_FLOW = "deleteFileFlow";
+        public static final String RENAME_FLOW = "renameFlow";
+        public static final String COPY_TO_LOCAL_FILE_FLOW = "copyToLocalFileFlow";
+        public static final String COPY_FROM_LOCAL_FILE_FLOW = "copyFromLocalFileFlow";
+        public static final String SET_PERMISSION_FLOW = "setPermissionFlow";
 
-     }
+    }
 
     public class ExceptionMessages {
         public static final String UNABLE_RETRIEVE = "Something went wrong while retrieving data from Hadoop";

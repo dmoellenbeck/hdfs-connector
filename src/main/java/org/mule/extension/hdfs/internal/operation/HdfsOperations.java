@@ -303,4 +303,156 @@ public class HdfsOperations {
             throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
         }
     }
+
+    /**
+     * Renames path target to path destination. *
+     * 
+     * @param connection
+     *            the connection object
+     * @param source
+     *            the source path to be renamed.
+     * @param destination
+     *            new path after rename.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void rename(@Connection HdfsConnection connection,
+            String source, final String destination) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.rename(source, destination);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Copy the source file on the FileSystem to local disk at the given target path, set deleteSource if the source should be removed. useRawLocalFileSystem indicates whether to
+     * use RawLocalFileSystem as it is a non CRC File System.
+     * 
+     * @param connection
+     *            the connection object
+     * @param deleteSource
+     *            whether to delete the source.
+     * @param useRawLocalFileSystem
+     *            whether to use RawLocalFileSystem as local file system or not.
+     * @param source
+     *            the source path on the File System.
+     * @param destination
+     *            the target path on the local disk.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void copyToLocalFile(@Connection HdfsConnection connection,
+            @Optional(defaultValue = "false") boolean deleteSource, @Optional(defaultValue = "false") boolean useRawLocalFileSystem, String source, String destination) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.copyToLocalFile(deleteSource, useRawLocalFileSystem, source, destination);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Copy the source file on the local disk to the FileSystem at the given target path, set deleteSource if the source should be removed.
+     * 
+     * 
+     * @param connection
+     *            the connection object
+     * @param deleteSource
+     *            whether to delete the source.
+     * @param useRawLocalFileSystem
+     *            whether to use RawLocalFileSystem as local file system or not.
+     * @param source
+     *            the source path on the File System.
+     * @param target
+     *            the target path on the local disk.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void copyFromLocalFile(@Connection HdfsConnection connection,
+            @Optional(defaultValue = "false") boolean deleteSource, @Optional(defaultValue = "true") boolean overwrite, String source, String destination) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.copyFromLocalFile(deleteSource, overwrite, source, destination);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    /**
+     * Set permission of a path (i.e., a file or a directory).
+     * 
+     * @param connection
+     *            the connection object
+     * @param path
+     *            the path of the file or directory to set permission.
+     * @param permission
+     *            the file system permission to be set.
+     */
+    @Throws(HdfsOperationErrorTypeProvider.class)
+    public void setPermission(@Connection HdfsConnection connection,
+            String path, String permission) {
+
+        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+
+        try {
+            hdfsApiService.setPermission(path, permission);
+        } catch (InvalidRequestDataException e) {
+            throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (UnableToSendRequestException | UnableToRetrieveResponseException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY, e);
+        } catch (IllegalArgumentException e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
+        } catch (Exception e) {
+            throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
+        }
+    }
+
+    // /**
+    // * Set permission of a path (i.e., a file or a directory).
+    // *
+    // * @param path
+    // * the path of the file or directory to set permission.
+    // * @param permission
+    // * the file system permission to be set.
+    // * @throws HDFSConnectorException
+    // * if any issue occurs during the execution.
+    // */
+    // @Processor
+    // public void setPermission(final String path, final String permission) throws HDFSConnectorException {
+    // try {
+    // runHdfsPathAction(path, new VoidHdfsPathAction() {
+    //
+    // public void run(final Path hdfsPath) throws Exception { // NOSONAR
+    // fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
+    // }
+    // });
+    // } catch (Exception e) {
+    // throw new HDFSConnectorException(e);
+    // }
+    // }
+    //
+ 
 }

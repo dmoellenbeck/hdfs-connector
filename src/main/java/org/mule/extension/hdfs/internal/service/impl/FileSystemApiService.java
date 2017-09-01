@@ -233,6 +233,82 @@ public class FileSystemApiService implements HdfsAPIService {
         return metaData;
     }
 
+    @Override
+    public void rename(String source, String destination)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+        try {
+            Path hdfsSourcePath = new Path(source);
+            Path hdfsDestPath = new Path(destination);
+            boolean result = fileSystem.rename(hdfsSourcePath, hdfsDestPath);
+            if (!result) {
+                throw new HdfsException(ExceptionMessages.UNABLE_TO_RENAME_PATH);
+            }
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    @Override
+    public void copyToLocalFile(boolean deleteSource, boolean useRawLocalFileSystem, String source, String destination)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+
+        try {
+            Path hdfsSourcePath = new Path(source);
+            Path hdfsDestPath = new Path(destination);
+            fileSystem.copyToLocalFile(deleteSource, hdfsSourcePath, hdfsDestPath, useRawLocalFileSystem);
+
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void copyFromLocalFile(boolean deleteSource, boolean overwrite, String source, String destination)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+
+        try {
+            Path hdfsSourcePath = new Path(source);
+            Path hdfsDestPath = new Path(destination);
+            fileSystem.copyFromLocalFile(deleteSource, overwrite, hdfsSourcePath, hdfsDestPath);
+
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public void setPermission(String path, String permission)
+            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+        try {
+            Path hdfsPath = new Path(path);
+            fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
+
+        } catch (ConnectException e) {
+            throw new HdfsConnectionException(ExceptionMessages.resolveExceptionMessage(HdfsConnectionException.class.getSimpleName()) + e.getMessage(), e);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
+        }
+    }
+
     private List<FileStatusDTO> mapFileStatusFiles(FileStatus[] files) {
         if (files != null) {
             return Arrays.stream(files)
