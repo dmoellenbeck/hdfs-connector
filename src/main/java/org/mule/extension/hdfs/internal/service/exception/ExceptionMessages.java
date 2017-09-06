@@ -27,7 +27,7 @@ public class ExceptionMessages {
    
     public static final String UNABLE_TO_DELETE_FILE = "Unable to delete file!";
     public static final String UNABLE_TO_DELETE_DIR = "Unable to delete directory!";
-
+    public static final String UNABLE_TO_RENAME_PATH = "Unable to rename path!";
 
     static Map<String, String> exceptionsMapping = new HashMap<>();
 
