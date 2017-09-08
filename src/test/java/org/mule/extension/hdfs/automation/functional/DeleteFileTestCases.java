@@ -20,7 +20,6 @@ import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
 
 @SuppressWarnings("unchecked")

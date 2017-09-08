@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.modules.hdfs.automation.functional.BaseTest;
 
 public class SetOwnerTestCases extends BaseTest {
 
