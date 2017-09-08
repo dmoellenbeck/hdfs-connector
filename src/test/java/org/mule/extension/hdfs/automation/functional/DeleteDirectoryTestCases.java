@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
-import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.core.exception.MessagingException;
 
 @SuppressWarnings("unchecked")

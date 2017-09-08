@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
 

@@ -19,7 +19,6 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
-import org.mule.modules.hdfs.automation.functional.BaseTest;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
 import org.mule.runtime.core.exception.MessagingException;
