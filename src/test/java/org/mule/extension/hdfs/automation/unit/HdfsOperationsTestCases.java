@@ -32,7 +32,6 @@ public class HdfsOperationsTestCases {
     @Test
     public void testDeleteFile() {
         try {
-            // fileSystem = spy(new LocalFileSystem());
             when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(true);
 
             hdfsOperations.deleteFile(hdfsConnection, "zoo");
@@ -45,11 +44,8 @@ public class HdfsOperationsTestCases {
     public void testDeleteDirectory() {
         try {
 
-            // fileSystem = spy(new LocalFileSystem());
             when(fileSystem.delete(any(Path.class), eq(true))).thenReturn(true);
-            // doCallRealMethod().when(fileSystem)
-            // .delete(any(Path.class), eq(true));
-
+           
             hdfsOperations.deleteDirectory(hdfsConnection, "zoo");
 
         } catch (Exception e) {
@@ -60,7 +56,6 @@ public class HdfsOperationsTestCases {
     @Test
     public void testMakeDirectories() {
         try {
-            // fileSystem = spy(new LocalFileSystem());
             when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(true);
             hdfsOperations.makeDirectories(hdfsConnection, "foo", "755");
         } catch (Exception e) {
