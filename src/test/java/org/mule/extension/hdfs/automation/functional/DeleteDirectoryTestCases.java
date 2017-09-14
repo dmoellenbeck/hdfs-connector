@@ -10,7 +10,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
-import org.mule.runtime.core.exception.MessagingException;
+import org.mule.runtime.core.api.exception.MessagingException;
+
 
 @SuppressWarnings("unchecked")
 public class DeleteDirectoryTestCases extends BaseTest {

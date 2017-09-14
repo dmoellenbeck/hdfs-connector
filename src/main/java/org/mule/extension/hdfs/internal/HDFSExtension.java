@@ -14,7 +14,7 @@ import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
         HdfsConfiguration.class
 })
 @Xml(prefix = "hdfs")
-@Extension(name = "Hdfs", description = "Connector to manipulate specific data to Hadoop Distributed File System (HDFS).")
+@Extension(name = "Hdfs")
 @ErrorTypes(HdfsErrorType.class)
 public class HDFSExtension {
 
