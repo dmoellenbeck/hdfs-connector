@@ -21,12 +21,14 @@ import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.Source;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
+import org.mule.weave.v2.grammar.structure.Object;
+import scala.Serializable;
 
 @Alias("read")
 @EmitsResponse
 @Streaming
 @MetadataScope(outputResolver = NullQueryMetadataResolver.class)
-public class ReadSource extends Source<Object, Attributes> {
+public class ReadSource extends Source<Object, Serializable> {
 
     private ServiceFactory serviceFactory = new ServiceFactory();
 
