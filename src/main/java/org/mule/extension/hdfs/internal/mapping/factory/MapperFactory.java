@@ -3,11 +3,12 @@
  */
 package org.mule.extension.hdfs.internal.mapping.factory;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.dozer.DozerBeanMapper;
 import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.mapping.dozer.DozerMapper;
 import org.mule.extension.hdfs.internal.mapping.object.ObjectMap;
+
+import java.io.ByteArrayInputStream;
 
 public class MapperFactory {
     
@@ -29,7 +30,7 @@ public class MapperFactory {
 
     static {
         DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
-        dozerBeanMapper.addMapping(new StringInputStream(DOZER_CONFIG_XML));
+        dozerBeanMapper.addMapping(new ByteArrayInputStream(DOZER_CONFIG_XML.getBytes()));
         DOZER_MAPPER = new DozerMapper(dozerBeanMapper);
     }
 

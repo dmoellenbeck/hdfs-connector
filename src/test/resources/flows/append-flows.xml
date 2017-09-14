@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" 
-      xmlns:context="http://www.springframework.org/schema/context"
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
-http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+">
 
-	<spring:beans>
-        <spring:import resource="base-flows.xml"/>
-    </spring:beans>
+    <import file="flows/base-flows.xml"></import>
 
-    
     <flow name="appendFlow">
-        <hdfs:append config-ref="simple-config" path="#[variables.path]">
-          <hdfs:payload>#[payload]</hdfs:payload>
+        <hdfs:append config-ref="simple-config" path="#[vars.path]">
+            <hdfs:payload>#[payload]</hdfs:payload>
         </hdfs:append>
     </flow>
-    
-    
-	<flow name="readOpFlow">
-        <hdfs:read-operation config-ref="simple-config" path="#[variables.path]">
+
+
+    <flow name="readOpFlow">
+        <hdfs:read-operation config-ref="simple-config" path="#[vars.path]">
         </hdfs:read-operation>
     </flow>
-    
+
     <flow name="writeFlow">
-        <hdfs:write config-ref="simple-config" path="#[variables.path]" ownerUserName="#[variables.ownerUserName]">
-          <hdfs:payload>#[payload]</hdfs:payload>
+        <hdfs:write config-ref="simple-config" path="#[vars.path]" ownerUserName="#[vars.ownerUserName]">
+            <hdfs:payload>#[payload]</hdfs:payload>
         </hdfs:write>
     </flow>
 </mule>
