@@ -18,7 +18,8 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
-import org.mule.runtime.core.exception.MessagingException;
+import org.mule.runtime.core.api.exception.MessagingException;
+
 
 public class ReadOperationTestCases extends BaseTest {
 
@@ -47,7 +48,8 @@ public class ReadOperationTestCases extends BaseTest {
                 .run()
                 .getMessage()
                 .getPayload()
-                .getValue()).openCursor();
+                .getValue())
+                .openCursor();
 
         byte[] actualContent = IOUtils.toByteArray(cursor);
         assertThat("Read content is different from what was written.", actualContent, equalTo(writtenData));
