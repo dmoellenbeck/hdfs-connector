@@ -13,8 +13,8 @@ import org.mule.extension.hdfs.api.connection.param.SimpleConnectionParams;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.connection.provider.util.HadoopConfigurationUtil;
+import org.mule.runtime.api.connection.CachedConnectionProvider;
 import org.mule.runtime.api.connection.ConnectionException;
-import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 @Alias("simple")
 @DisplayName("Simple")
-public class SimpleConnectionProvider extends FileSystemConnectionProvider implements ConnectionProvider<HdfsConnection> {
+public class SimpleConnectionProvider extends FileSystemConnectionProvider implements CachedConnectionProvider<HdfsConnection> {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleConnectionProvider.class);
 
