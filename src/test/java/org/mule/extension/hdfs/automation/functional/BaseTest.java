@@ -20,9 +20,6 @@ import org.mule.test.runner.ArtifactClassLoaderRunnerConfig;
 @ArtifactClassLoaderRunnerConfig(testInclusions = {"org.apache.hadoop:hadoop-client", "commons-lang:commons-lang"})
 public abstract class BaseTest extends MuleArtifactFunctionalTestCase {
 
-    @Rule
-    public SystemProperty disableAutomaticTestConnectivity = TestConnectivityUtils.disableAutomaticTestConnectivity();
-
     private static Properties hdfsProp;
 
     public static String getNodeNameUri() {
