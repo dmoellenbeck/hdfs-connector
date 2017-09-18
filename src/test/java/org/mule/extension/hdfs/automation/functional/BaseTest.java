@@ -10,10 +10,18 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
+import org.mule.tck.junit4.rule.SystemProperty;
+import org.mule.tck.util.TestConnectivityUtils;
+import org.mule.test.runner.ArtifactClassLoaderRunnerConfig;
 
+@ArtifactClassLoaderRunnerConfig(testInclusions = {"org.apache.hadoop:hadoop-client", "commons-lang:commons-lang"})
 public abstract class BaseTest extends MuleArtifactFunctionalTestCase {
+
+    @Rule
+    public SystemProperty disableAutomaticTestConnectivity = TestConnectivityUtils.disableAutomaticTestConnectivity();
 
     private static Properties hdfsProp;
 
