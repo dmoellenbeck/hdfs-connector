@@ -10,6 +10,7 @@ import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.api.connection.ConnectionException;
+import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.Streaming;
@@ -40,7 +41,7 @@ public class ReadSource extends Source<Object, Serializable> {
     private int bufferSize;
 
     @Connection
-    private HdfsConnection connection;
+    private ConnectionProvider<HdfsConnection> connection;
 
     @Override
     public void onStart(SourceCallback<Object, java.io.Serializable> sourceCallback) throws MuleException {
@@ -53,20 +54,25 @@ public class ReadSource extends Source<Object, Serializable> {
     }
 
     private void doStart(SourceCallback sourceCallback) throws IOException {
+        
+        HdfsAPIService hdfsApiService;
+        try {
+            hdfsApiService = serviceFactory.getService(connection.connect());
 
-        HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
+            Result.Builder<Object, Serializable> resultBuilder = Result.builder();
 
-        Result.Builder<Object, Serializable> resultBuilder = Result.builder();
+            HashMap<String, Object> metaData = (HashMap<String, Object>) hdfsApiService.getMetadata(path);
+            InputStream is = hdfsApiService.read(path, bufferSize);
 
-        HashMap<String, Object> metaData = (HashMap<String, Object>) hdfsApiService.getMetadata(path);
-        InputStream is = hdfsApiService.read(path, bufferSize);
+            Result<Object, java.io.Serializable> result = resultBuilder.attributes(metaData)
+                    .output(is)
+                    .build();
 
-        Result<Object, java.io.Serializable> result = resultBuilder.attributes(metaData)
-                .output(is)
-                .build();
-
-        sourceCallback.handle(result);
-
+            sourceCallback.handle(result);
+        } catch (ConnectionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override

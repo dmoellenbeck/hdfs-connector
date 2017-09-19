@@ -15,10 +15,6 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
         </hdfs:copy-from-local-file>
     </flow>
 
-    <flow name="deleteDirFlow">
-        <hdfs:delete-directory config-ref="simple-config" path="#[vars.path]">
-        </hdfs:delete-directory>
-    </flow>
     <flow name="readOpFlow">
         <hdfs:read-operation config-ref="simple-config" path="#[vars.path]">
         </hdfs:read-operation>

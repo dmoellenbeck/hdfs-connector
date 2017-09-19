@@ -66,7 +66,7 @@ public class GetMetadataTestCases extends BaseTest {
     public void shouldThrowExceptionForInvalidParameter() throws Exception {
         fileNotFoundExpected.expect(MessagingException.class);
         fileNotFoundExpected.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.ILLEGAL_PATH));
-        flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", null).run();
+        flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", "").run();
     }
 
 
