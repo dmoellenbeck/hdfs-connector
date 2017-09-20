@@ -28,10 +28,14 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
+import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
+import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
 import org.mule.extension.hdfs.internal.service.dto.FileStatusDTO;
+import org.mule.extension.hdfs.internal.service.dto.MetaDataDTO;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
 import org.mule.extension.hdfs.internal.service.exception.HdfsException;
@@ -213,33 +217,40 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public Map<String, Object> getMetadata(String path) {
+    public MetaDataDTO getMetadata(String path) {
         Path hdfsPath = new Path(path);
-        final Map<String, Object> metaData = new HashMap<>();
-
+        final MetaDataDTO metaInfo = new MetaDataDTO();
         try {
-            final boolean pathExists = fileSystem.exists(hdfsPath);
-            metaData.put(HDFS_PATH_EXISTS, pathExists);
-            if (!pathExists) {
-                return metaData;
+
+            metaInfo.setPathExists(fileSystem.exists(hdfsPath));
+
+            if (!metaInfo.isPathExists()) {
+                return metaInfo;
             }
 
-            metaData.put(HDFS_CONTENT_SUMMARY, fileSystem.getContentSummary(hdfsPath));
+
+
+            ContentSummaryDTO csdto= beanMapper.map(fileSystem.getContentSummary(hdfsPath),ContentSummaryDTO.class);
+            metaInfo.setContentSummary(csdto);
 
             final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
-            metaData.put(HDFS_FILE_STATUS, fileStatus);
+            FileStatusDTO fileStatusDTO=beanMapper.map(fileStatus,FileStatusDTO.class);
+
+
+            metaInfo.setFileStatus(fileStatusDTO);
             if (fileStatus.isDirectory()) {
-                return metaData;
+                return metaInfo;
             }
 
             final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
+            CheckSummaryDTO checkSummaryDTO=beanMapper.map(fileChecksum,CheckSummaryDTO.class);
             if (fileChecksum != null) {
-                metaData.put(HDFS_FILE_CHECKSUM, fileChecksum);
+                metaInfo.setCheckSummary(checkSummaryDTO);
             }
         } catch (IOException e) {
             throw new InvalidRequestDataException(ExceptionMessages.resolveExceptionMessage(InvalidRequestDataException.class.getSimpleName()) + e.getMessage(), e.getMessage(), e);
         }
-        return metaData;
+      return metaInfo;
     }
 
     @Override

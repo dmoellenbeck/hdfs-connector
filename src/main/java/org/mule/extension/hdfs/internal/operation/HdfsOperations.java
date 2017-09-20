@@ -3,14 +3,8 @@
  */
 package org.mule.extension.hdfs.internal.operation;
 
-import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.mule.extension.hdfs.api.FileStatus;
+import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.api.error.HdfsOperationErrorTypeProvider;
 import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
@@ -23,13 +17,17 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveRespon
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.extension.api.annotation.error.Throws;
-import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
-import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
 
 public class HdfsOperations {
 
@@ -291,13 +289,14 @@ public class HdfsOperations {
      *            the path whose existence must be checked.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
-    @OutputResolver(output = NullQueryMetadataResolver.class)
-    public Map<String, Object> getMetadata(@Connection HdfsConnection connection, final String path) {
+
+    public MetaData getMetadata(@Connection HdfsConnection connection, final String path) {
 
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
 
         try {
-            return hdfsApiService.getMetadata(path);
+            BeanMapper beanMapper = dozerMapper();
+             return beanMapper.map(hdfsApiService.getMetadata(path),MetaData.class);
         } catch (InvalidRequestDataException | IllegalArgumentException e) {
             throw new ModuleException(e.getMessage(), HdfsErrorType.INVALID_REQUEST_DATA, e);
         } catch (Exception e) {

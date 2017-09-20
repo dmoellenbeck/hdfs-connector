@@ -5,9 +5,9 @@ package org.mule.extension.hdfs.internal.service;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import org.mule.extension.hdfs.internal.service.dto.FileStatusDTO;
+import org.mule.extension.hdfs.internal.service.dto.MetaDataDTO;
 import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
 import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
@@ -35,7 +35,7 @@ public interface HdfsAPIService {
 
     void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
-    Map<String, Object> getMetadata(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
+    MetaDataDTO getMetadata(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
     void rename(String source, String destination) throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException;
 
