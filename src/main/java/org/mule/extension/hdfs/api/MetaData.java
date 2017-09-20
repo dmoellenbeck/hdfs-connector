@@ -1,12 +1,17 @@
+/**
+ * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.extension.hdfs.api;
 
-public class MetaData {
+import java.io.Serializable;
 
-    boolean pathExists;
-    ContentSummary contentSummary;
-    FileStatus fileStatus;
-    CheckSummary checkSummary;
+public class MetaData implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    private boolean pathExists;
+    private ContentSummary contentSummary;
+    private FileStatus fileStatus;
+    private CheckSummary checkSummary;
 
     public boolean isPathExists() {
         return pathExists;

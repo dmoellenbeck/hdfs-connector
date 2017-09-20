@@ -2,7 +2,6 @@ package org.mule.extension.hdfs.internal.service.dto;
 
 public class ContentSummaryDTO {
 
-
     private long length;
     private long fileCount;
     private long directoryCount;

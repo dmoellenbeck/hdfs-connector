@@ -1,10 +1,16 @@
+/**
+ * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.extension.hdfs.api;
 
-import org.apache.hadoop.fs.Options;
 import org.apache.hadoop.io.MD5Hash;
 
+public class CheckSummary {
 
-public class CheckSummary  {
+    private int bytesPerCRC;
+    private long crcPerBlock;
+    private MD5Hash md5;
+
     public int getBytesPerCRC() {
         return bytesPerCRC;
     }
@@ -29,7 +35,4 @@ public class CheckSummary  {
         this.md5 = md5;
     }
 
-    private int bytesPerCRC;
-    private long crcPerBlock;
-    private MD5Hash md5;
 }

@@ -2,7 +2,12 @@ package org.mule.extension.hdfs.internal.service.dto;
 
 import org.apache.hadoop.io.MD5Hash;
 
-public class CheckSummaryDTO  {
+public class CheckSummaryDTO {
+
+    private int bytesPerCRC;
+    private long crcPerBlock;
+    private MD5Hash md5;
+
     public int getBytesPerCRC() {
         return bytesPerCRC;
     }
@@ -27,7 +32,4 @@ public class CheckSummaryDTO  {
         this.md5 = md5;
     }
 
-    private int bytesPerCRC;
-    private long crcPerBlock;
-    private MD5Hash md5;
 }

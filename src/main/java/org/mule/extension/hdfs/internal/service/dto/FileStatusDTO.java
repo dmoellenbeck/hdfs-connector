@@ -104,8 +104,8 @@ public class FileStatusDTO {
     public void setSymlink(String symlink) {
         this.symlink = symlink;
     }
-   
+
     public boolean isSymlink() {
         return symlink != null;
-      }
+    }
 }

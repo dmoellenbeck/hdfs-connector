@@ -2,11 +2,10 @@ package org.mule.extension.hdfs.internal.service.dto;
 
 public class MetaDataDTO {
 
-    boolean pathExists;
-    ContentSummaryDTO contentSummary;
-    FileStatusDTO fileStatus;
-    CheckSummaryDTO checkSummary;
-
+    private boolean pathExists;
+    private ContentSummaryDTO contentSummary;
+    private FileStatusDTO fileStatus;
+    private CheckSummaryDTO checkSummary;
 
     public boolean isPathExists() {
         return pathExists;

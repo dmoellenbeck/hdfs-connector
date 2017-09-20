@@ -1,11 +1,12 @@
 package org.mule.extension.hdfs.internal.source;
 
+import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.util.HashMap;
 
+import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
@@ -23,8 +24,6 @@ import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.Source;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
-
-
 
 @Alias("read")
 @EmitsResponse
@@ -54,14 +53,16 @@ public class ReadSource extends Source<Object, Serializable> {
     }
 
     private void doStart(SourceCallback sourceCallback) throws IOException {
-        
+
         HdfsAPIService hdfsApiService;
+     
         try {
             hdfsApiService = serviceFactory.getService(connection.connect());
 
             Result.Builder<Object, Serializable> resultBuilder = Result.builder();
 
-            HashMap<String, Object> metaData = (HashMap<String, Object>) hdfsApiService.getMetadata(path);
+            MetaData metaData = dozerMapper().map(hdfsApiService.getMetadata(path), MetaData.class);
+
             InputStream is = hdfsApiService.read(path, bufferSize);
 
             Result<Object, java.io.Serializable> result = resultBuilder.attributes(metaData)
