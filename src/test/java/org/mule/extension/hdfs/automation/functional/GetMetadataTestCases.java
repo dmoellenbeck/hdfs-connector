@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.runtime.core.api.exception.MessagingException;
@@ -51,15 +52,13 @@ public class GetMetadataTestCases extends BaseTest {
 
     @Test
     public void shouldContainDirectoryMetadataInfo() throws Exception {
-        Map<String, Object> pathMetadata = (Map<String, Object>)TestDataBuilder
-                .getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY).run());
+        MetaData pathMetadata = (MetaData) TestDataBuilder.getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path",PARENT_DIRECTORY+NEW_DIRECTORY).run());
 
         //the checksum param is not populated since the path is a directory and not a file
         assertThat(pathMetadata, notNullValue());
-        assertThat(pathMetadata.size(), is(3));
-        assertThat(pathMetadata.get("hdfs.path.exists"), is(Boolean.TRUE));
-        assertThat(String.valueOf(pathMetadata.get("hdfs.content.summary")), not(IsEmptyString.isEmptyOrNullString()));
-        assertThat(String.valueOf(pathMetadata.get("hdfs.file.status")), not(IsEmptyString.isEmptyOrNullString()));
+        assertThat(pathMetadata.isPathExists(), is(Boolean.TRUE));
+        assertThat(String.valueOf(pathMetadata.getContentSummary()), not(IsEmptyString.isEmptyOrNullString()));
+        assertThat(String.valueOf(pathMetadata.getFileStatus()), not(IsEmptyString.isEmptyOrNullString()));
     }
 
     @Test
@@ -72,10 +71,10 @@ public class GetMetadataTestCases extends BaseTest {
 
 
     private void verifyDeletetionOfDirectory() throws Exception {
-        Map<String, Object> pathMetadata = (Map<String, Object>)TestDataBuilder
+        MetaData pathMetadata =(MetaData)TestDataBuilder
                 .getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY).run());
 
         assertThat(pathMetadata, notNullValue());
-        assertThat(pathMetadata.get("hdfs.path.exists"), is(Boolean.FALSE));
+        assertThat(pathMetadata.isPathExists(),is(false));
     }
 }
