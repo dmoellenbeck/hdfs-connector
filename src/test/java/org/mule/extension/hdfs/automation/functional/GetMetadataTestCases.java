@@ -3,6 +3,11 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
 import org.hamcrest.core.StringContains;
 import org.hamcrest.text.IsEmptyString;
 import org.junit.After;
@@ -11,17 +16,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.MetaData;
-import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
+import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.runtime.core.api.exception.MessagingException;
-
-
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 
 @SuppressWarnings("unchecked")
 public class GetMetadataTestCases extends BaseTest {
@@ -52,9 +49,10 @@ public class GetMetadataTestCases extends BaseTest {
 
     @Test
     public void shouldContainDirectoryMetadataInfo() throws Exception {
-        MetaData pathMetadata = (MetaData) TestDataBuilder.getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path",PARENT_DIRECTORY+NEW_DIRECTORY).run());
+        MetaData pathMetadata = (MetaData) TestDataBuilder.getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+                .run());
 
-        //the checksum param is not populated since the path is a directory and not a file
+        // the checksum param is not populated since the path is a directory and not a file
         assertThat(pathMetadata, notNullValue());
         assertThat(pathMetadata.isPathExists(), is(Boolean.TRUE));
         assertThat(String.valueOf(pathMetadata.getContentSummary()), not(IsEmptyString.isEmptyOrNullString()));
@@ -65,16 +63,16 @@ public class GetMetadataTestCases extends BaseTest {
     public void shouldThrowExceptionForInvalidParameter() throws Exception {
         fileNotFoundExpected.expect(MessagingException.class);
         fileNotFoundExpected.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.ILLEGAL_PATH));
-        flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", "").run();
+        flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", "")
+                .run();
     }
 
-
-
     private void verifyDeletetionOfDirectory() throws Exception {
-        MetaData pathMetadata =(MetaData)TestDataBuilder
-                .getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY).run());
+        MetaData pathMetadata = (MetaData) TestDataBuilder
+                .getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+                        .run());
 
         assertThat(pathMetadata, notNullValue());
-        assertThat(pathMetadata.isPathExists(),is(false));
+        assertThat(pathMetadata.isPathExists(), is(false));
     }
 }

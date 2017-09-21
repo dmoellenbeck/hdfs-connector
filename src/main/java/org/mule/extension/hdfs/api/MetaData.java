@@ -8,9 +8,23 @@ import java.io.Serializable;
 public class MetaData implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Indicates if the path exists
+     */
     private boolean pathExists;
+    /**
+     * A resume of the path info
+     */
     private ContentSummary contentSummary;
+    /**
+     * info about the status of the file
+     */
     private FileStatus fileStatus;
+
+    /**
+     * MD5 digest of the file (if it is a file and exists)
+     */
     private CheckSummary checkSummary;
 
     public boolean isPathExists() {
