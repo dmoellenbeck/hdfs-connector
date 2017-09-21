@@ -21,7 +21,7 @@
     </flow>
 
 
-    <os:object-store name="watermarkStore" persistent="false"/>
+    <os:object-store name="hdfsStore" persistent="false"/>
     <flow name="readSourceFlow" initialState="stopped">
         <hdfs:read config-ref="simple-config" path="/test.txt">
         </hdfs:read>
