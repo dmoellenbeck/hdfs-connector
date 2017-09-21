@@ -32,7 +32,15 @@ import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 public class ReadSource extends Source<Object, Serializable> {
 
     private ServiceFactory serviceFactory = new ServiceFactory();
-
+    /**
+     * Read the content of a file designated by its path
+     *
+     * @param path
+     *            the path of the file to read.
+     * @param bufferSize
+     *            the buffer size to use when reading the file.
+     * @return the result from executing the rest of the flow.
+     */
     @Parameter
     private String path;
     @Parameter
