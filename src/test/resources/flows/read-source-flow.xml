@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule
+        xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+        xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+        xmlns:os="http://www.mulesoft.org/schema/mule/os"
+
+        xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+        ">
+
+
+    <import file="flows/base-flows.xml"></import>
+    <flow name="writeFlow">
+        <hdfs:write config-ref="simple-config" path="#[vars.path]" ownerUserName="#[vars.ownerUserName]"
+                    permission="#[vars.permission]">
+            <hdfs:payload>#[payload]</hdfs:payload>
+        </hdfs:write>
+    </flow>
+
+
+    <os:object-store name="watermarkStore" persistent="false"/>
+    <flow name="readSourceFlow" initialState="stopped">
+        <hdfs:read config-ref="simple-config" path="/test.txt">
+        </hdfs:read>
+
+        <os:store key="payloadKey" failIfPresent="false" failOnNullValue="false" objectStore="hdfsStore">
+            <os:value>#[payload]</os:value>
+        </os:store>
+        <os:store key="attrKey" failIfPresent="false" failOnNullValue="false" objectStore="hdfsStore">
+            <os:value>#[attributes]</os:value>
+        </os:store>
+
+    </flow>
+
+
+
+
+
+
+
+
+
+</mule>

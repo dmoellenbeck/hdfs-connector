@@ -44,6 +44,14 @@
 			<artifactId>dozer</artifactId>
 			<version>5.5.1</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-objectstore-connector</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -88,6 +96,71 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <id>deploy-devx-maven-facade</id>
+            <distributionManagement>
+                <repository>
+                    <id>maven-facade-devx</id>
+                    <name>Mozart Dev Environment</name>
+                    <url>https://maven.devx.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven</url>
+                </repository>
+                <snapshotRepository>
+                    <id>maven-facade-devx</id>
+                    <name>Mozart Dev Environment</name>
+                    <url>https://maven.devx.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>deploy-qax-maven-facade</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>maven-facade-qax</id>
+                    <name>Mozart QA Environment</name>
+                    <url>https://maven.qax.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven</url>
+                </repository>
+                <snapshotRepository>
+                    <id>maven-facade-qax</id>
+                    <name>Mozart Dev Environment</name>
+                    <url>https://maven.qax.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>deploy-stgx-maven-facade</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>maven-facade-stgx</id>
+                    <name>Mozart STGX Environment</name>
+                    <url>https://maven.stgx.anypoint.mulesoft.com/api/v1/organizations/b2fd6061-9225-4f03-8ed9-2f3bf95acf41/maven</url>
+                </repository>
+                <snapshotRepository>
+                    <id>maven-facade-stgx</id>
+                    <name>Mozart STGX Environment</name>
+                    <url>https://maven.stgx.anypoint.mulesoft.com/api/v1/organizations/b2fd6061-9225-4f03-8ed9-2f3bf95acf41/maven</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>functional-testing-output-dir</id>
+            <build>
+                <directory>${project.basedir}/target/functionalTesting</directory>
+            </build>
+        </profile>
+    </profiles>
 
     <scm>
         <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
