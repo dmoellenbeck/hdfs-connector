@@ -36,7 +36,8 @@ import org.mule.extension.hdfs.automation.functional.WriteTestCases;
         RenameTestCases.class,
         SetOwnerTestCases.class,
         SetPermissionTestCases.class,
-        WriteTestCases.class
+        WriteTestCases.class 
+        
 })
 public class FunctionalTestSuite {
 
