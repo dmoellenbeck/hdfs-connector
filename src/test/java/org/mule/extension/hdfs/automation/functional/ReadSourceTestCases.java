@@ -25,9 +25,6 @@ public class ReadSourceTestCases extends MuleArtifactFunctionalTestCase {
     @Before
     public void setUp() throws Exception {
 
-       /* flowRunner(TestConstants.FlowNames.MAKE_DIR_FLOW).withVariable("path", PARENT_DIRECTORY)
-                .withVariable("permission", "700")
-                .run();*/
         flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", PARENT_DIRECTORY + MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(TestDataBuilder.payloadShortString()))
                 .run();
