@@ -19,7 +19,7 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 
 @SuppressWarnings("unchecked")
-public class GlobStatusTestCases extends BaseTest {
+public class GlobStatusTestCase extends BaseTest {
 
     private final String PARENT_DIRECTORY = "hdfs-test-glob-status/";
     public static final String INVALID_PATH_PATTERN = "invalidPathPattern";

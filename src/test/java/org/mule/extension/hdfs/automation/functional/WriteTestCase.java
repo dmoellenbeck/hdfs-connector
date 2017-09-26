@@ -24,7 +24,7 @@ import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
 import org.mule.runtime.core.api.exception.MessagingException;
 
 @SuppressWarnings("unchecked")
-public class WriteTestCases extends BaseTest {
+public class WriteTestCase extends BaseTest {
 
     private final byte[] writtenData = RandomStringUtils.randomAlphanumeric(20)
             .getBytes();

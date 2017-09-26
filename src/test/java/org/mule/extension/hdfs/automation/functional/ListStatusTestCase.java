@@ -20,7 +20,7 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 
 @SuppressWarnings("unchecked")
-public class ListStatusTestCases extends BaseTest {
+public class ListStatusTestCase extends BaseTest {
 
     private final String PARENT_DIRECTORY = "hdfs-test-list-status/";
     private final String FILE_PATH1 = PARENT_DIRECTORY + "hdfs-test-write-file1.txt";

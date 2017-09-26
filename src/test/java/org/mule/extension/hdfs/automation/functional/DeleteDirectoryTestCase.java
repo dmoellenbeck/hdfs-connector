@@ -14,7 +14,7 @@ import org.mule.runtime.core.api.exception.MessagingException;
 
 
 @SuppressWarnings("unchecked")
-public class DeleteDirectoryTestCases extends BaseTest {
+public class DeleteDirectoryTestCase extends BaseTest {
 
     private static final String PARENT_DIRECTORY = "rootDirectory/";
     private static final String NEW_DIRECTORY = "newDirectory";

@@ -16,7 +16,7 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 
 @SuppressWarnings("unchecked")
-public class MakeDirectoriesTestCases extends BaseTest {
+public class MakeDirectoriesTestCase extends BaseTest {
 
     private static final String PARENT_DIRECTORY = "rootDirectory/";
     private static final String NEW_DIRECTORY = "newDirectory";

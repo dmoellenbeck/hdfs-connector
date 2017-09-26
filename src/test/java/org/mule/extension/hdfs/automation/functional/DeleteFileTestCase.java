@@ -24,7 +24,7 @@ import org.mule.runtime.core.api.exception.MessagingException;
 
 
 @SuppressWarnings("unchecked")
-public class DeleteFileTestCases extends BaseTest {
+public class DeleteFileTestCase extends BaseTest {
 
     private static final String PARENT_DIRECTORY = "rootDirecotry/";
     private static final String MYFILE_PATH = PARENT_DIRECTORY + "myfile.txt";

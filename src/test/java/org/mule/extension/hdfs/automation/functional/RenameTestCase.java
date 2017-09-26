@@ -1,3 +1,6 @@
+/**
+ * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.extension.hdfs.automation.functional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +21,7 @@ import org.mule.runtime.core.api.exception.MessagingException;
 
 
 @SuppressWarnings("unchecked")
-public class RenameTestCases extends BaseTest {
+public class RenameTestCase extends BaseTest {
 
     private static final String ROOT_DIRECTORY = "rootDirectory/";
     private static final String DIRECTORY = ROOT_DIRECTORY + "directory";

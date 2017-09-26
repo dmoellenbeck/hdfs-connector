@@ -21,7 +21,7 @@ import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
 import org.mule.runtime.core.api.exception.MessagingException;
 
 
-public class ReadOperationTestCases extends BaseTest {
+public class ReadOperationTestCase extends BaseTest {
 
     private final byte[] writtenData = RandomStringUtils.randomAlphanumeric(20)
             .getBytes();
