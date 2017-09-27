@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+
+    <hdfs:hdfs-config name="hdfs-conf" doc:name="HDFS">
+    	<hdfs:simple-connection nameNodeUri="localhost:9000" username="bogdan.filip"/>
+    </hdfs:hdfs-config>
+ 
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6ae5b064-a085-4c94-a5ee-a379f07cf81a" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="90180e96-cd36-41a5-9ab7-ca31b36286cf" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="UI_Provider_Flow">
+        <http:listener path="/" doc:name="HTTP" config-ref="HTTP_Listener_config"/>
+		<http:load-static-resource resourceBasePath="D:\FixingHdfsToRelease\common-operations\src\main\resources" doc:name="Load static resource" doc:id="79b28a57-431c-47dc-ad5b-097507c67908" defaultFile="dashboardForm.html"/>
+    
+</flow>
+	<flow name="Delete_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/filedelete" doc:name="HTTP"/>
+        <logger message="#[attributes.queryParams.path]" level="INFO" doc:name="Delete file log"/>
+        <hdfs:delete-file config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="Delete file"/>
+        <set-payload value='#[attributes.queryParams.path ++ " succesfully deleted"]' doc:name="Set Payload"/>
+    </flow>
+     <flow name="Create_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/filecreate" doc:name="HTTP"/>
+        <logger message="#['Creating file  : ' ++ attributes.queryParams.path ++ '  with message : ' ++ attributes.queryParams.content]"
+                level="INFO" doc:name="Write to Path Log"/>
+        <set-payload value="#[attributes.queryParams.content]" doc:name="Set the message input as payload"/>
+        <hdfs:write config-ref="hdfs-conf" path="#[attributes.queryParams.path]" permission="755"
+                    doc:name="Write to Path"/>
+    </flow>
+    <flow name="Append_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/fileappend" doc:name="HTTP"/>
+        <logger message="#['Appending file: ' ++ attributes.queryParams.path ++ ' with message: ' ++ attributes.queryParams.content]"
+                level="INFO" doc:name="Append to File Log"/>
+        <set-payload value="#[attributes.queryParams.content]" doc:name="Set the message input as payload"/>
+        <hdfs:append config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="Append to path"/>
+    </flow>
+	<flow name="Retrieve_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/fileread" doc:name="HTTP"/>
+        <logger message="#['Reading from file: ' ++ attributes.queryParams.path]" level="INFO" doc:name="Read From Path Log"/>
+        <hdfs:read-operation config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="Read From Path"/>
+    
+</flow>
+    <flow name="Delete_Directory_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/dirdelete" doc:name="HTTP"/>
+        <logger message="#['Deleting dir: ' ++ attributes.queryParams.path]" level="INFO"
+                doc:name="Delete Directory Log"/>
+        <hdfs:delete-directory config-ref="hdfs-conf" path="#[attributes.queryParams.path]"
+                               doc:name="Delete Directory"/>
+        <set-payload value="#[attributes.queryParams.path ++ ' successfully deleted.']" doc:name="Set Payload"/>
+		<ee:transform doc:name="Transform Message" doc:id="0351d103-7773-4473-8b03-e7eca3771323" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    
+</flow>
+    <flow name="Create_Directory_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/dircreate" doc:name="HTTP"/>
+        <logger message="#[attributes.queryParams.path]" level="INFO"
+                doc:name="Create Directory Log"/>
+        <hdfs:make-directories config-ref="hdfs-conf" path="#[attributes.queryParams.path]" permission="755"
+                               doc:name="Create Directory"/>
+        <set-payload value="#[attributes.queryParams.path ++ ' successfully created.']" doc:name="Set Payload"/>
+    </flow>
+    <flow name="Metadata_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/metadata" doc:name="HTTP"/>
+        <logger message="#['Meta-Data from path:  ' ++ attributes.queryParams.path]" level="INFO"
+                doc:name="MetaData Log"/>
+        <hdfs:get-metadata config-ref="hdfs-conf" path="#[attributes.queryParams.path]"
+                           doc:name="Get Path Meta Data" doc:description="The &amp;quot;Get Path Meta Data&amp;quot; processor will obtain META-DATA from a path that can be either a file or a directory.
+The way that this info is gathered is that once the process is executed, the result will be stored in flowVars.
+
+These vars are:
+hdfs.path.exists - Indicates if the path exists (true or false)
+hdfs.content.summary - A resume of the path info
+hdfs.file.checksum - MD5 digest of the file (if it is a file and exists)
+hdfs.file.status - The status of the file"/>
+		<ee:transform doc:name="Transform Message" doc:id="ebf0da7d-1d1a-4324-a0e6-618bb9191387" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+payload 
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+       
+    
+</flow>
+    <flow name="Copy_From_Local_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/copyfromlocalfile" doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Copy from Local Path Log"
+                message="#['Copying from local path : ' ++ attributes.queryParams.source ++ 'to file system : ' ++ attributes.queryParams.target]"/>
+        <hdfs:copy-from-local-file config-ref="hdfs-conf" source="#[attributes.queryParams.source]"
+                                   doc:name="Copy from Local Path" destination="#[attributes.queryParams.target]"/>
+        <set-payload value="#[attributes.queryParams.source ++ ' successfully copied to: ' ++ attributes.queryParams.target]"
+                     doc:name="Set Payload"/>
+    </flow>
+    <flow name="Copy_To_Local_File_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/copytolocalfile" doc:name="HTTP"/>
+        <logger message="#['Copying to local path : ' ++ attributes.queryParams.target ++ 'from file system : ' ++ attributes.queryParams.source]"
+                level="INFO" doc:name="Copy to Local Path Log"/>
+        <hdfs:copy-to-local-file config-ref="hdfs-conf" source="#[attributes.queryParams.source]"
+                                 doc:name="Copy to Local Path" destination="#[attributes.queryParams.target]"/>
+        <set-payload value="#[attributes.queryParams.source ++ '  successfully copied to : ' ++ attributes.queryParams.target]"
+                     doc:name="Set Payload"/>
+    
+</flow>
+    <flow name="Rename_flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/rename" doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Rename path log"
+                message="#['Rename path : ' ++ attributes.queryParams.source ++ ' to ' ++ attributes.queryParams.target]"/>
+        <hdfs:rename config-ref="hdfs-conf" source="#[attributes.queryParams.source]"
+                     doc:name="Rename Path" destination="#[attributes.queryParams.target]"/>
+        <set-payload value="#[attributes.queryParams.source ++ 'successfully renamed to:' ++ attributes.queryParams.target]"
+                     doc:name="Set Payload"/>
+		<ee:transform doc:name="Transform Message" doc:id="1b258a5d-6a17-4497-bcec-0e854baedd79" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    
+</flow>
+    <flow name="Set_Permission_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/setpermission" doc:name="HTTP"/>
+        <logger message="#['Set Permission on path : ' ++ attributes.queryParams.path ++ 'to ' ++ attributes.queryParams.mode]" level="INFO"
+                doc:name="Set Permission Log"/>
+        <hdfs:set-permission config-ref="hdfs-conf" path="#[attributes.queryParams.path]" permission="#[attributes.queryParams.mode]"
+                             doc:name="Set Permission"/>
+        <set-payload value="#[attributes.queryParams.path ++ 'permissions successfully set to:' ++ attributes.queryParams.mode]"
+                     doc:name="Set Payload"/>
+    </flow>
+    <flow name="Set_Owner_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/setowner" doc:name="HTTP"/>
+        <logger message="#['Set owner on path :' ++ attributes.queryParams.path]" level="INFO"
+                doc:name="Set Owner Log"/>
+        <hdfs:set-owner config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="Set Owner"
+                        groupname="#[attributes.queryParams.group]" ownername="#[attributes.queryParams.owner]"/>
+        <set-payload
+                value="#[attributes.queryParams.path ++ 'owner successfully set to goup: ' ++ attributes.queryParams.group ++ 'owner:' ++ attributes.queryParams.owner]"
+                doc:name="Set Payload"/>
+    </flow>
+    <flow name="List_Status_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/liststatus" doc:name="HTTP"/>
+        <logger message="#['List Status path :' ++ attributes.queryParams.path]" level="INFO"
+                doc:name="List Status Log"/>
+        <hdfs:list-status config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="List Status"/>
+		<ee:transform doc:name="Transform Message" doc:id="4f327cdb-9cf0-41bb-b3ff-01b3a4cbc46f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+	accessTime: $.accessTime,
+	directory: $.directory,
+	entrypted: $.encrypted,
+	group: $.group,
+	owner:$.owner,
+	len: $.len
+	}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    
+</flow>
+    <flow name="Glob_Status_Flow">
+        <http:listener config-ref="HTTP_Listener_config" path="/globstatus" doc:name="HTTP"/>
+        <logger message="#['Glob Status path :' ++ attributes.queryParams.path]" level="INFO"
+                doc:name="Glob Status Log"/>
+        <hdfs:glob-status config-ref="hdfs-conf" doc:name="Glob Status"
+                          pathPattern="#[attributes.queryParams.path]"/>
+		<ee:transform doc:name="Transform Message" doc:id="6f297398-8ee4-4d3c-876a-c37492119889" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+	accessTime: $.accessTime,
+	directory: $.directory,
+	entrypted: $.encrypted,
+	group: $.group,
+	owner:$.owner,
+	len: $.len}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    
+</flow>
+	
+
+
+</mule>

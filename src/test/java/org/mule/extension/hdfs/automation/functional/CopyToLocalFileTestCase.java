@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
@@ -30,12 +31,21 @@ public class CopyToLocalFileTestCase extends BaseTest {
         return TestConstants.COPY_TO_LOCAL_FLOW_PATH;
     }
 
+    @BeforeClass
+    public static void setEnv()
+    {
+        //TODO Set properties: hadoop.home.dir and HADOOP_HOME in order to make the test work
+        System.setProperty("hadoop.home.dir","C:\\hadoop-2.7.3");
+        //System.setProperty("HADOOP_HOME","C:\\hadoop-2.7.3");
+    }
+
     @Before
     public void setUp() throws Exception {
         initialWrittenData = TestDataBuilder.payloadShortString();
         flowRunner(TestConstants.FlowNames.WRITE_FLOW).withVariable("path", MYFILE_PATH)
                 .withPayload(new ByteArrayInputStream(initialWrittenData))
                 .run();
+
     }
 
     @Test

@@ -6,10 +6,8 @@ package org.mule.extension.hdfs.internal.config;
 import org.mule.extension.hdfs.internal.connection.provider.KerberosConnectionProvider;
 import org.mule.extension.hdfs.internal.connection.provider.SimpleConnectionProvider;
 import org.mule.extension.hdfs.internal.operation.HdfsOperations;
-import org.mule.extension.hdfs.internal.source.ReadSource;
 import org.mule.runtime.extension.api.annotation.Configuration;
 import org.mule.runtime.extension.api.annotation.Operations;
-import org.mule.runtime.extension.api.annotation.Sources;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 
@@ -20,7 +18,6 @@ import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
         KerberosConnectionProvider.class,
         SimpleConnectionProvider.class
 })
-@Sources(ReadSource.class)
 @Configuration(name = "hdfs")
 @DisplayName("Hdfs")
 public class HdfsConfiguration {
