@@ -1,0 +1,19 @@
+{
+  "domain": "default",
+  "configs": [
+    "common-operations.xml"
+  ],
+  "redeploymentEnabled": true,
+  "name": "common-operations",
+  "minMuleVersion": "4.0.0-rc-SNAPSHOT",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedResources": []
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
