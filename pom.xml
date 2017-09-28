@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.0.0-rc-SNAPSHOT</version>
+        <version>1.0.0-rc</version>
     </parent>
 
     <groupId>org.mule.connectors</groupId>
     <artifactId>mule-hdfs-connector</artifactId>
-    <version>6.0.0-pre-rc-001-SNAPSHOT</version>
+    <version>6.0.0-rc</version>
     <packaging>mule-extension</packaging>
     <name>Mule HDFS Connector</name>
 
