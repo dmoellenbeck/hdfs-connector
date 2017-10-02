@@ -14,7 +14,7 @@ import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
         HdfsConfiguration.class
 })
 @Xml(prefix = "hdfs")
-@Extension(name = "Hdfs")
+@Extension(name = "HDFS")
 @ErrorTypes(HdfsErrorType.class)
 public class HDFSExtension {
 

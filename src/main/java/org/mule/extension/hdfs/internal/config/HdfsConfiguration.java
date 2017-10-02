@@ -22,7 +22,7 @@ import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 })
 @Sources(ReadSource.class)
 @Configuration(name = "hdfs")
-@DisplayName("Hdfs")
+@DisplayName("HDFS")
 public class HdfsConfiguration {
 
 }
