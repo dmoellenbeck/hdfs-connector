@@ -22,12 +22,14 @@ import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataExce
 import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
+import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.extension.api.annotation.error.Throws;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.exception.ModuleException;
+import org.mule.runtime.extension.api.runtime.operation.Result;
 
 public class HdfsOperations {
 
@@ -45,14 +47,14 @@ public class HdfsOperations {
      * @return the result from executing the rest of the flow.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
-    public InputStream readOperation(@Connection HdfsConnection connection, String path,
-            @Optional(defaultValue = "4096") final int bufferSize)
+    public Result<InputStream,Void> readOperation(@Connection HdfsConnection connection, String path,
+                                                  @Optional(defaultValue = "4096") final int bufferSize)
 
     {
         HdfsAPIService hdfsApiService = serviceFactory.getService(connection);
 
         try {
-            return hdfsApiService.read(path, bufferSize);
+            return Result.<InputStream,Void>builder().mediaType(MediaType.BINARY).output(hdfsApiService.read(path,bufferSize)).build();
         } catch (InvalidRequestDataException e) {
             throw new ModuleException(e.getMessage() + " ErrorCode: " + e.getErrorCode(),
                     HdfsErrorType.INVALID_REQUEST_DATA, e);
@@ -377,11 +379,11 @@ public class HdfsOperations {
      *            the connection object
      * @param deleteSource
      *            whether to delete the source.
-     * @param useRawLocalFileSystem
-     *            whether to use RawLocalFileSystem as local file system or not.
+     * @param overwrite
+     *           whether to overwrite destination content.
      * @param source
      *            the source path on the File System.
-     * @param target
+     * @param destination
      *            the target path on the local disk.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
