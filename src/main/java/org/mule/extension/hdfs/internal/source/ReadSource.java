@@ -1,12 +1,7 @@
 package org.mule.extension.hdfs.internal.source;
 
-import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-
 import org.mule.extension.hdfs.api.MetaData;
+import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
@@ -20,10 +15,17 @@ import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.source.EmitsResponse;
+import org.mule.runtime.extension.api.exception.ModuleException;
 import org.mule.runtime.extension.api.metadata.NullQueryMetadataResolver;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.source.Source;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+
+import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
 
 @Alias("read")
 @EmitsResponse
@@ -32,6 +34,7 @@ import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 public class ReadSource extends Source<Object, Serializable> {
 
     private ServiceFactory serviceFactory = new ServiceFactory();
+    private HdfsConnection hdfsConnection;
     /**
      * Read the content of a file designated by its path
      *
@@ -65,7 +68,8 @@ public class ReadSource extends Source<Object, Serializable> {
         HdfsAPIService hdfsApiService;
      
         try {
-            hdfsApiService = serviceFactory.getService(connection.connect());
+            hdfsConnection=connection.connect();
+            hdfsApiService = serviceFactory.getService(hdfsConnection);
 
             Result.Builder<Object, Serializable> resultBuilder = Result.builder();
 
@@ -79,14 +83,13 @@ public class ReadSource extends Source<Object, Serializable> {
 
             sourceCallback.handle(result);
         } catch (ConnectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY);
         }
     }
 
     @Override
     public void onStop() {
-
+        connection.disconnect(hdfsConnection);
     }
 
 }

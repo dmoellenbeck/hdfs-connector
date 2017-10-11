@@ -16,16 +16,25 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.hamcrest.core.StringContains;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.operation.HdfsOperations;
+import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.internal.service.impl.FileSystemApiService;
+import org.mule.runtime.extension.api.exception.ModuleException;
+
+import java.io.IOException;
 
 public class HdfsOperationsTest {
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     HdfsOperations hdfsOperations = new HdfsOperations();
     @Mock
     FileSystemApiService fileSystemApiService;
@@ -36,11 +45,28 @@ public class HdfsOperationsTest {
     public void testDeleteFile() {
         try {
             when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(true);
-
             hdfsOperations.deleteFile(hdfsConnection, "zoo");
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testUnsuccesfullyDeleteFile() throws IOException {
+            expectedException.expect(ModuleException.class);
+            expectedException.expectMessage(StringContains.containsString("Unable to delete file!"));
+            when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(false);
+            hdfsOperations.deleteFile(hdfsConnection,"fdsdfs");
+
+    }
+
+    @Test
+    public void testUnsuccesfullyDeleteFileWrongParams() throws IOException {
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+        when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(true);
+        hdfsOperations.deleteFile(hdfsConnection,null);
+
     }
 
     @Test
@@ -57,6 +83,15 @@ public class HdfsOperationsTest {
     }
 
     @Test
+    public void testUnsuccesfullyDeleteDirectory() throws IOException {
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Unable to delete"));
+        when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(false);
+        hdfsOperations.deleteDirectory(hdfsConnection,"fdsdfs");
+
+    }
+
+    @Test
     public void testMakeDirectories() {
         try {
             when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(true);
@@ -65,7 +100,25 @@ public class HdfsOperationsTest {
             fail(e.getMessage());
         }
     }
+    @Test
+    public void testUnsuccesfullyMakeDirectories() throws IOException {
 
+            expectedException.expect(ModuleException.class);
+            expectedException.expectMessage(StringContains.containsString("Unable to create directory!"));
+            when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(false);
+            hdfsOperations.makeDirectories(hdfsConnection, "foo", "755");
+
+    }
+
+    @Test
+    public void testUnsuccesfullyMakeDirectoriesWrongParams() throws IOException {
+
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+        when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(true);
+        hdfsOperations.makeDirectories(hdfsConnection, null, "755");
+
+    }
     @Test
     public void testRename() {
         try {
@@ -74,6 +127,26 @@ public class HdfsOperationsTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+    @Test
+    public void testUnsuccesfullyRename() throws IOException {
+
+            expectedException.expect(ModuleException.class);
+            expectedException.expectMessage(StringContains.containsString("Unable to rename path!"));
+
+            when(fileSystem.rename(any(Path.class), any(Path.class))).thenReturn(false);
+            hdfsOperations.rename(hdfsConnection, "foo", "zoo");
+
+    }
+    @Test
+    public void testUnsuccesfullyRenameWrongParams() throws IOException {
+
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+
+        when(fileSystem.rename(any(Path.class), any(Path.class))).thenReturn(true);
+        hdfsOperations.rename(hdfsConnection, null, null);
+
     }
 
     @Test
@@ -85,6 +158,17 @@ public class HdfsOperationsTest {
             fail(e.getMessage());
         }
     }
+    @Test
+    public void testListStatusWrongParams() throws IOException {
+
+            expectedException.expect(ModuleException.class);
+            expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+            when(fileSystem.listStatus(any(Path.class), any(PathFilter.class))).thenReturn(new FileStatus[0]);
+            hdfsOperations.listStatus(hdfsConnection, null, null);
+
+    }
+
+
 
     @Test
     public void testGlobStatus() {
@@ -94,6 +178,14 @@ public class HdfsOperationsTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+    @Test
+    public void testGlobStatusWrongParams() throws IOException {
+            expectedException.expect(ModuleException.class);
+            expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+            when(fileSystem.globStatus(any(Path.class), any(PathFilter.class))).thenReturn(new FileStatus[0]);
+            hdfsOperations.globStatus(hdfsConnection, null, null);
+
     }
 
     @Test
@@ -107,6 +199,23 @@ public class HdfsOperationsTest {
         }
     }
 
+
+    @Test
+    public void testCopyFromLocalFileWrongParams() throws IOException {
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Invalid request data"));
+        fileSystem.copyFromLocalFile(anyBoolean(), anyBoolean(), any(Path.class), any(Path.class));
+        hdfsOperations.copyFromLocalFile(hdfsConnection, false, false, null, null);
+
+    }
+
+    @Test
+    public void testUnsuccesfullyCopyFromLocalFile() {
+        expectedException.expect(ModuleException.class);
+        expectedException.expectMessage(StringContains.containsString("Invalid request data :Can not create a Path from a null string"));
+        hdfsOperations.copyFromLocalFile(hdfsConnection, false, false, null, null);
+    }
+
     @Test
     public void testCopyToLocalFile() {
         try {
@@ -117,6 +226,12 @@ public class HdfsOperationsTest {
             fail(e.getMessage());
         }
     }
+    @Test
+    public void testUnsuccesfullyCopyToLocalFile() {
+            expectedException.expectMessage(StringContains.containsString("Invalid request data :Can not create a Path from a null string"));
+            hdfsOperations.copyToLocalFile(hdfsConnection, false, true, null, null);
+
+    }
 
     @Test
     public void testSetPermission() {
@@ -124,6 +239,16 @@ public class HdfsOperationsTest {
             doNothing().when(fileSystem)
                     .setPermission(any(Path.class), any(FsPermission.class));
             hdfsOperations.setPermission(hdfsConnection, "foo", "755");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUnsuccesfullySetPermission() {
+        try {
+            expectedException.expectMessage(StringContains.containsString("Invalid request data :Can not create a Path from a null string"));
+            hdfsOperations.setPermission(hdfsConnection, null, "755");
         } catch (Exception e) {
             fail(e.getMessage());
         }

@@ -16,9 +16,6 @@ public class InvalidRequestDataException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public InvalidRequestDataException(String message, Exception cause) {
-        this(message, null, cause);
-    }
     public InvalidRequestDataException(String message) {
         this(message, null, null);
     }

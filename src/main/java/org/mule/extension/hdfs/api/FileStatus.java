@@ -3,7 +3,9 @@
  */
 package org.mule.extension.hdfs.api;
 
-public class FileStatus {
+import java.io.Serializable;
+
+public class FileStatus implements Serializable {
 
     private String path;
     private long length;
