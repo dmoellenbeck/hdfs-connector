@@ -15,7 +15,7 @@ import org.mule.runtime.core.api.construct.Flow;
 
 import java.io.ByteArrayInputStream;
 
-public class ReadSourceTestCaseS extends BaseTest {
+public class ReadSourceTestCase extends BaseTest {
     private final String PARENT_DIRECTORY = "/";
     private final String MYFILE_PATH = "test.txt";
 
