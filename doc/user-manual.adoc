@@ -36,20 +36,9 @@ HDFS Hadoop connector is compatible with the following:
 
 You can install a connector in Anypoint Studio following the instructions from link: https://beta-mule-sdk.docs-stgx.mulesoft.com/connectors/common-add-module-task [To Add a Connector to Studio].
 
-=== Upgrading from an Older Version
-
-If you’re currently using an older version of the connector, a small popup appears in the bottom right corner of Anypoint Studio with an "Updates Available" message.
-
-. Click the popup and check for available updates. 
-. Click the Connector version checkbox and click *Next* and follow the instructions provided by the user interface. 
-. *Restart* Studio when prompted. 
-. After restarting, when creating a flow and using the HDFS Connector, if you have several versions of the connector installed, you may be asked which version you would like to use. Choose the version you would like to use.
-
-Additionally, we recommend that you keep Studio up to date with its latest version.
-
 == Configure the Connector Global Element
 
-To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/3.8/global-elements[Global Elements]). The HDFS connector offers the following global configuration options, requiring the following credentials:
+To use the HDFS connector in your Mule application, you must configure a global HDFS element that can be used by the connector (read more about  link:/mule-fundamentals/v/4.0/global-elements[Global Elements]). The HDFS connector offers the following global configuration options, requiring the following credentials:
 
 === Simple Authentication Configuration
 
@@ -121,10 +110,6 @@ If you are manually coding the Mule application in Studio's XML editor or other 
       http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
 </mule>
 
-== Demo Mule Application Using Connector
-
-Existing demos demonstrate how to use the connector for link:http://mulesoft.github.io/hdfs-connector/[basic file system operations] and how to link:http://mulesoft.github.io/hdfs-connector/[poll data from a file] at a specific interval.
-
 === Example Use Case
 
 The following example shows how to create a text file into HDFS using the connector:
@@ -140,8 +125,6 @@ image:create-file-flow.png[Create file flow]
 . Run the application. From your favorite HTTP client make a POST request with "Content-type:plain/text" to `locahost:8081/createFile` with content that you want to write as payload. (e.g. `curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile`)
 . Check that */test.txt* has been created and has your content by using Hadoop explorer.
 * A demo with the above mentioned use case was provided.
-
-== Connector Performance
 
 == Resources
 
