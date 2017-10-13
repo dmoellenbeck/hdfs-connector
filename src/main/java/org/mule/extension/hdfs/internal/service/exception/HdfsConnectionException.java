@@ -10,10 +10,6 @@ public class HdfsConnectionException extends RuntimeException {
 
     private static final long serialVersionUID = 5861111931034719604L;
 
-    public HdfsConnectionException(String message) {
-        super(message);
-    }
-
     public HdfsConnectionException(String message, Throwable cause) {
         super(message, cause);
     }

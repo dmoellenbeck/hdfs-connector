@@ -10,10 +10,6 @@ public class UnableToCloseConnection extends RuntimeException {
 
     private static final long serialVersionUID = 5861111931034719604L;
 
-    public UnableToCloseConnection(String message) {
-        super(message);
-    }
-
     public UnableToCloseConnection(String message, Throwable cause) {
         super(message, cause);
     }

@@ -3,13 +3,13 @@
  */
 package org.mule.extension.hdfs.api;
 
-import org.apache.hadoop.io.MD5Hash;
+import java.io.Serializable;
 
-public class CheckSummary {
+public class CheckSummary implements Serializable {
 
     private int bytesPerCRC;
     private long crcPerBlock;
-    private MD5Hash md5;
+    private String md5;
 
     public int getBytesPerCRC() {
         return bytesPerCRC;
@@ -27,11 +27,12 @@ public class CheckSummary {
         this.crcPerBlock = crcPerBlock;
     }
 
-    public MD5Hash getMd5() {
+    public String getMd5() {
         return md5;
+
     }
 
-    public void setMd5(MD5Hash md5) {
+    public void setMd5(String md5) {
         this.md5 = md5;
     }
 

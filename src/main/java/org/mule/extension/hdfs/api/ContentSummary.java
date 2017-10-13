@@ -3,7 +3,9 @@
  */
 package org.mule.extension.hdfs.api;
 
-public class ContentSummary {
+import java.io.Serializable;
+
+public class ContentSummary implements Serializable {
 
     private long length;
     private long fileCount;
