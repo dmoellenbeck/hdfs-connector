@@ -3,7 +3,7 @@
 
 The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as a bi-directional gateway between Mule applications and HDFS.
 
-== Version 6.0.0 - November 2, 2017
+== Version 6.0.0 - September 28, 2017
 
 === Version 6.0.0 Compatibility
 
@@ -36,4 +36,4 @@ The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as 
 
 
 
-* To access MuleSoft?s expert support team, http://www.mulesoft.com/mule-esb-subscription[subscribe] to Mule ESB Enterprise and log in to MuleSoft?s http://www.mulesoft.com/support-login[Customer Portal]. 
+* To access MuleSoft?s expert support team,Â http://www.mulesoft.com/mule-esb-subscription[subscribe]Â to Mule ESB Enterprise and log in to MuleSoft?sÂ http://www.mulesoft.com/support-login[Customer Portal].Â 
