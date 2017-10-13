@@ -89,7 +89,6 @@ The final flow XML should look like this.
      	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
      	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      	xsi:schemaLocation="
-     	
      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
@@ -100,8 +99,8 @@ The final flow XML should look like this.
     	         <hdfs:simple-connection nameNodeUri="hdfs://localhost:9000" username="hduser"/>
          </hdfs:hdfs-config>
     
-    	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6ae5b064-a085-4c94-a5ee-a379f07cf81a" >
-        		<http:listener-connection host="localhost" port="8081" />
+    	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6ae5b064-a085-4c94-a5ee-a379f07cf81a">
+                <http:listener-connection host="localhost" port="8081" />
         </http:listener-config>
         	
         <flow name="Create_File_Flow">
@@ -124,13 +123,11 @@ The final flow XML should look like this.
                     				<ee:set-payload ><![CDATA[%dw 2.0
                     output application/json
                     ---
-                    
                     payload 
                     ]]></ee:set-payload>
                     			</ee:message>
                     		</ee:transform>
                            
-                        
           </flow>
                        
                        
