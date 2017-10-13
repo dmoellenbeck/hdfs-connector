@@ -45,7 +45,7 @@ public class HdfsOperationsTest {
     public void testDeleteFile() {
         try {
             when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(true);
-            hdfsOperations.deleteFile(hdfsConnection, "zoo");
+            hdfsOperations.deleteFile(hdfsConnection, "testpath");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -56,7 +56,7 @@ public class HdfsOperationsTest {
             expectedException.expect(ModuleException.class);
             expectedException.expectMessage(StringContains.containsString("Unable to delete file!"));
             when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(false);
-            hdfsOperations.deleteFile(hdfsConnection,"fdsdfs");
+            hdfsOperations.deleteFile(hdfsConnection,"testpath");
 
     }
 
@@ -75,7 +75,7 @@ public class HdfsOperationsTest {
 
             when(fileSystem.delete(any(Path.class), eq(true))).thenReturn(true);
            
-            hdfsOperations.deleteDirectory(hdfsConnection, "zoo");
+            hdfsOperations.deleteDirectory(hdfsConnection, "testpath");
 
         } catch (Exception e) {
             fail(e.getMessage());
@@ -87,7 +87,7 @@ public class HdfsOperationsTest {
         expectedException.expect(ModuleException.class);
         expectedException.expectMessage(StringContains.containsString("Unable to delete"));
         when(fileSystem.delete(any(Path.class), eq(false))).thenReturn(false);
-        hdfsOperations.deleteDirectory(hdfsConnection,"fdsdfs");
+        hdfsOperations.deleteDirectory(hdfsConnection,"testpath");
 
     }
 
@@ -95,7 +95,7 @@ public class HdfsOperationsTest {
     public void testMakeDirectories() {
         try {
             when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(true);
-            hdfsOperations.makeDirectories(hdfsConnection, "foo", "755");
+            hdfsOperations.makeDirectories(hdfsConnection, "testpath", "755");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -106,7 +106,7 @@ public class HdfsOperationsTest {
             expectedException.expect(ModuleException.class);
             expectedException.expectMessage(StringContains.containsString("Unable to create directory!"));
             when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(false);
-            hdfsOperations.makeDirectories(hdfsConnection, "foo", "755");
+            hdfsOperations.makeDirectories(hdfsConnection, "testpath", "755");
 
     }
 
@@ -116,14 +116,14 @@ public class HdfsOperationsTest {
         expectedException.expect(ModuleException.class);
         expectedException.expectMessage(StringContains.containsString("Invalid request data"));
         when(fileSystem.mkdirs(any(Path.class), any(FsPermission.class))).thenReturn(true);
-        hdfsOperations.makeDirectories(hdfsConnection, null, "755");
+        hdfsOperations.makeDirectories(hdfsConnection, null, "testpath");
 
     }
     @Test
     public void testRename() {
         try {
             when(fileSystem.rename(any(Path.class), any(Path.class))).thenReturn(true);
-            hdfsOperations.rename(hdfsConnection, "foo", "zoo");
+            hdfsOperations.rename(hdfsConnection, "testsource", "testdestination");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -135,7 +135,7 @@ public class HdfsOperationsTest {
             expectedException.expectMessage(StringContains.containsString("Unable to rename path!"));
 
             when(fileSystem.rename(any(Path.class), any(Path.class))).thenReturn(false);
-            hdfsOperations.rename(hdfsConnection, "foo", "zoo");
+            hdfsOperations.rename(hdfsConnection, "testsource", "testdestination");
 
     }
     @Test
@@ -153,7 +153,7 @@ public class HdfsOperationsTest {
     public void testListStatus() {
         try {
             when(fileSystem.listStatus(any(Path.class), any(PathFilter.class))).thenReturn(new FileStatus[0]);
-            hdfsOperations.listStatus(hdfsConnection, "foo", "zoo");
+            hdfsOperations.listStatus(hdfsConnection, "testpath", "testfilter");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -174,7 +174,7 @@ public class HdfsOperationsTest {
     public void testGlobStatus() {
         try {
             when(fileSystem.globStatus(any(Path.class), any(PathFilter.class))).thenReturn(new FileStatus[0]);
-            hdfsOperations.globStatus(hdfsConnection, "foo", " ");
+            hdfsOperations.globStatus(hdfsConnection, "test/path/pattern", " ");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -193,7 +193,7 @@ public class HdfsOperationsTest {
         try {
             doNothing().when(fileSystem)
                     .copyFromLocalFile(anyBoolean(), anyBoolean(), any(Path.class), any(Path.class));
-            hdfsOperations.copyFromLocalFile(hdfsConnection, false, false, "foo", "zoo");
+            hdfsOperations.copyFromLocalFile(hdfsConnection, false, false, "testsource", "testdest");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -221,7 +221,7 @@ public class HdfsOperationsTest {
         try {
             doNothing().when(fileSystem)
                     .copyToLocalFile(anyBoolean(), any(Path.class), any(Path.class), anyBoolean());
-            hdfsOperations.copyToLocalFile(hdfsConnection, false, true, "foo", "zoo");
+            hdfsOperations.copyToLocalFile(hdfsConnection, false, true, "testsource", "testdest");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -238,7 +238,7 @@ public class HdfsOperationsTest {
         try {
             doNothing().when(fileSystem)
                     .setPermission(any(Path.class), any(FsPermission.class));
-            hdfsOperations.setPermission(hdfsConnection, "foo", "755");
+            hdfsOperations.setPermission(hdfsConnection, "testpath", "755");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -259,7 +259,7 @@ public class HdfsOperationsTest {
         try {
             doNothing().when(fileSystem)
                     .setOwner(any(Path.class), anyString(), anyString());
-            hdfsOperations.setOwner(hdfsConnection, "foo/oof", "foo", "zoo");
+            hdfsOperations.setOwner(hdfsConnection, "foo/oof", "testowner", "testgroupname");
         } catch (Exception e) {
             fail(e.getMessage());
         }
