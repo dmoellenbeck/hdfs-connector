@@ -12,23 +12,14 @@ The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as 
 
 Read through this user guide to understand how to set up and configure a basic flow using the connector. Track feature additions, compatibility, limitations and API version updates with each release of the connector using the link:/release-notes/hdfs-connector-release-notes[Connector Release Notes]. Review the connector operations and functionality using the link:/mulesoft.github.io/hdfs-connector[Technical Reference] alongside the link:https://www.mulesoft.com/exchange#!/?filters=HDFS&sortBy=rank[demo applications].
 
-Since version 5.0.0, MuleSoft maintains this connector under the link:/mule-user-guide/v/3.8/anypoint-connectors#connector-categories[_Select_] support policy.
-
 == Prerequisites
 
-This document assumes that you are familiar with Mule,
-link:/mule-user-guide/v/3.8/anypoint-connectors[Anypoint Connectors], and
-link:/mule-fundamentals/v/3.8/anypoint-studio-essentials[Anypoint Studio Essentials]. To increase your familiarity with Studio, consider completing a link:/mule-fundamentals/v/3.8/basic-studio-tutorial[Anypoint Studio Tutorial]. This page requires some basic knowledge of link:/mule-fundamentals/v/3.8/mule-concepts[Mule Concepts], link:/mule-fundamentals/v/3.8/elements-in-a-mule-flow[Elements in a Mule Flow], and link:/mule-fundamentals/v/3.8/global-elements[Global Elements].
+This document assumes that you are familiar with Mule.
 
 To use the HDFS connector, you need:
 
-* *Anypoint Studio* - An instance of link:https://www.mulesoft.com/lp/dl/mule-esb-enterprise[Anypoint Studio]. If you do not use Anypoint Studio for development, follow the instructions in <<Configuring Maven Dependencies,Configuring Maven Dependencies>> for your project.
+* *Anypoint Studio* version 7.0 or above - An instance of link:https://www.mulesoft.com/lp/dl/mule-esb-enterprise[Anypoint Studio]. If you do not use Anypoint Studio for development, follow the instructions in <<Configuring Maven Dependencies,Configuring Maven Dependencies>> for your project.
 * An instance of Hadoop Distributed File System  up and running. It can be downloaded from link:http://hadoop.apache.org/releases.html[here].
-
-[[requirements]]
-=== Hardware and Software Requirements
-
-For hardware and software requirements, please visit the link:/mule-user-guide/v/3.8/hardware-and-software-requirements[Hardware and Software Requirements] page.
 
 == Compatibility
 
@@ -37,17 +28,13 @@ HDFS Hadoop connector is compatible with the following:
 [%header,width="100%",cols="50%,50%"]
 |===
 |Application/Service|Version
-|Mule Runtime |3.6 or newer
-|Apache Hadoop |2.7.1 or newer
+|Mule Runtime |4.0 or newer
+|Apache Hadoop |2.8.1 or newer
 |===
-
-[IMPORTANT]
-Starting with v5.0.0, the HDFS connector is licensed commercially with Anypoint Platform as are other link:/mule-user-guide/v/3.8/anypoint-connectors#connector-categories[_Select_] connectors.  Prior versions will remain freely available to the community.
 
 == Install the Connector
 
-You can install the connector in Anypoint Studio using the instructions in
-link:/mule-fundamentals/v/3.8/anypoint-exchange#installing-a-connector-from-anypoint-exchange[Installing a Connector from Anypoint Exchange].
+You can install the connector in Anypoint Studio
 
 === Upgrading from an Older Version
 
@@ -121,41 +108,34 @@ If you are manually coding the Mule application in Studio's XML editor or other 
 
 [source, xml,linenums]
 ----
-<mule xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:connector="http://www.mulesoft.org/schema/mule/hdfs"
-      xsi:schemaLocation="
-               http://www.mulesoft.org/schema/mule/core
-               http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-               http://www.mulesoft.org/schema/mule/connector
-               http://www.mulesoft.org/schema/mule/connector/current/mule-hdfs.xsd">
+ <mule xmlns:http="xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+      	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      	xmlns:spring="http://www.springframework.org/schema/beans"
+      	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      	xsi:schemaLocation="
 
-      <!-- put your global configuration elements and flows here -->
-
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
 </mule>
 ----
-
-=== Using the Connector in a Mavenized Mule App
-
-If you are coding a Mavenized Mule application, this XML snippet must be included in your `pom.xml` file.
-
-[source,xml,linenums]
+In order to install the connector in Anypoint Studio enviroment you need to add the following maven dependency in the project's pom:
 ----
-<dependency>
-  <groupId>org.mule.modules</groupId>
-      <artifactId>mule-module-hdfs</artifactId>
-      <version>5.0.0</version>
-</dependency>
+        <dependency>
+		         <groupId>org.mule.connectors</groupId>
+                 <artifactId>mule-hdfs-connector</artifactId>
+                 <version>6.0.0-rc</version>
+                 <classifier>mule-plugin</classifier>
+	   </dependency>
 ----
 
 [TIP]
 ====
 Inside the `<version>` tags, put the desired version number, the word `RELEASE` for the latest release, or `SNAPSHOT` for the latest available version. The available versions to date are:
 
-* *5.0.0*
-* *4.0.0*
-* *3.7.0*
-* *3.6.0*
+* *6.0.0-rc*
 ====
 
 == Demo Mule Application Using Connector
@@ -185,14 +165,16 @@ Paste this into Anypoint Studio to interact with the example use case applicatio
 [source,xml,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-
-<mule xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+<mule xmlns:http="xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+      	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      	xmlns:spring="http://www.springframework.org/schema/beans"
+      	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      	xsi:schemaLocation="
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
     <hdfs:config name="HDFS__Configuration" nameNodeUri="hdfs://localhost:9000" doc:name="HDFS: Configuration"/>
     <flow name="hdfs-example-use-caseFlow">
@@ -205,8 +187,6 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
 == Connector Performance
 
 To define the pooling profile for the connector manually, access the *Pooling Profile* tab in the applicable global element for the connector.
-
-For background information on pooling, see link:/mule-user-guide/v/3.8/tuning-performance[Tuning Performance].
 
 == Resources
 
