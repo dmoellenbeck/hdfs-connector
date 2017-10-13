@@ -93,8 +93,7 @@ The final flow XML should look like this.
      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
      http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
-     
-     
+    
          <hdfs:hdfs-config name="hdfs-conf" doc:name="HDFS">
     	         <hdfs:simple-connection nameNodeUri="hdfs://localhost:9000" username="hduser"/>
          </hdfs:hdfs-config>
@@ -105,26 +104,24 @@ The final flow XML should look like this.
         	
         <flow name="Create_File_Flow">
                            <http:listener config-ref="HTTP_Listener_config" path="/filecreate" doc:name="HTTP"/>
-                           <logger message="#['Creating file  : ' ++ attributes.queryParams.path ++ '  with message : ' ++ attributes.queryParams.content]"
-                                   level="INFO" doc:name="Write to Path Log"/>
+                           <logger message="#['Creating file  : ' ++ attributes.queryParams.path ++ '  with message : ' ++ attributes.queryParams.content]" level="INFO" doc:name="Write to Path Log"/>
                            <set-payload value="#[attributes.queryParams.content]" doc:name="Set the message input as payload"/>
-                           <hdfs:write config-ref="hdfs-conf" path="#[attributes.queryParams.path]" permission="755"
-                                       doc:name="Write to Path"/>
-         </flow>
+                           <hdfs:write config-ref="hdfs-conf" path="#[attributes.queryParams.path]" permission="755" doc:name="Write to Path"/>
+        </flow>
          
            <flow name="Metadata_Flow">
            <http:listener config-ref="HTTP_Listener_config" path="/metadata" doc:name="HTTP"/>
                
-          <hdfs:get-metadata config-ref="hdfs-conf" path="#[attributes.queryParams.path]"
-                                               doc:name="Get Path Meta Data" 
-        
+          <hdfs:get-metadata config-ref="hdfs-conf" path="#[attributes.queryParams.path]" doc:name="Get Path Meta Data" 
+       
                     		<ee:transform doc:name="Transform Message" doc:id="ebf0da7d-1d1a-4324-a0e6-618bb9191387" >
                     			<ee:message >
-                    				<ee:set-payload ><![CDATA[%dw 2.0
+                    				<ee:set-payload >
+						    <![CDATA[%dw 2.0
                     output application/json
                     ---
                     payload 
-                    ]]></ee:set-payload>
+                    ]]>                    </ee:set-payload>
                     			</ee:message>
                     		</ee:transform>
                            
