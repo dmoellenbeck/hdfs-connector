@@ -34,7 +34,7 @@ HDFS Hadoop connector is compatible with the following:
 
 == Install the Connector
 
-You can install the connector in Anypoint Studio
+You can install a connector in Anypoint Studio following the instructions from link: https://beta-mule-sdk.docs-stgx.mulesoft.com/connectors/common-add-module-task [To Add a Connector to Studio].
 
 === Upgrading from an Older Version
 
