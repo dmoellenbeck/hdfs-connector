@@ -10,18 +10,18 @@
 
 [Other resources](#other-resources)
 
-###Purpose
+### Purpose
 
 This document provides detailed instructions on how to install MuleSoft's HDFS connector and demonstrates how to build and run a simple demo application with Mule that creates a directory on HDFS, retrieves metadata about the directory, and deletes the directory.
 
-###Prerequisites
+### Prerequisites
 
 In order to build and run this project you'll need,
 
 *   A working [Apache Hadoop Server](http://hadoop.apache.org/).
 *   Downloaded and installed [Anypoint Studio Community edition](http://www.mulesoft.org/download-mule-esb-community-edition).
 
-###Getting Anypoint Studio Ready
+### Getting Anypoint Studio Ready
 
 If you haven't installed Anypoint Studio on your computer yet, it's time to download Anypoint Studio from this location: [http://www.mulesoft.org/download-mule-esb-community-edition](http://www.mulesoft.org/download-mule-esb-community-edition). You also have the option of downloading a 30 day trial of Mule Enterprise Edition from this location [http://www.mulesoft.com/mule-esb-enterprise](http://www.mulesoft.com/mule-esb-enterprise) if you want to evaluate and purchase the premium edition. This demo can be built using either community or enterprise edition. There is no specific installation that you need to run. Once you unzip the zip file to your desired location, you are ready to go. To install the HDFS connector, you can download and install it from Anypoint Connectors maven dependencies.
 
@@ -29,7 +29,7 @@ If you haven't installed Anypoint Studio on your computer yet, it's time to down
 
 ![](images/image004.jpg)
 
-###Setting up the project
+### Setting up the project
 
 Now that you've got your Anypoint Studio up and running, it's time to work on the Mule App. Create a new Mule Project by clicking on "File \> New \> Mule Project". In the new project dialog box, the only thing you are required to enter is the name of the project. You can click on "Next" to go through the rest of pages.
 
@@ -45,7 +45,7 @@ The XML for the global element should look like this:
 
      <hdfs:config name="hdfs-conf" nameNodeUri="hdfs://localhost:9000" username="hduser" doc:name="HDFS"/>
 
-###Building the flows
+### Building the flows
 
 It's time to build the flows which create a directory, retrieve metadata about the directory, and delete the directory on HDFS.
 
@@ -148,7 +148,7 @@ Now it's time to test the app. Run the app in Anypoint Studio and open a browser
 Now visit [http://localhost:8081/metadata?path=muledir](http://localhost:8081/metadata?path=muledir). This will retrieve metadata about the recently created directory.
 Now visit [http://localhost:8081/dirdelete?path=muledir](http://localhost:8081/dirdelete?path=muledir). This will delete the previously created directory.
 
-###Other resources
+### Other resources
 
 For more information on:
 
