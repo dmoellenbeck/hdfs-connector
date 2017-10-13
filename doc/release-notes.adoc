@@ -3,83 +3,40 @@
 
 The Anypoint Connector for the Hadoop Distributed File System (HDFS) is used as a bi-directional gateway between Mule applications and HDFS.
 
-link:/mule-user-guide/v/3.8/hdfs-connector[HDFS Connector User Guide]
++See the link:/mule-user-guide/v/4.0/hdfs-connector[HDFS Connector User Guide].
 
-== Version 5.0.0 - September 13, 2016
+== Version 6.0.0 - September 28, 2017
 
-=== Version 5.0.0 Compatibility
+=== Version 6.0.0 Compatibility
 
 [%header,width="100%", cols=","]
 |===
 |Software |Version
-|Mule Runtime | 3.6 and higher
-|Hadoop Distribute File System | 2.7.1 or higher
+|Mule Runtime | 4.0 and higher
+|Hadoop Distribute File System | 2.8.1 or higher
 |===
+=== Migrating from Older Versions
 
-=== Version 5.0.0 Features
+*Not applicable
 
-* Upgraded the connector category from *Community* to *Select*.
-* *Read from path* - added operation to read from a file into HDFS. This is different from the existing one that polls data and can be used as an endpoint.
+=== Features
 
-=== Version 5.0.0 Fixed in this Release
-
-None; only new features.
-
-=== Version 5.0.0 Known Issues
-
-No known issues.
-
-== Version 4.0 - March 5, 2015
-
-Release notes for version 4.0 of the HDFS connector.
-
-The Anypoint Connector for HDFS facilitates connections between Mule integration applications and your Apache Hadoop instance.  
-
-=== Version 4.0 Compatibility
-
-HDFS Hadoop connector  is compatible with the following:
-
-[width="100%",cols="50%,50%",options="header",]
-|===
-a|
-Application/Service
-
- a|
-Version
-
-|Mule Runtime |3.6 or higher
-|Apache Hadoop |2.6.0 or higher
-|===
+*Not applicable
 
 
+=== Version 6.0.0 Fixed in this Release
 
-=== Version 4.0 New Features and Functionality
+*Not applicable
 
-HDFS connector now supports 2.6.X Apache Hadoop hosts. Other highlights of the release include:
 
-* Enhanced Read from Path operation to act as an inbound endpoint that can stream data
-* Added seven new operations:
-** Copy to Local File
-** Copy from Local File
-** Glob Status
-** List Status
-** Rename
-** Set Owner
-** Set Permission
+=== Version 6.0.0 Known Issues
 
-=== Version 4.0 Fixed in this Release
+*There are no known issues in this version
 
-Issues with the following operations have been fixed in this release:
+=== See also
 
-* Append to File
-* Read from Path
+Learn how to Install Anypoint Connectors using Anypoint Exchange.
 
-=== Version 4.0 Known Issues
+Access MuleSoft’s Forum to pose questions and get help from Mule’?s broad community of users.
 
-Read from Path operation does not support Polling and Move functions.  +
-
-== See Also
-
-* Learn how to link:/mule-fundamentals/v/3.7/anypoint-exchange[Install Anypoint Connectors] using Anypoint Exchange.
-* Access MuleSoft’s http://forum.mulesoft.org/mulesoft[forum] to pose questions and get help from Mule’s broad community of users.
-* To access MuleSoft’s expert support team, http://www.mulesoft.com/mule-esb-subscription[subscribe] to Mule ESB Enterprise and log in to MuleSoft’s http://www.mulesoft.com/support-login[Customer Portal]. 
+To access MuleSoft’s expert support team, subscribe to Mule ESB Enterprise and log into MuleSoft’s Customer Portal.
