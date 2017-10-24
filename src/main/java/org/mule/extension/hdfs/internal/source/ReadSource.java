@@ -12,6 +12,7 @@ import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.Streaming;
 import org.mule.runtime.extension.api.annotation.metadata.MetadataScope;
 import org.mule.runtime.extension.api.annotation.param.Connection;
+import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.source.EmitsResponse;
@@ -30,6 +31,7 @@ import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.doz
 @Alias("read")
 @EmitsResponse
 @Streaming
+@MediaType(MediaType.ANY)
 @MetadataScope(outputResolver = NullQueryMetadataResolver.class)
 public class ReadSource extends Source<Object, Serializable> {
 

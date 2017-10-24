@@ -21,7 +21,7 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
-import org.mule.runtime.core.api.exception.MessagingException;
+import org.mule.runtime.core.internal.exception.MessagingException;
 
 @SuppressWarnings("unchecked")
 public class WriteTestCase extends BaseTest {

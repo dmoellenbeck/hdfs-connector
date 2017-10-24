@@ -18,6 +18,7 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
+import org.mule.runtime.core.api.event.CoreEvent;
 
 @SuppressWarnings("unchecked")
 public class ListStatusTestCase extends BaseTest {
@@ -98,9 +99,9 @@ public class ListStatusTestCase extends BaseTest {
                 .withPayload(TestDataBuilder.payloadForWrite())
                 .run();
 
-        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
-                        .run());
+        CoreEvent path = flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", FILE_PATH2)
+                .run();
+        List<FileStatus> listStatus = (List<FileStatus>) TestDataBuilder.getValue(path);
 
         assertThat(listStatus, notNullValue());
         assertThat(listStatus.size(), is(1));

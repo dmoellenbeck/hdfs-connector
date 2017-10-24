@@ -56,6 +56,7 @@ public class HdfsOperations extends BaseOperations {
      * @return the result from executing the rest of the flow.
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
+    @org.mule.runtime.extension.api.annotation.param.MediaType(value = org.mule.runtime.extension.api.annotation.param.MediaType.ANY)
     public Result<InputStream, Void> readOperation(@Connection HdfsConnection connection, String path,
                                                    @Optional(defaultValue = "4096") final int bufferSize)
 

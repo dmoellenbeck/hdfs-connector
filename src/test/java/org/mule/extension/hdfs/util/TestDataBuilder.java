@@ -9,8 +9,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.mule.runtime.core.api.InternalEvent;
+
 import org.apache.commons.lang3.RandomStringUtils;
+import org.mule.runtime.core.api.event.CoreEvent;
+import org.mule.runtime.core.internal.message.InternalEvent;
 
 
 public class TestDataBuilder {
@@ -54,7 +56,7 @@ public class TestDataBuilder {
 
     }
 
-    public static Object getValue(InternalEvent ev) {
+    public static Object getValue(CoreEvent ev) {
         return ev.getMessage()
                 .getPayload()
                 .getValue();

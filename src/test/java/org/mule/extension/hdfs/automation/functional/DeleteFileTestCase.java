@@ -20,7 +20,8 @@ import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.runtime.core.api.exception.MessagingException;
+import org.mule.runtime.core.api.event.CoreEvent;
+import org.mule.runtime.core.internal.exception.MessagingException;
 
 
 @SuppressWarnings("unchecked")
@@ -61,9 +62,9 @@ public class DeleteFileTestCase extends BaseTest {
         flowRunner(TestConstants.FlowNames.DELETE_FILE_FLOW).withVariable("path", MYFILE_PATH)
                 .run();
 
+        CoreEvent path = flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY).run();
         List<FileStatus> parentDirectoryStatuses = (List<FileStatus>) TestDataBuilder
-                .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY)
-                        .run());
+                .getValue(path);
         assertThat(parentDirectoryStatuses, notNullValue());
         assertThat(parentDirectoryStatuses, empty());
     }
