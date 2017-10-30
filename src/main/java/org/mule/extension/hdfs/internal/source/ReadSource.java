@@ -1,9 +1,8 @@
 package org.mule.extension.hdfs.internal.source;
 
-import org.mule.extension.hdfs.api.MetaData;
-import org.mule.extension.hdfs.api.error.HdfsErrorType;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
+import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.internal.service.factory.ServiceFactory;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionProvider;
@@ -23,10 +22,9 @@ import org.mule.runtime.extension.api.runtime.source.Source;
 import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 
-import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.dozerMapper;
+import static org.mule.extension.hdfs.api.error.HdfsErrorType.CONNECTIVITY;
 
 @Alias("read")
 @EmitsResponse
@@ -36,14 +34,13 @@ import static org.mule.extension.hdfs.internal.mapping.factory.MapperFactory.doz
 public class ReadSource extends Source<Object, Serializable> {
 
     private ServiceFactory serviceFactory = new ServiceFactory();
-    private HdfsConnection hdfsConnection;
     /**
      * Read the content of a file designated by its path
      *
      * @param path
-     *            the path of the file to read.
+     * the path of the file to read.
      * @param bufferSize
-     *            the buffer size to use when reading the file.
+     * the buffer size to use when reading the file.
      * @return the result from executing the rest of the flow.
      */
     @Parameter
@@ -53,45 +50,31 @@ public class ReadSource extends Source<Object, Serializable> {
     private int bufferSize;
 
     @Connection
-    private ConnectionProvider<HdfsConnection> connection;
+    private ConnectionProvider<HdfsConnection> connectionProvider;
 
     @Override
     public void onStart(SourceCallback<Object, java.io.Serializable> sourceCallback) throws MuleException {
-
         try {
             doStart(sourceCallback);
         } catch (Exception e) {
-            sourceCallback.onConnectionException((ConnectionException) e);
-        }
-    }
-
-    private void doStart(SourceCallback sourceCallback) throws IOException {
-
-        HdfsAPIService hdfsApiService;
-     
-        try {
-            hdfsConnection=connection.connect();
-            hdfsApiService = serviceFactory.getService(hdfsConnection);
-
-            Result.Builder<Object, Serializable> resultBuilder = Result.builder();
-
-            MetaData metaData = dozerMapper().map(hdfsApiService.getMetadata(path), MetaData.class);
-
-            InputStream is = hdfsApiService.read(path, bufferSize);
-
-            Result<Object, java.io.Serializable> result = resultBuilder.attributes(metaData)
-                    .output(is)
-                    .build();
-
-            sourceCallback.handle(result);
-        } catch (ConnectionException e) {
-          throw new ModuleException(e.getMessage(), HdfsErrorType.CONNECTIVITY);
+            sourceCallback.onConnectionException(ConnectionException.class.cast(e));
         }
     }
 
     @Override
     public void onStop() {
-        connection.disconnect(hdfsConnection);
+        // Do nothing.
     }
 
+    private void doStart(SourceCallback sourceCallback) throws IOException {
+        try {
+            HdfsAPIService hdfsApiService = serviceFactory.getService(connectionProvider.connect());
+            MetaData metaData = hdfsApiService.getMetadata(path);
+            sourceCallback.handle(Result.builder().attributes(metaData)
+                    .output(hdfsApiService.read(path, bufferSize))
+                    .build());
+        } catch (ConnectionException e) {
+            throw new ModuleException(e.getMessage(), CONNECTIVITY, e);
+        }
+    }
 }

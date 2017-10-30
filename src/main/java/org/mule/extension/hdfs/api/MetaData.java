@@ -1,31 +1,16 @@
-/**
- * (c) 2003-2017 MuleSoft, Inc. The software in this package is published under the terms of the Commercial Free Software license V.1 a copy of which has been included with this distribution in the LICENSE.md file.
- */
 package org.mule.extension.hdfs.api;
+
+import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
+import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
 
 import java.io.Serializable;
 
 public class MetaData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Indicates if the path exists
-     */
     private boolean pathExists;
-    /**
-     * A resume of the path info
-     */
-    private ContentSummary contentSummary;
-    /**
-     * info about the status of the file
-     */
+    private ContentSummaryDTO contentSummary;
     private FileStatus fileStatus;
-
-    /**
-     * MD5 digest of the file (if it is a file and exists)
-     */
-    private CheckSummary checkSummary;
+    private CheckSummaryDTO checkSummary;
 
     public boolean isPathExists() {
         return pathExists;
@@ -35,11 +20,11 @@ public class MetaData implements Serializable {
         this.pathExists = pathExists;
     }
 
-    public ContentSummary getContentSummary() {
+    public ContentSummaryDTO getContentSummary() {
         return contentSummary;
     }
 
-    public void setContentSummary(ContentSummary contentSummary) {
+    public void setContentSummary(ContentSummaryDTO contentSummary) {
         this.contentSummary = contentSummary;
     }
 
@@ -51,11 +36,11 @@ public class MetaData implements Serializable {
         this.fileStatus = fileStatus;
     }
 
-    public CheckSummary getCheckSummary() {
+    public CheckSummaryDTO getCheckSummary() {
         return checkSummary;
     }
 
-    public void setCheckSummary(CheckSummary checkSummary) {
+    public void setCheckSummary(CheckSummaryDTO checkSummary) {
         this.checkSummary = checkSummary;
     }
 }

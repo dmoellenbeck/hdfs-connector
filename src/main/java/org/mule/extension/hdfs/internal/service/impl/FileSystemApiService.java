@@ -3,8 +3,27 @@
  */
 package org.mule.extension.hdfs.internal.service.impl;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileChecksum;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.fs.permission.FsPermission;
+import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
+import org.mule.extension.hdfs.internal.mapping.BeanMapper;
+import org.mule.extension.hdfs.internal.service.HdfsAPIService;
+import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
+import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
+import org.mule.extension.hdfs.api.FileStatus;
+import org.mule.extension.hdfs.api.MetaData;
+import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
+import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
+import org.mule.extension.hdfs.internal.service.exception.HdfsException;
+import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
+import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
+import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,36 +36,12 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileChecksum;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.PathFilter;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
-import org.mule.extension.hdfs.internal.mapping.BeanMapper;
-import org.mule.extension.hdfs.internal.service.HdfsAPIService;
-import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
-import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
-import org.mule.extension.hdfs.internal.service.dto.FileStatusDTO;
-import org.mule.extension.hdfs.internal.service.dto.MetaDataDTO;
-import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
-import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
-import org.mule.extension.hdfs.internal.service.exception.HdfsException;
-import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
-import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
-import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class FileSystemApiService implements HdfsAPIService {
 
     public static final String HDFS = "hdfs";
-    public static final String HDFS_PATH_EXISTS = HDFS + ".path.exists";
-    public static final String HDFS_FILE_STATUS = HDFS + ".file.status";
-    public static final String HDFS_FILE_CHECKSUM = HDFS + ".file.checksum";
-    public static final String HDFS_CONTENT_SUMMARY = HDFS + ".content.summary";
 
     private FileSystem fileSystem;
     private BeanMapper beanMapper;
@@ -111,7 +106,7 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public List<FileStatusDTO> listStatus(String path, String filter) throws InvalidRequestDataException,
+    public List<FileStatus> listStatus(String path, String filter) throws InvalidRequestDataException,
             UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
@@ -145,7 +140,7 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public List<FileStatusDTO> globStatus(String pathPattern, String filter) throws InvalidRequestDataException,
+    public List<FileStatus> globStatus(String pathPattern, String filter) throws InvalidRequestDataException,
             UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
 
         try {
@@ -277,8 +272,8 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public MetaDataDTO getMetadata(String path) {
-        final MetaDataDTO metaData = new MetaDataDTO();
+    public MetaData getMetadata(String path) {
+        final MetaData metaData = new MetaData();
         try {
             Path hdfsPath = new Path(path);
 
@@ -290,8 +285,8 @@ public class FileSystemApiService implements HdfsAPIService {
 
             metaData.setContentSummary(beanMapper.map(fileSystem.getContentSummary(hdfsPath), ContentSummaryDTO.class));
 
-            final FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
-            metaData.setFileStatus(beanMapper.map(fileStatus, FileStatusDTO.class));
+            final org.apache.hadoop.fs.FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
+            metaData.setFileStatus(beanMapper.map(fileStatus, FileStatus.class));
 
             if (fileStatus.isDirectory()) {
                 return metaData;
@@ -421,10 +416,10 @@ public class FileSystemApiService implements HdfsAPIService {
         }
     }
 
-    private List<FileStatusDTO> mapFileStatusFiles(FileStatus[] files) {
+    private List<FileStatus> mapFileStatusFiles(org.apache.hadoop.fs.FileStatus[] files) {
         if (files != null) {
             return Arrays.stream(files)
-                    .map(fs -> beanMapper.map(fs, FileStatusDTO.class))
+                    .map(fs -> beanMapper.map(fs, FileStatus.class))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();

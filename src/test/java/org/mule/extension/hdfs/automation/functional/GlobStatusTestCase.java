@@ -3,20 +3,20 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mule.extension.hdfs.api.FileStatus;
+import org.mule.extension.hdfs.util.TestConstants;
+import org.mule.extension.hdfs.util.TestDataBuilder;
+
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mule.extension.hdfs.api.FileStatus;
-import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.extension.hdfs.util.TestConstants;
 
 @SuppressWarnings("unchecked")
 public class GlobStatusTestCase extends BaseTest {

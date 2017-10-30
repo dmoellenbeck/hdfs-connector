@@ -42,7 +42,7 @@ public class ReadSourceTestCase extends MuleArtifactFunctionalTestCase {
         String actualPayload = new String((byte[]) retrievePayload.getValue());
 
         TypedValue retrieveAttributes = (TypedValue) muleContext.getObjectStoreManager().getObjectStore("hdfsStore").retrieve("attrKey");
-        MetaData actualAttributes = (MetaData) retrieveAttributes.getValue();
+        MetaData actualAttributes = MetaData.class.cast(retrieveAttributes.getValue());
 
         Assert.assertTrue(actualPayload != null);
         Assert.assertTrue(actualAttributes != null);

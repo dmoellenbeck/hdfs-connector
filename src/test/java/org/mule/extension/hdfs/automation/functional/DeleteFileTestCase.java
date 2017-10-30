@@ -3,13 +3,6 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.io.ByteArrayInputStream;
-import java.util.List;
-
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +15,13 @@ import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.internal.exception.MessagingException;
+
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.notNullValue;
 
 
 @SuppressWarnings("unchecked")
