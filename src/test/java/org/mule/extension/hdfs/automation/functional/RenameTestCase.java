@@ -17,7 +17,7 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
 
 
 @SuppressWarnings("unchecked")
@@ -30,8 +30,12 @@ public class RenameTestCase extends BaseTest {
     private static final String NEW_MYFILE_PATH = ROOT_DIRECTORY + "myfile1.txt";
     private byte[] writtenData;
 
+    public RenameTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.RENAME_FLOW_PATH;
     }
 
@@ -65,7 +69,7 @@ public class RenameTestCase extends BaseTest {
                         .run());
         assertThat(destDirStatuses, notNullValue());
 
-        expectedException.expect(MessagingException.class);
+        expectedException.expect(Exception.class);
         List<FileStatus> sourceDirStatuses = (List<FileStatus>) TestDataBuilder
                 .getValue(flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", DIRECTORY)
                         .run());

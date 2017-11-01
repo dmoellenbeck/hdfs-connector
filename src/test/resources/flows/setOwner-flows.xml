@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
 ">
 
-    <import file="flows/base-flows.xml"></import>
+
 
     <flow name="setOwnerFlow">
         <hdfs:set-owner config-ref="simple-config" path="#[vars.path]" ownername="#[vars.ownername]"

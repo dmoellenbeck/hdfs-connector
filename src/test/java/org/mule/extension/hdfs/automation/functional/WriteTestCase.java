@@ -21,7 +21,7 @@ import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
 
 @SuppressWarnings("unchecked")
 public class WriteTestCase extends BaseTest {
@@ -34,8 +34,12 @@ public class WriteTestCase extends BaseTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    public WriteTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.WRITE_OPERATION_FLOW_PATH;
     }
 
@@ -61,7 +65,7 @@ public class WriteTestCase extends BaseTest {
 
     @Test
     public void testWriteNullPayloadFlow() throws Exception {
-        expectedException.expect(MessagingException.class);
+        expectedException.expect(Exception.class);
         expectedException.expectMessage(StringContains.containsString("Payload cannot be null"));
 
         InputStream payload = null;

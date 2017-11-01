@@ -34,8 +34,12 @@ public class DeleteFileTestCase extends BaseTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    public DeleteFileTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.DELETE_FILE_FLOW_PATH;
     }
 
@@ -72,7 +76,7 @@ public class DeleteFileTestCase extends BaseTest {
     @Test
     public void testDeleteUnexistingFile() throws Exception {
       
-        expectedException.expect(MessagingException.class);
+        expectedException.expect(Exception.class);
         expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_FILE));
         
         flowRunner(TestConstants.FlowNames.DELETE_FILE_FLOW).withVariable("path", UNEXISTING_FILE)

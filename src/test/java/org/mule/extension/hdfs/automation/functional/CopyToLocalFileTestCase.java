@@ -26,8 +26,12 @@ public class CopyToLocalFileTestCase extends BaseTest {
     private static final String LOCAL_TARGET_PATH = "src/test/resources/data-sets/myfile.txt";
     private byte[] initialWrittenData;
 
+    public CopyToLocalFileTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.COPY_TO_LOCAL_FLOW_PATH;
     }
 

@@ -6,7 +6,6 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
 ">
-    <import file="flows/base-flows.xml"></import>
 
     <flow name="listStatusFlow">
         <hdfs:list-status config-ref="simple-config" path="#[vars.path]" filter="#[vars.filter]">

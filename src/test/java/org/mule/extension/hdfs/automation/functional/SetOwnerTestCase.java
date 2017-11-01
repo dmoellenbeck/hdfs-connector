@@ -24,8 +24,12 @@ public class SetOwnerTestCase extends BaseTest {
     private static final String NEW_GROUP = "testGroup";
     private byte[] writtenData;
 
+    public SetOwnerTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.SET_OWNER_FLOW_PATH;
     }
 

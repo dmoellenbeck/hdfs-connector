@@ -24,8 +24,12 @@ public class GlobStatusTestCase extends BaseTest {
     private final String PARENT_DIRECTORY = "hdfs-test-glob-status/";
     public static final String INVALID_PATH_PATTERN = "invalidPathPattern";
 
+    public GlobStatusTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.GLOBAL_STATUS_FLOW_PATH;
     }
 

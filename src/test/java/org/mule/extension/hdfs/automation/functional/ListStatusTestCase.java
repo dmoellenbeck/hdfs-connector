@@ -32,8 +32,12 @@ public class ListStatusTestCase extends BaseTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    public ListStatusTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.LIST_STATUS_FLOW_PATH;
     }
 

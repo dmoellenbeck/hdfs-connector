@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
 
 @SuppressWarnings("unchecked")
 public class GetMetadataTestCase extends BaseTest {
@@ -28,8 +28,12 @@ public class GetMetadataTestCase extends BaseTest {
     @Rule
     public ExpectedException fileNotFoundExpected = ExpectedException.none();
 
+    public GetMetadataTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.GET_METADATA_FLOW_PATH;
     }
 
@@ -61,7 +65,7 @@ public class GetMetadataTestCase extends BaseTest {
 
     @Test
     public void shouldThrowExceptionForInvalidParameter() throws Exception {
-        fileNotFoundExpected.expect(MessagingException.class);
+        fileNotFoundExpected.expect(Exception.class);
         fileNotFoundExpected.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.ILLEGAL_PATH));
         flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", "")
                 .run();

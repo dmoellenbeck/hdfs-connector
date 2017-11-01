@@ -12,7 +12,7 @@
         ">
 
 
-    <import file="flows/base-flows.xml"></import>
+
     <flow name="writeFlow">
         <hdfs:write config-ref="simple-config" path="#[vars.path]" ownerUserName="#[vars.ownerUserName]"
                     permission="#[vars.permission]">

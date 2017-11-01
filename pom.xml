@@ -75,7 +75,12 @@
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-objectstore-connector</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
     </dependencies>
 
     <build>
