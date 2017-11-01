@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
-
+import org.mule.runtime.api.exception.MuleException;
 
 
 @SuppressWarnings("unchecked")
@@ -49,7 +49,7 @@ public class DeleteDirectoryTestCase extends BaseTest {
     @Test
     public void testDeleteUnexistingDir() throws Exception {
 
-        expectedException.expect(Exception.class);
+        expectedException.expect(MuleException.class);
         expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_DIR));
 
         flowRunner(TestConstants.FlowNames.DELETE_DIR_FLOW).withVariable("path", UNEXISTING_FILE)
@@ -57,7 +57,7 @@ public class DeleteDirectoryTestCase extends BaseTest {
     }
 
     private void verifyDeletionOfDirectory() throws Exception {
-        expectedException.expect(Exception.class);
+        expectedException.expect(MuleException.class);
         expectedException.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_FILE_PATH));
         flowRunner(TestConstants.FlowNames.LIST_STATUS_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
                 .run();

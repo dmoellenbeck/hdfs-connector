@@ -3,13 +3,6 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.io.ByteArrayInputStream;
-import java.util.List;
-
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
@@ -20,8 +13,15 @@ import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
+import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.core.api.event.CoreEvent;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.notNullValue;
 
 
 @SuppressWarnings("unchecked")
@@ -76,7 +76,7 @@ public class DeleteFileTestCase extends BaseTest {
     @Test
     public void testDeleteUnexistingFile() throws Exception {
       
-        expectedException.expect(Exception.class);
+        expectedException.expect(MuleException.class);
         expectedException.expectMessage(StringContains.containsString(ExceptionMessages.UNABLE_TO_DELETE_FILE));
         
         flowRunner(TestConstants.FlowNames.DELETE_FILE_FLOW).withVariable("path", UNEXISTING_FILE)
