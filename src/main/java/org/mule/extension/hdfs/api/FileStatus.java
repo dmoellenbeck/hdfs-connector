@@ -3,9 +3,7 @@
  */
 package org.mule.extension.hdfs.api;
 
-import java.io.Serializable;
-
-public class FileStatus implements Serializable {
+public class FileStatus {
 
     private String path;
     private long length;
@@ -110,5 +108,4 @@ public class FileStatus implements Serializable {
     public boolean isSymlink() {
         return symlink != null;
     }
-
 }

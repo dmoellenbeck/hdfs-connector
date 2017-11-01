@@ -3,11 +3,6 @@
  */
 package org.mule.extension.hdfs.automation.functional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-
 import org.hamcrest.core.StringContains;
 import org.hamcrest.text.IsEmptyString;
 import org.junit.After;
@@ -20,6 +15,11 @@ import org.mule.extension.hdfs.util.TestConstants;
 import org.mule.extension.hdfs.util.TestDataBuilder;
 import org.mule.runtime.api.exception.MuleException;
 
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 @SuppressWarnings("unchecked")
 public class GetMetadataTestCase extends BaseTest {
@@ -54,8 +54,8 @@ public class GetMetadataTestCase extends BaseTest {
 
     @Test
     public void shouldContainDirectoryMetadataInfo() throws Exception {
-        MetaData pathMetadata = (MetaData) TestDataBuilder.getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
-                .run());
+        MetaData pathMetadata = MetaData.class.cast(TestDataBuilder.getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
+                .run()));
 
         // the checksum param is not populated since the path is a directory and not a file
         assertThat(pathMetadata, notNullValue());
@@ -73,10 +73,9 @@ public class GetMetadataTestCase extends BaseTest {
     }
 
     private void verifyDeletetionOfDirectory() throws Exception {
-        MetaData pathMetadata = (MetaData) TestDataBuilder
+        MetaData pathMetadata = MetaData.class.cast(TestDataBuilder
                 .getValue(flowRunner(TestConstants.FlowNames.GET_METADATA_FLOW).withVariable("path", PARENT_DIRECTORY + NEW_DIRECTORY)
-                        .run());
-
+                        .run()));
         assertThat(pathMetadata, notNullValue());
         assertThat(pathMetadata.isPathExists(), is(false));
     }

@@ -6,6 +6,7 @@ import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveRespon
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.runtime.extension.api.exception.ModuleException;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BaseOperations {
@@ -25,6 +26,13 @@ public abstract class BaseOperations {
         } catch (Exception e) {
             throw new ModuleException(e.getMessage(), HdfsErrorType.UNKNOWN, e);
         }
+    }
+
+    protected void execute(Runnable runnable) {
+        execute(() -> {
+            runnable.run();
+            return null;
+        });
     }
 
 }
