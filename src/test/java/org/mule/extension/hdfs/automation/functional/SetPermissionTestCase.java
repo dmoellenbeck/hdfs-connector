@@ -31,8 +31,12 @@ public class SetPermissionTestCase extends BaseTest {
 
     private byte[] writtenData;
 
+    public SetPermissionTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.SET_PERMISSION_FLOW_PATH;
     }
 

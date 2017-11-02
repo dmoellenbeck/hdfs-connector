@@ -23,8 +23,12 @@ public class CopyFromLocalFileTestCase extends BaseTest {
     public static final String TARGET_DIRECTORY = "rootDirectory/";
     public static final String LOCAL_SOURCE_PATH = "src/test/resources/data-sets/timeZones.txt";
 
+    public CopyFromLocalFileTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.COPY_FROM_LOCAL_FLOW_PATH;
     }
 

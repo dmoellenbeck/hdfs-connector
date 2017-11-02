@@ -21,8 +21,12 @@ public class MakeDirectoriesTestCase extends BaseTest {
     private static final String PARENT_DIRECTORY = "rootDirectory/";
     private static final String NEW_DIRECTORY = "newDirectory";
 
+    public MakeDirectoriesTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.MAKE_DIR_FLOW_PATH;
     }
 

@@ -11,10 +11,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.util.TestConstants;
+
+import org.mule.runtime.api.exception.MuleException;
+
 import org.mule.extension.hdfs.util.TestDataBuilder;
+
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -34,8 +38,12 @@ public class WriteTestCase extends BaseTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    public WriteTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.WRITE_OPERATION_FLOW_PATH;
     }
 
@@ -61,7 +69,7 @@ public class WriteTestCase extends BaseTest {
 
     @Test
     public void testWriteNullPayloadFlow() throws Exception {
-        expectedException.expect(MessagingException.class);
+        expectedException.expect(MuleException.class);
         expectedException.expectMessage(StringContains.containsString("Payload cannot be null"));
 
         InputStream payload = null;

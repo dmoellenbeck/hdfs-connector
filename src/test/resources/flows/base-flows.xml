@@ -8,8 +8,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
 ">
 
-    <import file="flows/configs/${activeconfiguration}-config.xml"/>
-
 
     <flow name="makeDirFlow">
         <hdfs:make-directories config-ref="simple-config" path="#[vars.path]" permission="#[vars.permission]">

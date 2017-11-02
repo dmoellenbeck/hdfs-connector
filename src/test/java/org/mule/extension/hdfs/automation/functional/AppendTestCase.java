@@ -26,8 +26,12 @@ public class AppendTestCase extends BaseTest {
     private byte[] initialWrittenData;
     private final String PARENT_DIRECTORY = "hdfs-test-append/";
 
+    public AppendTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.APPEND_FLOW_PATH;
     }
 

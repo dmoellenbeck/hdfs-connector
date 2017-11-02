@@ -16,9 +16,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mule.extension.hdfs.util.TestConstants;
+import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.bytes.CursorStream;
 import org.mule.runtime.api.streaming.bytes.CursorStreamProvider;
-import org.mule.runtime.core.internal.exception.MessagingException;
+
 
 
 public class ReadOperationTestCase extends BaseTest {
@@ -30,8 +31,12 @@ public class ReadOperationTestCase extends BaseTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    public ReadOperationTestCase(String configuration) {
+        super(configuration);
+    }
+
     @Override
-    protected String getConfigFile() {
+    public String getFlowFile() {
         return TestConstants.READ_OPERATION_FLOW_PATH;
     }
 
@@ -59,7 +64,7 @@ public class ReadOperationTestCase extends BaseTest {
     @Test
     public void testReadOpFlowUnexistingFile() throws Exception {
 
-        expectedException.expect(MessagingException.class);
+        expectedException.expect(MuleException.class);
         expectedException.expectMessage(StringContains.containsString(TestConstants.ExceptionMessages.INVALID_REQUEST_DATA));
 
         flowRunner(TestConstants.FlowNames.READ_OP_FLOW).withVariable("path", "unexisting.txt")
