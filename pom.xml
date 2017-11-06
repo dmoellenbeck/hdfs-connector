@@ -11,7 +11,7 @@
 
     <groupId>org.mule.connectors</groupId>
     <artifactId>mule-hdfs-connector</artifactId>
-    <version>6.0.0-001-SNAPSHOT</version>
+    <version>6.0.0-002-SNAPSHOT</version>
     <packaging>mule-extension</packaging>
     <name>Mule HDFS Connector</name>
 
