@@ -1,9 +1,9 @@
 {
   "configs": [
-    "common-operations.xml"
+    "hdfs-poll-from-file.xml"
   ],
   "redeploymentEnabled": true,
-  "name": "common-operations",
+  "name": "hdfs-poll-from-file",
   "minMuleVersion": "4.0.0-SNAPSHOT",
   "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {

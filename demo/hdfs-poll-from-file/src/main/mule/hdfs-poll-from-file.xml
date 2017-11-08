@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+    
+      <hdfs:hdfs-config name="hdfs-conf">
+        <hdfs:simple-connection nameNodeUri="hdfs://localhost:9000" username="hduser"/>
+    </hdfs:hdfs-config>
+	<flow name="poll-from-file-flow">
+		<hdfs:read config-ref="hdfs-conf" path="/test.txt" doc:name="Read" doc:id="655beb68-e410-4c2a-9556-81f566abf6ba" />
+        <ee:transform doc:name="Transform Message" doc:id="d0e113e3-a36b-4597-8a93-0a9f0f3a3f37" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload as String]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="084804d7-b410-41e8-be27-0566be9178e1" message="#[payload]"/>
+    
+
+</flow>
+	</mule>
