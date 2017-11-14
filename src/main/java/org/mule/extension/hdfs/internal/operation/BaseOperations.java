@@ -1,12 +1,11 @@
 package org.mule.extension.hdfs.internal.operation;
 
-import org.mule.extension.hdfs.api.error.HdfsErrorType;
+import org.mule.extension.hdfs.internal.error.HdfsErrorType;
 import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
 import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
 import org.mule.runtime.extension.api.exception.ModuleException;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BaseOperations {

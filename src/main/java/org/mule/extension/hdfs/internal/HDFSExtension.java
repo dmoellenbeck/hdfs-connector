@@ -3,7 +3,7 @@
  */
 package org.mule.extension.hdfs.internal;
 
-import org.mule.extension.hdfs.api.error.HdfsErrorType;
+import org.mule.extension.hdfs.internal.error.HdfsErrorType;
 import org.mule.extension.hdfs.internal.config.HdfsConfiguration;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.Extension;

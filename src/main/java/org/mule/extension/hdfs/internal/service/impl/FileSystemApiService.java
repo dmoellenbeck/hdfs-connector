@@ -11,11 +11,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.fs.permission.FsPermission;
+import org.mule.extension.hdfs.api.CheckSummary;
+import org.mule.extension.hdfs.api.ContentSummary;
 import org.mule.extension.hdfs.internal.connection.FileSystemConnection;
 import org.mule.extension.hdfs.internal.mapping.BeanMapper;
 import org.mule.extension.hdfs.internal.service.HdfsAPIService;
-import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
-import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.api.MetaData;
 import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
@@ -283,7 +283,9 @@ public class FileSystemApiService implements HdfsAPIService {
                 return metaData;
             }
 
-            metaData.setContentSummary(beanMapper.map(fileSystem.getContentSummary(hdfsPath), ContentSummaryDTO.class));
+            ContentSummary dto = beanMapper.map(fileSystem.getContentSummary(hdfsPath), ContentSummary.class);
+
+            metaData.setContentSummary(dto);
 
             final org.apache.hadoop.fs.FileStatus fileStatus = fileSystem.getFileStatus(hdfsPath);
             metaData.setFileStatus(beanMapper.map(fileStatus, FileStatus.class));
@@ -294,8 +296,8 @@ public class FileSystemApiService implements HdfsAPIService {
 
             final FileChecksum fileChecksum = fileSystem.getFileChecksum(hdfsPath);
             if (fileChecksum != null) {
-                CheckSummaryDTO checkSummaryDTO = beanMapper.map(fileChecksum, CheckSummaryDTO.class);
-                metaData.setCheckSummary(checkSummaryDTO);
+                CheckSummary checkSummary = beanMapper.map(fileChecksum, CheckSummary.class);
+                metaData.setCheckSummary(checkSummary);
             }
         } catch (IOException e) {
             throw new InvalidRequestDataException(
