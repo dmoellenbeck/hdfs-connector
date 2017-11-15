@@ -6,16 +6,27 @@ package org.mule.extension.hdfs.api;
 public class FileStatus {
 
     private String path;
+
     private long length;
-    private boolean isdir;
-    private short block_replication;
-    private long blocksize;
-    private long modification_time;
-    private long access_time;
+
+    private boolean isDirectory;
+
+    private short blockReplication;
+
+    private long blockSize;
+
+    private long modificationTime;
+
+    private long accessTime;
+
     private String permission;
+
     private String owner;
+
     private String group;
-    private String symlink;
+
+    private String symbolicLink;
+
 
     public String getPath() {
         return path;
@@ -33,44 +44,44 @@ public class FileStatus {
         this.length = length;
     }
 
-    public boolean isIsdir() {
-        return isdir;
+    public boolean isDirectory() {
+        return isDirectory;
     }
 
-    public void setIsdir(boolean isdir) {
-        this.isdir = isdir;
+    public void setDirectory(boolean directory) {
+        this.isDirectory = directory;
     }
 
-    public short getBlock_replication() {
-        return block_replication;
+    public short getBlockReplication() {
+        return blockReplication;
     }
 
-    public void setBlock_replication(short block_replication) {
-        this.block_replication = block_replication;
+    public void setBlockReplication(short blockReplication) {
+        this.blockReplication = blockReplication;
     }
 
-    public long getBlocksize() {
-        return blocksize;
+    public long getBlockSize() {
+        return blockSize;
     }
 
-    public void setBlocksize(long blocksize) {
-        this.blocksize = blocksize;
+    public void setBlockSize(long blockSize) {
+        this.blockSize = blockSize;
     }
 
-    public long getModification_time() {
-        return modification_time;
+    public long getModificationTime() {
+        return modificationTime;
     }
 
-    public void setModification_time(long modification_time) {
-        this.modification_time = modification_time;
+    public void setModificationTime(long modificationTime) {
+        this.modificationTime = modificationTime;
     }
 
-    public long getAccess_time() {
-        return access_time;
+    public long getAccessTime() {
+        return accessTime;
     }
 
-    public void setAccess_time(long access_time) {
-        this.access_time = access_time;
+    public void setAccessTime(long accessTime) {
+        this.accessTime = accessTime;
     }
 
     public String getPermission() {
@@ -97,15 +108,15 @@ public class FileStatus {
         this.group = group;
     }
 
-    public String getSymlink() {
-        return symlink;
+    public String getSymbolicLink() {
+        return symbolicLink;
     }
 
-    public void setSymlink(String symlink) {
-        this.symlink = symlink;
+    public void setSymbolicLink(String symbolicLink) {
+        this.symbolicLink = symbolicLink;
     }
 
-    public boolean isSymlink() {
-        return symlink != null;
+    public boolean isSymbolicLink() {
+        return symbolicLink != null;
     }
 }

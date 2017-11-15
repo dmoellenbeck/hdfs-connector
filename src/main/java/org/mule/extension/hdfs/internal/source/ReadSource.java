@@ -24,7 +24,7 @@ import org.mule.runtime.extension.api.runtime.source.SourceCallback;
 import java.io.IOException;
 import java.io.Serializable;
 
-import static org.mule.extension.hdfs.api.error.HdfsErrorType.CONNECTIVITY;
+import static org.mule.extension.hdfs.internal.error.HdfsErrorType.CONNECTIVITY;
 
 @Alias("read")
 @EmitsResponse

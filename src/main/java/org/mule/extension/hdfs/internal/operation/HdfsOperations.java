@@ -4,7 +4,7 @@
 package org.mule.extension.hdfs.internal.operation;
 
 
-import org.mule.extension.hdfs.api.error.HdfsOperationErrorTypeProvider;
+import org.mule.extension.hdfs.internal.error.HdfsOperationErrorTypeProvider;
 import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.api.FileStatus;
@@ -180,8 +180,8 @@ public class HdfsOperations extends BaseOperations {
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void copyToLocalFile(@Connection HdfsConnection connection,
-                                @Optional(defaultValue = "false") boolean deleteSource,
-                                @Optional(defaultValue = "false") boolean useRawLocalFileSystem,
+                                @Optional boolean deleteSource,
+                                @Optional boolean useRawLocalFileSystem,
                                 String source,
                                 String destination) {
         execute(() -> serviceFactory.getService(connection).copyToLocalFile(deleteSource, useRawLocalFileSystem, source, destination));
@@ -198,7 +198,7 @@ public class HdfsOperations extends BaseOperations {
      */
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void copyFromLocalFile(@Connection HdfsConnection connection,
-                                  @Optional(defaultValue = "false") boolean deleteSource,
+                                  @Optional boolean deleteSource,
                                   @Optional(defaultValue = "true") boolean overwrite,
                                   String source, String destination) {
         execute(() -> serviceFactory.getService(connection).copyFromLocalFile(deleteSource, overwrite, source, destination));

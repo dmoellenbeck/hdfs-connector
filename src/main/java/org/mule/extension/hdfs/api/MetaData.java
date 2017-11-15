@@ -1,16 +1,13 @@
 package org.mule.extension.hdfs.api;
 
-import org.mule.extension.hdfs.internal.service.dto.CheckSummaryDTO;
-import org.mule.extension.hdfs.internal.service.dto.ContentSummaryDTO;
-
 import java.io.Serializable;
 
 public class MetaData implements Serializable {
 
     private boolean pathExists;
-    private ContentSummaryDTO contentSummary;
+    private ContentSummary contentSummary;
     private FileStatus fileStatus;
-    private CheckSummaryDTO checkSummary;
+    private CheckSummary checkSummary;
 
     public boolean isPathExists() {
         return pathExists;
@@ -20,11 +17,11 @@ public class MetaData implements Serializable {
         this.pathExists = pathExists;
     }
 
-    public ContentSummaryDTO getContentSummary() {
+    public ContentSummary getContentSummary() {
         return contentSummary;
     }
 
-    public void setContentSummary(ContentSummaryDTO contentSummary) {
+    public void setContentSummary(ContentSummary contentSummary) {
         this.contentSummary = contentSummary;
     }
 
@@ -36,11 +33,11 @@ public class MetaData implements Serializable {
         this.fileStatus = fileStatus;
     }
 
-    public CheckSummaryDTO getCheckSummary() {
+    public CheckSummary getCheckSummary() {
         return checkSummary;
     }
 
-    public void setCheckSummary(CheckSummaryDTO checkSummary) {
+    public void setCheckSummary(CheckSummary checkSummary) {
         this.checkSummary = checkSummary;
     }
 }

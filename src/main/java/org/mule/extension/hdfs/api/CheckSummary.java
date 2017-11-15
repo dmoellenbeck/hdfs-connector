@@ -8,7 +8,9 @@ import java.io.Serializable;
 public class CheckSummary implements Serializable {
 
     private int bytesPerCRC;
+
     private long crcPerBlock;
+
     private String md5;
 
     public int getBytesPerCRC() {
@@ -29,7 +31,6 @@ public class CheckSummary implements Serializable {
 
     public String getMd5() {
         return md5;
-
     }
 
     public void setMd5(String md5) {
