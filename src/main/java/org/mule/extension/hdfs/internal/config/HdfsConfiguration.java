@@ -3,6 +3,7 @@
  */
 package org.mule.extension.hdfs.internal.config;
 
+import org.mule.connectors.commons.template.config.ConnectorConfig;
 import org.mule.extension.hdfs.internal.connection.provider.KerberosConnectionProvider;
 import org.mule.extension.hdfs.internal.connection.provider.SimpleConnectionProvider;
 import org.mule.extension.hdfs.internal.operation.HdfsOperations;
@@ -23,6 +24,6 @@ import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 @Sources(ReadSource.class)
 @Configuration(name = "hdfs")
 @DisplayName("Hdfs")
-public class HdfsConfiguration {
+public class HdfsConfiguration implements ConnectorConfig {
 
 }

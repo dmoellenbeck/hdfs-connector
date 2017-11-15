@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.mule.extensions</groupId>
-        <artifactId>mule-modules-parent</artifactId>
-        <version>1.0.0</version>
+        <groupId>com.mule.connectors</groupId>
+        <artifactId>mule-connectivity-parent</artifactId>
+        <version>1.0.0-004-SNAPSHOT</version>
     </parent>
 
     <groupId>org.mule.connectors</groupId>
@@ -91,6 +91,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>connector-analyze</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <ignoredDependencies>
+                                <ignoredDependency>org.mule.*</ignoredDependency>
+                                <ignoredDependency>org.apache.hadoop:hadoop-client</ignoredDependency>
+                                <ignoredDependency>org.apache.zookeeper:zookeeper</ignoredDependency>
+                                <ignoredDependency>org.apache.httpcomponents:httpclient</ignoredDependency>
+                            </ignoredDependencies>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoredUsedUndeclaredDependencies>
+                                <ignoredUsedUndeclaredDependency>*</ignoredUsedUndeclaredDependency>
+                            </ignoredUsedUndeclaredDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <repositories>
@@ -121,89 +147,9 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
-    <profiles>
-        <profile>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <id>deploy-devx-maven-facade</id>
-            <distributionManagement>
-                <repository>
-                    <id>maven-facade-devx</id>
-                    <name>Mozart Dev Environment</name>
-                    <url>
-                        https://maven.devx.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven
-                    </url>
-                </repository>
-                <snapshotRepository>
-                    <id>maven-facade-devx</id>
-                    <name>Mozart Dev Environment</name>
-                    <url>
-                        https://maven.devx.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven
-                    </url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>deploy-qax-maven-facade</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>maven-facade-qax</id>
-                    <name>Mozart QA Environment</name>
-                    <url>
-                        https://maven.qax.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven
-                    </url>
-                </repository>
-                <snapshotRepository>
-                    <id>maven-facade-qax</id>
-                    <name>Mozart Dev Environment</name>
-                    <url>
-                        https://maven.qax.anypoint.mulesoft.com/api/v1/organizations/68ef9520-24e9-4cf2-b2f5-620025690913/maven
-                    </url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>deploy-stgx-maven-facade</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>maven-facade-stgx</id>
-                    <name>Mozart STGX Environment</name>
-                    <url>
-                        https://maven.stgx.anypoint.mulesoft.com/api/v1/organizations/b2fd6061-9225-4f03-8ed9-2f3bf95acf41/maven
-                    </url>
-                </repository>
-                <snapshotRepository>
-                    <id>maven-facade-stgx</id>
-                    <name>Mozart STGX Environment</name>
-                    <url>
-                        https://maven.stgx.anypoint.mulesoft.com/api/v1/organizations/b2fd6061-9225-4f03-8ed9-2f3bf95acf41/maven
-                    </url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>functional-testing-output-dir</id>
-            <build>
-                <directory>${project.basedir}/target/functionalTesting</directory>
-            </build>
-        </profile>
-    </profiles>
-
     <scm>
         <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
         <developerConnection>scm:git:git@github.com:mulesoft/hdfs-connector.git</developerConnection>
         <url>https://github.com/mulesoft/hdfs-connector</url>
     </scm>
-
-
 </project>
