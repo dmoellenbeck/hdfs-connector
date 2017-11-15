@@ -5,7 +5,6 @@ package org.mule.extension.hdfs.internal.operation;
 
 
 import org.mule.extension.hdfs.internal.error.HdfsOperationErrorTypeProvider;
-import org.mule.extension.hdfs.api.operation.param.WriteOpParams;
 import org.mule.extension.hdfs.internal.connection.HdfsConnection;
 import org.mule.extension.hdfs.api.FileStatus;
 import org.mule.extension.hdfs.api.MetaData;
