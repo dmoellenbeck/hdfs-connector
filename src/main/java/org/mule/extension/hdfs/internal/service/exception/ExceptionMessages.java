@@ -33,7 +33,6 @@ public class ExceptionMessages {
 
     static {
         exceptionsMapping.put(HdfsConnectionException.class.getSimpleName(), UNABLE_SEND);
-        exceptionsMapping.put(UnableToRetrieveResponseException.class.getSimpleName(), UNABLE_RETRIEVE);
         exceptionsMapping.put(InvalidRequestDataException.class.getSimpleName(), INVALID_REQUEST_DATA);
         exceptionsMapping.put(IllegalArgumentException.class.getSimpleName(), ILLEGAL_ARGUMENT);
         exceptionsMapping.put(PatternSyntaxException.class.getSimpleName(), INVALID_INPUT_FILTER);

@@ -9,6 +9,7 @@ package org.mule.extension.hdfs.internal.service.exception;
 public class InvalidRequestDataException extends RuntimeException {
 
     private static final long serialVersionUID = -7589867696620893927L;
+
     private final String errorCode;
 
     public InvalidRequestDataException(String message, String errorCode, Exception cause) {

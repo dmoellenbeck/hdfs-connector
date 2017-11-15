@@ -5,8 +5,10 @@ package org.mule.extension.hdfs.internal;
 
 import org.mule.extension.hdfs.internal.error.HdfsErrorType;
 import org.mule.extension.hdfs.internal.config.HdfsConfiguration;
+import org.mule.extension.hdfs.internal.error.HdfsExceptionHandler;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.Extension;
+import org.mule.runtime.extension.api.annotation.OnException;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 
@@ -16,6 +18,7 @@ import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 @Xml(prefix = "hdfs")
 @Extension(name = "Hdfs")
 @ErrorTypes(HdfsErrorType.class)
+@OnException(HdfsExceptionHandler.class)
 public class HDFSExtension {
 
 }

@@ -22,8 +22,8 @@ import org.mule.extension.hdfs.internal.service.exception.ExceptionMessages;
 import org.mule.extension.hdfs.internal.service.exception.HdfsConnectionException;
 import org.mule.extension.hdfs.internal.service.exception.HdfsException;
 import org.mule.extension.hdfs.internal.service.exception.InvalidRequestDataException;
-import org.mule.extension.hdfs.internal.service.exception.UnableToRetrieveResponseException;
-import org.mule.extension.hdfs.internal.service.exception.UnableToSendRequestException;
+
+
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public InputStream read(String path, int bufferSize) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             InputStream input = fileSystem.open(hdfsPath, bufferSize);
@@ -74,7 +74,7 @@ public class FileSystemApiService implements HdfsAPIService {
     @Override
     public void create(String path, String permission, boolean overwrite, int bufferSize, int replication,
             long blockSize, String ownerUserName, String ownerGroupName, InputStream payload)
-            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException,
+            throws InvalidRequestDataException,
             HdfsConnectionException {
 
         try {
@@ -107,7 +107,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public List<FileStatus> listStatus(String path, String filter) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             if (StringUtils.isNotBlank(filter)) {
@@ -141,7 +141,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public List<FileStatus> globStatus(String pathPattern, String filter) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
 
         try {
             Path hdfsPath = new Path(pathPattern);
@@ -177,7 +177,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void mkdirs(String path, String permission) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
 
         try {
 
@@ -201,8 +201,8 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public void deleteDirectory(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException,
-            UnableToSendRequestException, HdfsConnectionException {
+    public void deleteDirectory(String path) throws InvalidRequestDataException,
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             boolean result = fileSystem.delete(hdfsPath, true);
@@ -224,7 +224,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void append(String path, int bufferSize, InputStream payload) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
 
             validateCreate(payload);
@@ -250,8 +250,8 @@ public class FileSystemApiService implements HdfsAPIService {
     }
 
     @Override
-    public void deleteFile(String path) throws InvalidRequestDataException, UnableToRetrieveResponseException,
-            UnableToSendRequestException, HdfsConnectionException {
+    public void deleteFile(String path) throws InvalidRequestDataException,
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             boolean result = fileSystem.delete(hdfsPath, false);
@@ -310,7 +310,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void rename(String source, String destination) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
             Path hdfsSourcePath = new Path(source);
             Path hdfsDestPath = new Path(destination);
@@ -334,7 +334,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void copyToLocalFile(boolean deleteSource, boolean useRawLocalFileSystem, String source, String destination)
-            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException,
+            throws InvalidRequestDataException,
             HdfsConnectionException {
 
         try {
@@ -357,7 +357,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void copyFromLocalFile(boolean deleteSource, boolean overwrite, String source, String destination)
-            throws InvalidRequestDataException, UnableToRetrieveResponseException, UnableToSendRequestException,
+            throws InvalidRequestDataException,
             HdfsConnectionException {
 
         try {
@@ -380,7 +380,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void setPermission(String path, String permission) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             fileSystem.setPermission(hdfsPath, getFileSystemPermission(permission));
@@ -400,7 +400,7 @@ public class FileSystemApiService implements HdfsAPIService {
 
     @Override
     public void setOwner(String path, String ownername, String groupname) throws InvalidRequestDataException,
-            UnableToRetrieveResponseException, UnableToSendRequestException, HdfsConnectionException {
+            HdfsConnectionException {
         try {
             Path hdfsPath = new Path(path);
             fileSystem.setOwner(hdfsPath, ownername, groupname);

@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.mule.runtime.extension.api.annotation.param.MediaType.APPLICATION_OCTET_STREAM;
 
-public class HdfsOperations extends BaseOperations {
+public class HdfsOperations {
 
     private ServiceFactory serviceFactory = new ServiceFactory();
 
@@ -39,7 +39,7 @@ public class HdfsOperations extends BaseOperations {
     public InputStream readOperation(@Connection HdfsConnection connection,
                                      String path,
                                      @Optional(defaultValue = "4096") int bufferSize) {
-        return execute(() -> serviceFactory.getService(connection).read(path, bufferSize));
+        return serviceFactory.getService(connection).read(path, bufferSize);
 
     }
 
@@ -52,9 +52,9 @@ public class HdfsOperations extends BaseOperations {
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void write(@Connection HdfsConnection connection,
                       @ParameterGroup(name = "Input parameters") WriteOpParams param) {
-        execute(() -> serviceFactory.getService(connection).create(param.getPath(), param.getPermission(), param.isOverwrite(), param.getBufferSize(),
+        serviceFactory.getService(connection).create(param.getPath(), param.getPermission(), param.isOverwrite(), param.getBufferSize(),
                 param.getReplication(), param.getBlockSize(), param.getOwnerUserName(), param.getOwnerGroupName(),
-                param.getPayload()));
+                param.getPayload());
     }
 
     /**
@@ -69,7 +69,7 @@ public class HdfsOperations extends BaseOperations {
     public List<FileStatus> listStatus(@Connection HdfsConnection connection,
                                        String path,
                                        @Optional String filter) {
-        return execute(() -> serviceFactory.getService(connection).listStatus(path, filter));
+        return serviceFactory.getService(connection).listStatus(path, filter);
     }
 
     /**
@@ -83,7 +83,7 @@ public class HdfsOperations extends BaseOperations {
     public List<FileStatus> globStatus(@Connection HdfsConnection connection,
                                        String pathPattern,
                                        @Optional String filter) {
-        return execute(() -> serviceFactory.getService(connection).globStatus(pathPattern, filter));
+        return serviceFactory.getService(connection).globStatus(pathPattern, filter);
     }
 
     /**
@@ -97,7 +97,7 @@ public class HdfsOperations extends BaseOperations {
     public void makeDirectories(@Connection HdfsConnection connection,
                                 String path,
                                 @Optional String permission) {
-        execute(() -> serviceFactory.getService(connection).mkdirs(path, permission));
+        serviceFactory.getService(connection).mkdirs(path, permission);
     }
 
     /**
@@ -109,7 +109,7 @@ public class HdfsOperations extends BaseOperations {
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void deleteDirectory(@Connection HdfsConnection connection,
                                 String path) {
-        execute(() -> serviceFactory.getService(connection).deleteDirectory(path));
+        serviceFactory.getService(connection).deleteDirectory(path);
     }
 
     /**
@@ -126,7 +126,7 @@ public class HdfsOperations extends BaseOperations {
                        String path,
                        @Optional(defaultValue = "4096") int bufferSize,
                        @Content InputStream payload) {
-        execute(() -> serviceFactory.getService(connection).append(path, bufferSize, payload));
+        serviceFactory.getService(connection).append(path, bufferSize, payload);
     }
 
     /**
@@ -138,7 +138,7 @@ public class HdfsOperations extends BaseOperations {
     @Throws(HdfsOperationErrorTypeProvider.class)
     public void deleteFile(@Connection HdfsConnection connection,
                            String path) {
-        execute(() -> serviceFactory.getService(connection).deleteFile(path));
+        serviceFactory.getService(connection).deleteFile(path);
     }
 
     /**
@@ -151,7 +151,7 @@ public class HdfsOperations extends BaseOperations {
     @Throws(HdfsOperationErrorTypeProvider.class)
     public MetaData getMetadata(@Connection HdfsConnection connection,
                                 String path) {
-        return execute(() -> serviceFactory.getService(connection).getMetadata(path));
+        return serviceFactory.getService(connection).getMetadata(path);
     }
 
     /**
@@ -165,7 +165,7 @@ public class HdfsOperations extends BaseOperations {
     public void rename(@Connection HdfsConnection connection,
                        String source,
                        String destination) {
-        execute(() -> serviceFactory.getService(connection).rename(source, destination));
+        serviceFactory.getService(connection).rename(source, destination);
     }
 
     /**
@@ -184,7 +184,7 @@ public class HdfsOperations extends BaseOperations {
                                 @Optional boolean useRawLocalFileSystem,
                                 String source,
                                 String destination) {
-        execute(() -> serviceFactory.getService(connection).copyToLocalFile(deleteSource, useRawLocalFileSystem, source, destination));
+        serviceFactory.getService(connection).copyToLocalFile(deleteSource, useRawLocalFileSystem, source, destination);
     }
 
     /**
@@ -201,7 +201,7 @@ public class HdfsOperations extends BaseOperations {
                                   @Optional boolean deleteSource,
                                   @Optional(defaultValue = "true") boolean overwrite,
                                   String source, String destination) {
-        execute(() -> serviceFactory.getService(connection).copyFromLocalFile(deleteSource, overwrite, source, destination));
+        serviceFactory.getService(connection).copyFromLocalFile(deleteSource, overwrite, source, destination);
     }
 
     /**
@@ -215,7 +215,7 @@ public class HdfsOperations extends BaseOperations {
     public void setPermission(@Connection HdfsConnection connection,
                               String path,
                               String permission) {
-        execute(() -> serviceFactory.getService(connection).setPermission(path, permission));
+        serviceFactory.getService(connection).setPermission(path, permission);
     }
 
     /**
@@ -231,6 +231,6 @@ public class HdfsOperations extends BaseOperations {
                          String path,
                          String ownername,
                          String groupname) {
-        execute(() -> serviceFactory.getService(connection).setOwner(path, ownername, groupname));
+        serviceFactory.getService(connection).setOwner(path, ownername, groupname);
     }
 }
