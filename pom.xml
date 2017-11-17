@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.mule.connectors</groupId>
         <artifactId>mule-connectivity-parent</artifactId>
-        <version>1.0.0-004-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>org.mule.connectors</groupId>
