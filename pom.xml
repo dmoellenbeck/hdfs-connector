@@ -62,6 +62,18 @@
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Dependency added to replace the above excluded dependency. -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
         </dependency>
         <dependency>
             <groupId>org.mule.connectors</groupId>
@@ -100,6 +112,7 @@
                                 <ignoredDependency>org.apache.hadoop:hadoop-client</ignoredDependency>
                                 <ignoredDependency>org.apache.zookeeper:zookeeper</ignoredDependency>
                                 <ignoredDependency>org.apache.httpcomponents:httpclient</ignoredDependency>
+                                <ignoredDependency>commons-beanutils:commons-beanutils</ignoredDependency>
                             </ignoredDependencies>
                             <failOnWarning>true</failOnWarning>
                             <ignoredUsedUndeclaredDependencies>
