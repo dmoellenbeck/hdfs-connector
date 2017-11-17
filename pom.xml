@@ -10,7 +10,7 @@
 
     <groupId>org.mule.connectors</groupId>
     <artifactId>mule-hdfs-connector</artifactId>
-    <version>6.0.0</version>
+    <version>6.0.1-SNAPSHOT</version>
     <packaging>mule-extension</packaging>
     <name>Mule HDFS Connector</name>
 
@@ -127,6 +127,6 @@
         <connection>scm:git:git@github.com:mulesoft/hdfs-connector.git</connection>
         <developerConnection>scm:git:git@github.com:mulesoft/hdfs-connector.git</developerConnection>
         <url>https://github.com/mulesoft/hdfs-connector</url>
-      <tag>mule-hdfs-connector-6.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
