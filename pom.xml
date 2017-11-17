@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mule.connectors</groupId>
+        <groupId>com.mulesoft.connectors</groupId>
         <artifactId>mule-connectivity-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <groupId>org.mule.connectors</groupId>
     <artifactId>mule-hdfs-connector</artifactId>
-    <version>6.0.0-003-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>mule-extension</packaging>
     <name>Mule HDFS Connector</name>
 
