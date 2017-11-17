@@ -32,9 +32,64 @@ HDFS Hadoop connector is compatible with the following:
 |Apache Hadoop |2.8.1 or newer
 |===
 
-== Install the Connector
+== What's New in this Connector
 
-You can install a connector in Anypoint Studio following the instructions from link: https://beta-mule-sdk.docs-stgx.mulesoft.com/connectors/common-add-module-task [To Add a Connector to Studio].
+First release on Mule 4.
+
+
+== To Connect in Design Center
+
+. In Design Center, click Set Up > Upload, browse for and select the driver for this connector on your file system, and upload it. Alternatively, search for and select a driver that is already uploaded.
+. Click a trigger. You can create a global element by selecting this connector as they trigger.
+If a global element is not needed, you can use an HTTP Listener or Scheduler trigger.
+
+image::trigger.png[]
+
+To create an HTTP global element for the connector, set these fields:
+
+. Select the plus sign to add a component.
+. Select the Http connector as a component.
+. Configure these fields:
+
+
+image::http-listener.png[]
+
+Protocol: Protocol selected for the http endpoint, it can be http or https (secure).
+
+Host: IP address where our Mule Application will listen requests.
+
+Port: Port address where our Mule Application will listen requests.
+
+Base Path: path where our Mule Application will listen requests.
+
+Select the plus sign to add a component.
+
+image::plus.png[]
+
+Select the connector as a component.
+
+Select the desired operation.
+
+image::operations.png[]
+
+Configure the Global element for the connector.
+
+Select a connection type.
+
+image::connection-type.png[]
+
+For Simple Connection:
+
+image::simple-connection.png[]
+
+Username: User identity that Hadoop uses for permissions in HDFS.
+
+
+NameNod URI: The URI of the file system to connect to.
+
+For Kerberos Configuratin:
+
+image::kerberos-connection.png[]
 
 == Configure the Connector Global Element
 
@@ -57,6 +112,11 @@ When Simple Authentication is used, Hadoop requires the user to be set as a Syst
 
 image:hdfs-config.png[hdfs-config]
 
+NameNode URI: The URI of the file system to connect to.
+
+Username: Kerberos principal.
+
+KeytabPath: Path to the keytab file associated with username.
 
 === Kerberos Authentication Configuration
 
@@ -85,7 +145,7 @@ You can use this connector as an inbound endpoint for polling content of a file 
 [NOTE]
 See a full list of operations for any version of the connector link:/mulesoft.github.io/hdfs-connector[here].
 
-=== Connector Namespace and Schema
+=== Connector XML
 
 When designing your application in Studio, the act of dragging the connector from the palette onto the Anypoint Studio canvas should automatically populate the XML code with the connector *namespace* and *schema location*.
 
@@ -108,8 +168,17 @@ If you are manually coding the Mule application in Studio's XML editor or other 
       http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
       http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
-</mule>
 
+    <hdfs:hdfs-config name="simple-config">
+        <hdfs:simple-connection nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}"/>
+    </hdfs:hdfs-config>
+
+     <flow name="makeDirFlow">
+        <hdfs:make-directories config-ref="simple-config" path="#[vars.path]" permission="#[vars.permission]">
+        </hdfs:make-directories>
+      </flow>
+</mule>
+----
 === Example Use Case
 
 The following example shows how to create a text file into HDFS using the connector:
@@ -119,9 +188,9 @@ The following example shows how to create a text file into HDFS using the connec
 . In the Search bar type "HDFS" and drag the *HDFS* connector onto the canvas. Configure as explained <<Configure the Connector Global Element>>
 . Choose *Write to path* as an operation. Set *Path* to `/test.txt` (this is the path of the file that is going to be created into HDFS) and leave other options with default values.
 . The flow should look like this:
-+
+
 image:create-file-flow.png[Create file flow]
-+
+
 . Run the application. From your favorite HTTP client make a POST request with "Content-type:plain/text" to `locahost:8081/createFile` with content that you want to write as payload. (e.g. `curl -X POST -H "Content-Type:plain/text" -d "payload to write to file" localhost:8090/createFile`)
 . Check that */test.txt* has been created and has your content by using Hadoop explorer.
 * A demo with the above mentioned use case was provided.
