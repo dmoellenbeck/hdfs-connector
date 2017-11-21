@@ -45,7 +45,7 @@ If a global element is not needed, you can use an HTTP Listener or Scheduler tri
 
 image::trigger.png[]
 
-To create an HTTP global element for the connector, set these fields:
+To create an HTTP global element for the connector:
 
 . Select the plus sign to add a component.
 . Select the Http connector as a component.
@@ -82,12 +82,16 @@ For Simple Connection:
 
 image::simple-connection.png[]
 
+If the Hadoop instance is not installed in the same network as your machine, you will need to put this configuration entry, in the advanced tab of HDFS configuration.
+
+image::advanced-connection.png[]
+
 Username: User identity that Hadoop uses for permissions in HDFS.
 
 
 NameNod URI: The URI of the file system to connect to.
 
-For Kerberos Configuratin:
+For Kerberos Configuration:
 
 image::kerberos-connection.png[]
 
@@ -157,17 +161,13 @@ If you are manually coding the Mule application in Studio's XML editor or other 
 
 [source, xml,linenums]
 ----
- <mule xmlns:http="xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
-      	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-      	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-      	xmlns:spring="http://www.springframework.org/schema/beans"
-      	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      	xsi:schemaLocation="
-
-      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-      http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd">
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:hdfs="http://www.mulesoft.org/schema/mule/hdfs"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdfs/current/mule-hdfs.xsd
+">
 
     <hdfs:hdfs-config name="simple-config">
         <hdfs:simple-connection nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}"/>
