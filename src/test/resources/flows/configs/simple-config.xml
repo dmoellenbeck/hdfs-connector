@@ -9,7 +9,11 @@ http://www.mulesoft.org/schema/mule/hdfs http://www.mulesoft.org/schema/mule/hdf
     <configuration-properties file="automation-credentials.properties"/>
 
     <hdfs:hdfs-config name="simple-config">
-        <hdfs:simple-connection nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}"/>
+        <hdfs:simple-connection nameNodeUri="${hdfs.nameNodeUri}" username="${hdfs.username}" >
+        <hdfs:configuration-entries>
+            <hdfs:configuration-entry key="dfs.client.use.datanode.hostname" value="true" />
+        </hdfs:configuration-entries>
+        </hdfs:simple-connection>
     </hdfs:hdfs-config>
 
 </mule>
