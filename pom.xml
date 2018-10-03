@@ -16,7 +16,7 @@
     <properties>
         <category>Select</category>
         <licensePath>LICENSE.md</licensePath>
-        <hadoop.version>2.7.2</hadoop.version>
+        <hadoop.version>2.6.0</hadoop.version>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
         <connector.test.version>2.0.7</connector.test.version>
         <harmcrest.version>1.3</harmcrest.version>
